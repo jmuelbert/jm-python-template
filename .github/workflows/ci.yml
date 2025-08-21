@@ -1,0 +1,101 @@
+---
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+
+name: Core CI
+run-name: "${{ github.event_name == 'workflow_dispatch' && format('CI: {0}', github.ref_name) || '' }}"
+
+on:
+  push:
+    branches: [main, develop, release]
+    paths:
+      - src/**
+      - pyproject.toml
+      - .github/workflows/ci.yml
+      - .github/actions/**
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  FORCE_COLOR: '1'
+  PACKAGE_NAME: my-project
+
+defaults:
+  run:
+    shell: bash
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-quality:
+    name: Lint & Quality Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: 🧐 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Call Python Environment Setup
+        uses: ./.github/actions/python-setup
+      - name: ⚙️ Install Python Dependencies
+        run: hatch env create lint
+      - name: 🔍 Run Linters & Checks
+        run: hatch run lint:all
+
+  test:
+    name: Test with ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    needs: lint-and-quality
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@v4
+      - name: Call Python Environment Setup
+        uses: ./.github/actions/python-setup
+        id: python-setup
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: ⚙️ Install Dependencies for Test
+        run: hatch env create test
+      - name: 🎨 Setup Qt Dependencies
+        if: runner.os == 'Linux'
+        uses: ./.github/actions/setup-qt-dependencies
+      - name: 🧪 Run Tests & Generate Coverage
+        run: |
+          hatch run test:cov
+      - name: 📊 Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          flags: ${{ matrix.os }}
+          fail_ci_if_error: true
+          verbose: true
+      - name: 📦 Store Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ runner.os }}-${{ matrix.python-version }}
+          path: |
+            .coverage
+            coverage.xml
+            htmlcov/
+          retention-days: 7
