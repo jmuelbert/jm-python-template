@@ -45,31 +45,6 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/
-      - name: 📢 Create Release Comment
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const summary = `## 📚 Documentation Deployment
-
-            ### Status
-            ✅ Documentation deployed successfully!
-
-            ### Details
-            - Files: ${{ steps.build.outputs.doc-files }}
-            - Environment: ${{ github.ref_name }}
-
-            ### Languages
-            - 🇬🇧 English: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/en/
-            - 🇩🇪 German: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/de/
-            `;
-
-            await github.rest.repos.createCommitComment({
-              ...context.repo,
-              commit_sha: context.sha,
-              body: summary
-            })
-            
   # Deploy job
   deploy:
     # Add a dependency to the build job
