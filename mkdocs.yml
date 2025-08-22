@@ -1,18 +1,18 @@
 ---
-# Source: https://github.com/jmuelbert/python-my-project/blob/main/workflow-templates/assets/mkdocs/mkdocs.yml
+# Source: https://github.com/jmuelbert/jm-python-template/blob/main/workflow-templates/assets/mkdocs/mkdocs.yml
 # See: https://www.mkdocs.org/user-guide/configuration/
 
 # --- Project Information ---
-site_name: python-my-project
-site_url: https://io.github.org/jmuelbert/python-my-project/
+site_name: jm-python-template
+site_url: https://io.github.org/jmuelbert/jm-python-template/
 site_description: >-
   A modern Python project template with comprehensive tooling.
 # Repository
-repo_name: jmuelbert/python-my-project
-repo_url: https://github.com/jmuelbert/python-my-project/
+repo_name: jmuelbert/jm-python-template
+repo_url: https://github.com/jmuelbert/jm-python-template/
 edit_uri: blob/main/docs/
 # Copyright
-copyright: Copyright &copy; 2023 - now Jürgen Mülbert
+copyright: Copyright &copy; 2025 - now Jürgen Mülbert
 
 # --- Configuration ---
 docs_dir: docs
@@ -24,17 +24,21 @@ theme:
   logo: assets/images/logo.svg
   favicon: assets/images/favicon.ico
   custom_dir: docs/.overrides
-  
+
   features:
+    - announce.dismiss
     - content.code.copy
     - content.code.annotate
     - content.code.select
+    - content.tooltips
     - header.autohide
+    - navigation.footer
+    - navigation.indexes
     - navigation.expand
     - navigation.top
     - search.suggest
     - toc.follow
-  
+
   palette:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
@@ -48,14 +52,14 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-    
+
   extra_css:
     - css/custom.css
-  
+
   icon:
     repo: fontawesome/brands/github-alt
     logo: material/check-network-outline
-    
+
   font:
     text: Roboto
     code: Roboto Mono
@@ -78,6 +82,9 @@ plugins:
       - zh
   mike:
     alias_type: copy
+  awesome-pages: {}
+  section-index: {}
+  glightbox: {}
   mkdocstrings:
     handlers:
       python:
@@ -108,28 +115,48 @@ plugins:
       - locale: de
         name: Deutsch
         build: true
-        site_name: "Meine Projekt-Dokumentation
-  section-index: {}
-  awesome-pages: {}
-  glightbox: {}
-  
+        site_name: "Meine Projekt-Dokumentation"
+
 # --- Markdown Extensions ---
 markdown_extensions:
+  - abbr
   - admonition
-  - pymdownx.tabbed:
-      alternate_style: true
+  - attr_list
+  - def_list
+  - tables
+  - footnotes
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.details  
-  - attr_list
-  - footnotes
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.snippets
   - toc:
       permalink: true
 
@@ -141,8 +168,8 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/jmuelbert
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/python-my-project/
-      
+      link: https://pypi.org/project/jm-python-template/
+
 watch:
   - mkdocs.yml
   - src/
@@ -150,10 +177,18 @@ watch:
 
 # Page tree
 nav:
-  - Introduction: index.md
-  - Getting Started: getting-started/index.md
-  - User-Guide: user-guide/index.md
-  - Developer-Guide: developer-guide/index.md
+  - Home: index.md
+  - Getting Started:
+      - getting-started/index.md
+  - User Guide:
+    - user-guide/index.md
+  - Developer Guide:
+    - developer-guide/index.md
+    - Security: developer-guide/security.md
   - Api-Reference: api-reference.md
-  - Community: community/index.md
-  - About: about/index.md
+  - Community:
+    - Code of Conduct: community/code_of_conduct.md
+    - Contributing: community/contributing.md
+    - FAQ: community/faq.md
+  - About:
+    - about/index.md
