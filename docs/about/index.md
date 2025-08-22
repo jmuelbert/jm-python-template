@@ -4,12 +4,12 @@ Finally, this section provides context and legal information.
 
 ## License:
 
-A link to your project's license file (LICENSE).
+jm-python-template is licensed under the [European Union Public License](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12).
 
 ## Changelog:
 
-A link to your CHANGELOG.md or a generated changelog.
+You can find a list of changes in the [CHANGELOG.md](https://github.com/jmuelbert/jm-python-template/blob/main/CHANGELOG.md) file.
 
 ## Authors:
 
-A list of the project's authors.
+Here's a list of the [project's authors](https://github.com/jmuelbert/jm-python-template/blob/main/AUTHORS.md).

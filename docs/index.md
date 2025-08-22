@@ -19,3 +19,28 @@ A bulleted list of the main functionalities.
 ## Quick Start:
 
 A single, copy-and-paste command to get started.
+
+```
+/docs
+├── about/
+│   ├── index.md  # Includes license info, etc.
+│   └── changelog.md # Can be a manual file or a link
+├── api-reference.md # Auto-generated via mkdocstrings
+├── assets/
+│   └── images/
+├── community/
+│   ├── code_of_conduct.md
+│   ├── contributing.md
+│   └── faq.md
+├── css/
+│   └── custom.css
+├── developer-guide/
+│   └── index.md  # Main page for dev setup, architecture, etc.
+├── getting-started/
+│   └── index.md  # Installation and quick start
+├── includes/
+│   └── abbreviations.md
+├── index.md # The main landing page
+└── user-guide/
+    └── index.md # All user-facing features and guides
+```
