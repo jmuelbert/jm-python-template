@@ -21,9 +21,8 @@ site_dir: site
 # --- Theme Configuration ---
 theme:
   name: material
-  logo: assets/images/logo.svg
-  favicon: assets/images/favicon.ico
-  custom_dir: docs/.overrides
+  logo: assets/images/jm-py-logo.svg
+  favicon: assets/images/jm-py-logo.svg
 
   features:
     - announce.dismiss
@@ -58,7 +57,7 @@ theme:
 
   icon:
     repo: fontawesome/brands/github-alt
-    logo: material/check-network-outline
+    logo: assets/images/jm-py-logo.svg
 
   font:
     text: Roboto
