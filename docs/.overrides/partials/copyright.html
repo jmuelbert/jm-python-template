@@ -1,18 +1,25 @@
-{% if config.copyright %}
-<div class="md-copyright__highlight">{{ config.copyright }}</div>
-<div>
+<div class="md-copyright">
+  {% if config.copyright %}
+  <div class="md-copyright__highlight">{{ config.copyright }}</div>
+  <div>
+    Logo by
+    <a href="https://gemini.google.com/" target="_blank" rel="noopener">
+      Google Gemini
+    </a>
+    and
+    <a
+      href="https://io.github.com/jmuelbert/jm-python-template"
+      target="_blank"
+      rel="noopener"
+      >Jürgen Mülbert</a
+    >
+  </div>
+  {% endif %} {% if not config.extra.generator == false %} Made with
   <a
-    href="https://io.github.com/jmuelbert/jm-python-template"
+    href="https://squidfunk.github.io/mkdocs-material/"
     target="_blank"
     rel="noopener"
-    >Jürgen Mülbert</a
+    >Material for MkDocs</a
   >
+  {% endif %}
 </div>
-{% endif %} {% if not config.extra.generator == false %}
-<a
-  href="https://squidfunk.github.io/mkdocs-material/"
-  target="_blank"
-  rel="noopener"
-  >Made with Material for MkDocs</a
->
-{% endif %}

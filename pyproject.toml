@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2023-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+#
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -26,7 +29,11 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "typer",
+  "rich",
+  "babel",
+]
 
 [project.urls]
 Homepage = "https://github.com/jmuelbert//jm-python-template"
@@ -36,26 +43,46 @@ Issues = "https://github.com/jmuelbert//jm-python-template/issues"
 Changelog = "https://github.com/jmuelbert//jm-python-template/blob/main/CHANGELOG.md"
 Source = "https://github.com/jmuelbert//jm-python-template"
 
+[project.optional-dependencies]
+docs = [
+  "mkdocs>=1.6.1,<1.7",
+  "mkdocs-material[imaging]>=9.6.7,<9.7",
+  "mkdocs-awesome-pages-plugin>=2.10.1,<2.20",
+  "mkdocs-git-revision-date-localized-plugin>=1.3.0,<1.4",
+  "mkdocs-glightbox>=0.4.0,<0.5",
+  "mkdocs-include-markdown-plugin>=7.1.6, <8.0.0",
+  "mkdocs-section-index>=0.3.0,<0.4",
+  "mkdocs-static-i18n>=1.3.0,<1.4",
+  "mkdocs-typer2>=0.1.5, <0.2.0",
+  "mkdocstrings[python]",
+  "mike>=2.1.3,<3.0.0",
+]
+
 [tool.hatch.version]
 path = "src/jm_python_template/__about__.py"
 
 [tool.hatch.envs.default]
 installer = "uv"
 
+[tool.hatch.envs.dev]
+dependencies = []
+scripts = { all = ["hatch run lint:check-all", "hatch run test:test"] }
+
+[tool.hatch.entry_points."console_scripts"]
+main = "jm_python_template.main"
+
 [tool.hatch.metadata]
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/jm-python-template"]
+packages = ["src/jm_python_template"]
 macos-max-compat = true
 
 [tool.hatch.build.targets.sdist]
-include = [
-  "src",
-  "README.md",
-  "LICENSE",
-  "pyproject.toml"
-  ]
+exclude = [
+  "/.github",
+  "/scripts",
+]
 
   [[tool.hatch.envs.test.matrix]]
   python = ["3.11", "3.12", "3.13"]
@@ -85,9 +112,10 @@ include = [
 
   [tool.hatch.envs.test.scripts]
   test = "pytest tests/ {args}"
-  cov = "pytest --cov --cov-report term-missing:skip-covered --cov-report xml --cov-report html --cov=src tests/"
+  coverage = "pytest --cov --cov-report term-missing:skip-covered --cov-report xml --cov-report html --cov=src tests/"
   typeguard = "pytest --typeguard-packages=src"
   doctest = "pytest --doctest-modules"
+  all = ["test", "coverage", "typeguard", "doctest"]
 
   [tool.pytest.ini_options]
   minversion = "6.0"
@@ -116,8 +144,8 @@ omit = [
 ]
 
 [tool.coverage.paths]
-jm_python_template = ["src/jm_python_template", "*/jm-python-template/src/jm_python_template"]
-tests = ["tests", "*/jm-python-template/tests"]
+jm_python_template = ["src/jm_python_template", "*/jm_python_template/src/jm_python_template"]
+tests = ["tests", "*/jm_python_template/tests"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -140,6 +168,7 @@ dependencies = [
 [tool.hatch.envs.lint.scripts]
 # Combined style linting
 check = "ruff check ."
+fmt = "ruff format ."
 fix = "ruff check . --fix"
 style = ["ruff check .", "ruff format --check ."]
 typing = "pyright"
@@ -148,20 +177,22 @@ precommit = "pre-commit run --all-files"
 
 # Aggregate linting tasks
 all = ["style", "typing", "license"]
+check-all = ["check", "typing", "license", "precommit"]
 
 [tool.hatch.envs.docs]
 installer = "uv"
 dependencies = [
   "mkdocs>=1.6.1,<1.7",
   "mkdocs-material[imaging]>=9.6.7,<9.7",
-  "mkdocs-static-i18n>=1.3.0,<1.4",
-  "mkdocstrings[python]", # The 'python' extra automatically installs griffe
   "mkdocs-awesome-pages-plugin>=2.10.1,<2.20",
-  "mike>=2.1.3,<2.2",
-  "mkdocs-click>=0.8.1,<0.9",
-  "mkdocs-section-index>=0.3.0,<0.4",
   "mkdocs-git-revision-date-localized-plugin>=1.3.0,<1.4",
   "mkdocs-glightbox>=0.4.0,<0.5",
+  "mkdocs-include-markdown-plugin>=7.1.6, <8.0.0",
+  "mkdocs-section-index>=0.3.0,<0.4",
+  "mkdocs-static-i18n>=1.3.0,<1.4",
+  "mkdocs-typer2>=0.1.5, <0.2.0",
+  "mkdocstrings[python]",
+  "mike>=2.1.3,<3.0.0",
   "jm-reusable-scripts @ git+https://github.com/jmuelbert/jm-reusable-scripts.git",
 ]
 
@@ -251,7 +282,7 @@ ignore = [
 # Ensure imports are organized consistently.
 # Replace "your_package_name" with the actual top-level package name(s) of your project.
 # This helps isort correctly group your internal imports.
-known-first-party = ["jm-python-config"]
+known-first-party = ["jm_python_config"]
 combine-as-imports = true # Combine imports like `import os, sys` into `import os; import sys`
 force-single-line = false # Set to true if you prefer all imports on a single line
 
@@ -312,7 +343,7 @@ reportUnusedVariable = true
 reportGeneralTypeIssues = true
 
 [tool.proselint]
-max-line-length = 120
+max-line-length = 80
 checks = [
   "typography.diacritical_marks",
   "typography.exclamation",
@@ -329,6 +360,13 @@ checks = [
   "spelling.misc",
   "consistency.spacing",
   "consistency.spelling",
+  # Additional recommended checks
+  "misc.tense",
+  "uncomparables.misc",
+  "weasel_words.misc",
+  "cliches.misc",
+  "conditional.misc",
+  "passive.misc",
 ]
 
 [tool.xdoctest]

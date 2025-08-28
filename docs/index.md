@@ -6,7 +6,7 @@ The project's name.
 
 ## A Brief Description:
 
-  What the project does.
+What the project does.
 
 ## Key Features:
 

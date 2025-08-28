@@ -1,0 +1,204 @@
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2023-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+
+# https://taskfile.dev
+# ------------------------
+# Global Settings
+# ------------------------
+version: '3'
+
+vars:
+  LOG: 'warn'
+  DOMAIN: 'jm-python-template'
+  SRC_DIR: 'src'
+  LOCALES_DIR: '{{.SRC_DIR}}/{{.DOMAIN}}/locales'
+  GUI_DIR: '{{.SRC_DIR}}/{{.DOMAIN}}/gui'
+  TRANSLATIONS_DIR: '{{.GUI_DIR}}/translations'
+  LANGUAGES: 'en es fr de it pt pt_BR ru zh_CN zh_TW ja ko hi tr ar vi pl nl sv'
+
+# ------------------------
+# Tasks
+# ------------------------
+tasks:
+  # ------------------------
+  # Default
+  # ------------------------
+  default:
+    desc: Lists available tasks
+    cmds:
+      - task --list
+
+  # ------------------------
+  # Environment
+  # ------------------------
+  sync:
+    desc: Synchronizes dependencies and installs pre-commit hooks
+    cmds:
+      - uv sync {{.CLI_ARGS}}
+      - pre-commit install
+
+  rm:
+    desc: Cleans up the project by removing generated files
+    cmds:
+      - |
+        echo "🧹 Cleaning up project..."
+        rm -rf dist htmlcov site .cache .ropeproject .ruff_cache .pytest_cache .venv
+        rm -f coverage.xml uv.lock
+        rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.mo
+        rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.po
+        rm -rf {{.TRANSLATIONS_DIR}}/*.ts {{.TRANSLATIONS_DIR}}/*.qm
+        rm -f {{.GUI_DIR}}/resources_rc.py
+        hatch env prune || true
+
+  # ------------------------
+  # Tests & Coverage
+  # ------------------------
+  test:
+    desc: Runs tests with a specific Hatch environment
+    cmds:
+      - hatch env create test
+      - hatch run test:test {{.CLI_ARGS}}
+
+  test-with-version:
+    desc: Runs tests for a specific Python version
+    cmds:
+      - task: rm
+      - hatch env create test
+      - hatch run +py={{.VERSION}} test:test
+    vars:
+      VERSION: ''
+
+  test-py:
+    desc: Runs tests on multiple Python versions
+    cmds:
+      - task: test-with-version
+        vars: { VERSION: 3.11 }
+      - task: test-with-version
+        vars: { VERSION: 3.12 }
+      - task: test-with-version
+        vars: { VERSION: 3.13 }
+      - task: rm
+
+  coverage:
+    desc: Runs code coverage tests
+    cmds:
+      - hatch env create test
+      - hatch run test:coverage
+
+  # ------------------------
+  # Linting & Quality
+  # ------------------------
+  lint:
+    desc: Runs all linting checks
+    cmds:
+      - hatch env create lint
+      - hatch run lint:all
+
+  lintdocs:
+    desc: Lints documentation files
+    cmds:
+      - pnpm install
+      - pnpm dlx prettier --write .
+      - pnpm dlx markdownlint-cli .
+      - pnpm dlx markdown-link-check $(find . -type f -name '*.md' ! -path './node_modules/*')
+      - pnpm dlx cspell .
+
+  pre-commit:
+    desc: Runs pre-commit hooks
+    cmds:
+      - hatch env create lint
+      - hatch run lint:precommit
+
+  spell-check:
+    desc: Runs spell check
+    cmds:
+      - pnpm dlx cspell .
+
+  # ------------------------
+  # Documentation
+  # ------------------------
+  serve:
+    desc: Serves documentation locally
+    cmds:
+      - hatch env create docs
+      - hatch run docs:serve
+
+  docs-build:
+    desc: Builds documentation
+    cmds:
+      - hatch env create docs
+      - hatch run docs:build
+
+  # ------------------------
+  # Translations
+  # ------------------------
+  extract-qt-translations:
+    desc: Extracts Qt translation strings
+    cmds:
+      - |
+        echo "Extracting Qt translations (.ts)..."
+        for lang in {{.LANGUAGES}}; do \
+          ts_file="{{.TRANSLATIONS_DIR}}/$${lang}.ts"; \
+          if [ ! -f "$${ts_file}" ]; then \
+            echo '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE TS><TS version="2.1" language="'"$${lang}"'"></TS>' > "$${ts_file}"; \
+          fi; \
+          hatch run pyside6-lupdate $(find "{{.GUI_DIR}}" -name '*.py') -ts "$${ts_file}"; \
+        done
+
+  compile-qt-translations:
+    desc: Compiles Qt translations
+    cmds:
+      - |
+        echo "Compiling Qt translations (.qm)..."
+        for lang in {{.LANGUAGES}}; do \
+          ts_file="{{.TRANSLATIONS_DIR}}/$${lang}.ts"; \
+          qm_file="{{.TRANSLATIONS_DIR}}/$${lang}.qm"; \
+          if [ -f "$${ts_file}" ]; then \
+            hatch run pyside6-lrelease "$${ts_file}" -qm "$${qm_file}"; \
+          fi; \
+        done
+        hatch run pyside6-rcc "{{.GUI_DIR}}/resources.qrc" -o "{{.GUI_DIR}}/resources_rc.py"
+
+  extract-babel-translations:
+    desc: Extracts Babel translation strings
+    cmds:
+      - |
+        echo "Extracting Babel translation strings (.pot)..."
+        pot_file="{{.LOCALES_DIR}}/{{.DOMAIN}}.pot"
+        hatch run pybabel extract -k translate -k _translate_func -o $$pot_file `find {{.SRC_DIR}} -name '*.py'`
+
+  compile-babel-translations:
+    desc: Updates and compiles Babel translations
+    cmds:
+      - |
+        echo "Updating and compiling Babel translations (.po → .mo)..."
+        for lang in {{.LANGUAGES}}; do \
+          po_dir="{{.LOCALES_DIR}}/$$lang/LC_MESSAGES"; \
+          mkdir -p $$po_dir; \
+          po_file="$$po_dir/messages.po"; \
+          pot_file="{{.LOCALES_DIR}}/{{.DOMAIN}}.pot"; \
+          if [ -f $$po_file ]; then \
+            hatch run pybabel update -i $$pot_file -d $$po_dir -l $$lang; \
+          else \
+            hatch run pybabel init -i $$pot_file -d $$po_dir -l $$lang; \
+          fi; \
+          hatch run pybabel compile -d $$po_dir -l $$lang; \
+        done
+
+  translate-qt:
+    desc: Extracts and compiles Qt translations
+    cmds:
+      - task: extract-qt-translations
+      - task: compile-qt-translations
+
+  translate-babel:
+    desc: Extracts and compiles Babel translations
+    cmds:
+      - task: extract-babel-translations
+      - task: compile-babel-translations
+
+  translate-all:
+    desc: Extracts and compiles all translations
+    cmds:
+      - task: translate-qt
+      - task: translate-babel
