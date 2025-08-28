@@ -1,4 +1,5 @@
 {
+  "files": ["./**/*.md"],
   "ignorePatterns": [
     {
       "pattern": "^http://localhost"
@@ -16,5 +17,8 @@
   "timeout": "20s",
   "retryOn429": true,
   "retryCount": 3,
-  "fallbackRetryDelay": "30s"
+  "fallbackRetryDelay": "30s",
+  "http_headers": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36"
+  }
 }

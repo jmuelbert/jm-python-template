@@ -1,10 +1,10 @@
 ---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-exclude: ^(3rd-party|COPYING|LICENSE|\.gitmodules|.*\.(ui|qrc|ts)$|LICENSES/|pnpm-lock.yaml)
+exclude: ^(LICENSE|.*\.(qrc|ts)$|LICENSES/|pnpm-lock.yaml)
 ci:
-  autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
-  autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate
+  autofix_commit_msg: '🎨 [pre-commit.ci] Auto format from pre-commit.com hooks'
+  autoupdate_commit_msg: '⬆ [pre-commit.ci] pre-commit autoupdate'
 fail_fast: false
 
 repos:
@@ -17,36 +17,33 @@ repos:
       - id: check-yaml
         args: [--allow-multiple-documents]
         exclude: mkdocs.yml
+      - id: check-toml
       - id: check-added-large-files
         args: [--maxkb=500]
       - id: check-json
-        exclude: (\.devcontainer/devcontainer.json|\.vscode/)
+        # exclude: "(\\.devcontainer/devcontainer\\.json|\\.vscode/.*)"
       - id: check-merge-conflict
       - id: check-case-conflict
       - id: detect-private-key
       - id: debug-statements
       - id: check-builtin-literals
 
-  # Check and update pre-commit
-  - repo: meta
-    hooks:
-      - id: check-hooks-apply
-      - id: check-useless-excludes
-
   - repo: https://github.com/mxr/sync-pre-commit-deps
     rev: v0.0.3
     hooks:
       - id: sync-pre-commit-deps
 
+  # Hook for consistent code style across files
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 2.7.3
+    hooks:
+      - id: editorconfig-checker
+
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.19.1
     hooks:
       - id: gitlint
-        args:
-          [
-            --contrib=CT1,
-            --msg-filename,
-          ]
+        args: [--contrib=CT1, --msg-filename]
 
   # Comprehensive Linting
   - repo: https://github.com/charliermarsh/ruff-pre-commit
@@ -56,47 +53,69 @@ repos:
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
 
+  # YAML Linter
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        files: \.(yaml|yml)$
+
   # GitHub json checks
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.31.3
     hooks:
       - id: check-dependabot
-      - id: check-github-actions
+        name: 'Check Dependabot configuration'
+        description: 'Validates .github/dependabot.yml.'
+        args: ['--verbose']
+        # The `files` regex ensures the hook only runs on this specific file.
+        files: ^\.github/dependabot\.yml$
+
       - id: check-github-workflows
-      # - id: check-gitlab-ci
-      - id: check-readthedocs
-        # - id: check-taskfile
-        args: [--verbose]
+        name: 'Check GitHub Workflows'
+        description: 'Validates all yaml files in .github/workflows.'
+        args: ['--verbose']
+        # The `files` regex targets all YAML files
+        #  within the workflows directory.
+        files: ^\.github/workflows/.*\.ya?ml$
 
-  # GitHub Workflows check
-  - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.7
-    hooks:
-      - id: actionlint
-
-  # Prettier
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
-    hooks:
-      - id: prettier
-        types: [markdown, javascript, css, json]
+      - id: check-github-actions
+        name: 'Check GitHub Actions configuration'
+        description: 'Validates the action.yml file for a custom action.'
+        args: ['--verbose']
+        # This hook targets action definition files, which
+        # are often in a subdirectory.
+        files: ^(\.github/actions/.*|action)\.ya?ml$
 
   # Markdown specific
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.44.0
     hooks:
       - id: markdownlint
-        args: ["--config", ".markdownlint.json"]
+        args: ['--config', '.markdownlint.json']
 
   # Links checker
   - repo: https://github.com/tcort/markdown-link-check
     rev: v3.13.6
     hooks:
       - id: markdown-link-check
-        args: ["--config", ".markdown-link-check.json"]
+        args: ['--config', '.markdown-link-check.json']
+        exclude: 'node_modules/'
 
+  - repo: https://github.com/amperser/proselint
+    rev: 0.12.0 # Check for the latest release on GitHub
+    hooks:
+      - id: proselint
+        # Or any other file extensions you use for prose
+        files: '\.(md|rst|txt)$'
   - repo: https://github.com/abravalheri/validate-pyproject
     rev: v0.24.1
     hooks:
       - id: validate-pyproject
         name: Validate pyproject.toml
+
+  # Check and update pre-commit
+  - repo: meta
+    hooks:
+      - id: check-hooks-apply
+      - id: check-useless-excludes

@@ -1,5 +1,5 @@
 {
-  "name": "checkconnect",
+  "name": "jm-python-template",
   "version": "0.0.0",
   "description": "Checks the availability of web addresses and NTP servers.",
   "main": "main.py",
@@ -32,6 +32,8 @@
     "eslint": "9.22.0",
     "husky": "9.1.7",
     "lint-staged": "^12.5.0",
+    "markdown-link-check": "^3.13.7",
+    "markdownlint-cli": "^0.45.0",
     "prettier": "3.5.3",
     "yaml": "^2.7.0"
   },

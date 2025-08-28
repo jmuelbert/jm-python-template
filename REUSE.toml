@@ -1,34 +1,41 @@
 version = 1
-SPDX-PackageName = "jm-python-config"
+SPDX-PackageName = "jm-python-template"
 SPDX-PackageSupplier = "<juergen.muelbert@outlook.de>"
-SPDX-PackageDownloadLocation = "https://www.github.com/jmuelbert/jm-python-config"
+SPDX-PackageDownloadLocation = "https://www.github.com/jmuelbert/jm-python-template"
 
 [[annotations]]
 path = ["src/**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
-SPDX-License-Identifier = "GPL-3.0-or-later"
+SPDX-License-Identifier = "EUPL-1.2"
+
 
 [[annotations]]
-path = ["**.ui", "**.qrc", "**.json", "docs/collection/about.txt", "**.frag", "**.geom", "**.vert", "**.ts", "**.qm", "**.map"]
+path = ["README.md", "AUTHORS.md", "CHANGELOG.md", "SECURITY.md"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
-SPDX-License-Identifier = "GPL-2.0-or-later"
+SPDX-License-Identifier = "EUPL-1.2"
 
 [[annotations]]
-path = ["CHANGES", "CONTRIBUTORS.txt", "INSTALL.md", "README.md", "docs/manual/style/**", "docs/api/**.html", "docs/man/**.pod", "docs/**.pdf"]
+path = [".github/CODE_OF_CONDUCT.md"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
-SPDX-License-Identifier = "GPL-2.0-or-later"
+SPDX-License-Identifier = "CC-BY-2.0 "
 
 [[annotations]]
-path = [ ".codespellrc", ".git-blame-ignore-revs", ".gitattributes", ".gitignore",  ".pep8", ".pre-commit-config.yaml", "distro/**", ".github/**"]
+path = [".gitattributes", ".gitignore", ".markdown-link-check.json", ".markdownlint.json", ".npmrc", ".pre-commit-config.yaml", ".python-version"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "BSD-3-Clause"
 
 [[annotations]]
-path = ["docs/manual/**/**.png", "docs/api/**.png", "tests/manual/**.png"]
+path = ["docs/**/**.md", "docs/**/**.html", "docs/**/**.css"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
-SPDX-License-Identifier = "GPL-2.0-or-later"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+path = ["docs/assets/**/**.png", "docs/assets/**/**.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
+SPDX-License-Identifier = "BSD-3-Clause"

@@ -12,7 +12,7 @@ permissions:
   id-token: write
 jobs:
   build:
-    name: Build & Test
+    name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -29,6 +29,11 @@ jobs:
       - name: Get Project Version
         id: version
         run: echo "version=$(hatch version)" >> "$GITHUB_OUTPUT"
+      - name: 📚 Compile Translations
+        uses: extractions/setup-just@v3
+        run: |
+          just compile-qt-translations
+          just compile-babel-translations
       - name: 📦 Build Python Package
         run: hatch build
       - name: 📤 Upload Artifacts
@@ -54,9 +59,13 @@ jobs:
         uses: pypa/gh-action-pypi-publish@v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
-      - name: 📝 Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
         with:
-          files: dist/*
-          generate_release_notes: true
+          body: ${{steps.github_release.outputs.changelog}}

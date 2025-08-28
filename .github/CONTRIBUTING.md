@@ -1,233 +1,212 @@
 # Contributing to jm-python-template
 
-jm-python-template is a large project and contributions are more than welcome, so
-thank you for wanting to contribute to jm-python-template!
+First off, thank you for considering contributing to **jm-python-template**! 🎉
+
+We welcome contributions of all kinds — code,
+documentation, testing, translations, and ideas.
+
+This guide will walk you through the process.
 
 ---
 
-## Checklist before creating a Pull Request
+## 📜 Code of Conduct
 
-Submit only relevant commits. We don't mind many commits in a pull request,
-but they must be relevant as explained below.
-
-- **Use a feature branch** The pull request should be created from a
-  feature branch, and not from _develop_. See below for why.
-- **No merge-commits** If you have commits that looks like this _"Merge
-  branch 'my-branch' into develop"_ or _"Merge branch 'develop' of
-  <https://github.com/jmuelbert/jm-python-template> into develop"_ you're
-  probably using merge instead of
-  [rebase](https://help.github.com/articles/about-git-rebase) locally. See
-  below on _Handling updates from upstream_.
-- **Squash commits** Often we create temporary commits like _"Started
-  implementing feature x"_ and then _"Did a bit more on feature x"_. Squash
-  these commits together using
-  [interactive rebase](https://help.github.com/articles/about-git-rebase).
-  Also see
-  [Squashing commits with rebase](https://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html).
-- **Descriptive commit messages** If a commit's message isn't descriptive,
-  change it using
-  [interactive rebase](https://help.github.com/articles/about-git-rebase).
-  Refer to issues using `#issue`. Example of a bad message ~~"Small
-  cleanup"~~. Example of good message: _"Removed Security.Claims header
-  from FSM, which broke Mono build per #62"_. Don't be afraid to write long
-  messages, if needed. Try to explain _why_ you've done the changes. The
-  Erlang repo has some info on
-  [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
-- **No one-commit-to-rule-them-all** Large commits that changes too many
-  things at the same time are very hard to review. Split large commits into
-  smaller. See this
-  [StackOverflow question](https://stackoverflow.com/questions/6217156/break-a-previous-commit-into-multiple-commits)
-  for information on how to do this.
-- **Tests** Add relevant tests and make sure all existing ones still
-  passes. Tests can be run using the command
-- **No Warnings** Make sure your code do not produce any build warnings.
-
-After reviewing a Pull request, we might ask you to fix some commits. After
-you've done that you need to force push to update your branch in your local
-fork.
-
-### Title and Description for the Pull Request
-
-Give the PR a descriptive title and in the description field describe what
-you have done in general terms and why. This will help the reviewers
-greatly, and provide a history for the future.
-
-Especially if you modify something existing, be very clear! Have you
-changed any algorithms, or did you just intend to reorder the code? Justify
-why the changes are needed.
+This project follows the
+[Contributor Covenant Code of Conduct v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+By participating, you are expected to uphold this code. Please report unacceptable behavior to the maintainers.
 
 ---
 
-### Getting started
+## 🚀 Getting Started
 
-Make sure you have a [GitHub](https://github.com/) account.
+### 1. Fork & Clone
 
-- Fork, clone, add upstream to the jm-python-template repository. See
-  [Fork a repo](https://help.github.com/articles/fork-a-repo) for more
-  detailed instructions or follow the instructions below.
-
-- Fork by clicking _Fork_ on <https://github.com/jmuelbert/jm-python-template>
-
-- Clone your fork locally.
+Fork the repository via GitHub and clone your fork locally:
 
 ```bash
-git clone https://github.com/jmuelbert/jm-python-template
+git clone https://github.com/your-username/jm-python-template.git
+cd jm-python-template
 ```
 
-- Add an upstream remote.
+### Development Environment
+
+We use [Hatch](https://hatch.pypa.io/latest/) for environment and project management.
+
+Enter the development environment with:
 
 ```bash
-git remote add upstream https://github.com/YOUR-USERNAME/jm-python-template
+hatch shell
 ```
 
-You now have two remotes: _upstream_ points to
-<https://github.com/jmuelbert/jm-python-template>, and _origin_ points to your
-fork on GitHub.
-
-- Make changes. See below.
-
-Unsure where to start? Issues marked with
-[_up for grabs_](https://github.com/jmuelbert/jm-python-template/labels/up%20for%20grabs)
-are things we want help with.
-
-See also:
-[Contributing to Open Source on GitHub](https://guides.github.com/activities/contributing-to-open-source/)
-
-New to Git? See
-<https://help.github.com/articles/what-are-other-good-resources-for-learning-git-and-github>
-
-### Making changes
-
-**Never** work directly on _dev_ or _main_ and you should never send a pull
-request from main - always from a feature branch created by you.
-
-- Pick an [issue](https://github.com/jmuelbert/jm-python-template/issues). If no
-  issue exists (search first) create one.
-- Get any changes from _upstream_.
+Run the tests to verify everything works:
 
 ```bash
-git checkout dev
-git fetch upstream
-git merge --ff-only upstream/dev
-git push origin dev
-#(optional) this makes sure dev in your own fork on GitHub is up to date
+   hatch test
 ```
 
-See <https://help.github.com/articles/fetching-a-remote> for more info
-
-- Create a new feature branch. It's important that you do your work on your
-  own branch and that it's created off of _dev_. Tip: Give it a descriptive
-  name and include the issue number, e.g.
-  `implement-lengthframeencoder-323` or `295-implement-recvbuffer`, so that
-  others can see what is being worked on.
+or
 
 ```bash
-git checkout -b my-new-branch-123
+   hatch run test:test
 ```
 
-- Work on your feature. Commit.
-- Rebase often, see below.
-- Make sure you adhere to _Checklist before creating a Pull Request_
-  described above.
-- Push the branch to your fork on GitHub
+### Optional: Using `Task`
+
+If you have [`Task`](https://taskfile.dev) installed, you can simplify common commands:
+
+````bash
+task test
+task translate-source
+
+### Documentation
+
+Documentation is built with [MkDocs](https://www.mkdocs.org/).
+Preview locally with:
+```bash
+   hatch run docs:serve
+````
+
+## ✅ How to Contribute
+
+**Reporting Bugs 🐛**
+
+- Use the GitHub Issues page.
+- Include details:
+  - Steps to reproduce
+  - Expected behavior
+  - Actual behavior
+  - Environment (OS, Python version, dependencies)
+
+**Suggesting Features 💡**
+
+- Open a Feature Request issue.
+- Explain the problem, proposed solution, and alternatives considered.
+
+**Submitting Changes 📝**
+
+1. Fork the repository
+2. Create a new branch:
 
 ```bash
-git push origin my-new-branch-123
+   git checkout -b feature/your-feature-name
 ```
 
-- Send a Pull Request, see
-  <https://help.github.com/articles/using-pull-requests> to the _develop_
-  branch.
-
-See also:
-[Understanding the GitHub Flow](https://guides.github.com/introduction/flow/)
-(we're using `develop` as our main branch)
-
-### Handling updates from upstream
-
-While you're working away in your branch it's quite possible that your
-upstream _dev_ may be updated. If this happens you should:
-
-- [Stash](https://git-scm.com/book/en/Git-Tools-Stashing) any un-committed
-  changes you need to
+3. Make your changes.
+4. Ensure all tests pass:
 
 ```bash
-git stash
+   hatch test
 ```
 
-- Update your local _dev_ by fetching from _upstream_
+5. Run linting and formatting:
 
 ```bash
-git checkout dev
-git fetch upstream
-git merge --ff-only upstream/dev
+   hatch lint:check-all
 ```
 
-- Rebase your feature branch on _dev_. See
-  [Git Branching - Rebasing](https://git-scm.com/book/en/Git-Branching-Rebasing)
-  for more info on rebasing
+6. Commit your changes using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
+
+```sql
+feat: add new feature
+fix: fix bug or correct some handling
+docs: update documentation
+```
+
+7. Push your branch and open a Pull Request
+
+## 📖 Coding Standards
+
+- **Python 3.11+ only**
+- Follow [PEP 8](https://peps.python.org/pep-0008/) with additional style enforced by [Ruff](https://docs.astral.sh/ruff/)
+- Use [type hints](https://docs.python.org/3/library/typing.html) everywhere
+- Write **docstrings** in [Google style](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings)
+- Keep functions small and focused
+- Add or update tests for all changes
+
+## 🧪 Testing
+
+We use [pytest](https://docs.pytest.org/en/latest/) and [pytest-mock](https://pypi.org/project/pytest-mock/).
+Run tests:
 
 ```bash
-git checkout my-new-branch-123
-git rebase dev
-git push origin dev
-#(optional) this makes sure dev in your own fork on GitHub is up to date
+   hatch test
 ```
 
-This ensures that your history is "clean" i.e. you have one branch off from
-_dev_ followed by your changes in a straight line. Failing to do this ends
-up with several "messy" merges in your history, which we don't want. This
-is the reason why you should always work in a branch and you should never
-be working in, or sending pull requests from _dev_.
-
-If you're working on a long running feature then you may want to do this
-quite often, rather than run the risk of potential merge issues further
-down the line.
-
-### Making changes to a Pull request
-
-If you realize you've missed something after submitting a Pull request,
-just commit to your local branch and push the branch just like you did the
-first time. This commit will automatically be included in the Pull request.
-If we ask you to change already published commits using interactive rebase
-(like squashing or splitting commits or rewriting commit messages) you need
-to force push using `-f`:
+Run a specific test file:
 
 ```bash
-git push -f origin my-new-branch-123
+   hatch shell test.py3.13
+   hatch run pytest tests/test_my_feature.py
 ```
 
-### All my commits are on develop. How do I get them to a new branch?
-
-If all commits are on _develop_ you need to move them to a new feature
-branch.
-
-You can rebase your local _develop_ on _upstream/develop_ (to remove any
-merge commits), rename it, and recreate _develop_
+Run with coverage:
 
 ```bash
-git checkout develop
-git rebase upstream/develop
-git branch -m my-new-branch-123
-git branch develop upstream/develop
+   hatch run test:coverage
 ```
 
-Or you can create a new branch off of _develop_ and then cherry pick the
-commits
+## 🌍 Translations
+
+jm-python-template supports internationalization (i18n) for both Python and Qt components.
+If you’d like to contribute translations, please follow the steps below.
+
+### Update Babel (.po) Translations (Python)
+
+1. Extract and update translation strings for all languages:
 
 ```bash
-git checkout -b my-new-branch-123 upstream/develop
-git cherry-pick rev                   #rev is the revisions you want to pick
-git cherry-pick rev                   #repeat until you have picked all commits
-git branch -m develop old-develop     #rename dev
-git branch develop upstream/develop   #create a new dev
+   task extract-translations
 ```
 
-## Code guidelines
+2. Edit the generated `.po` files under `src/jm-python-template/locales/<lang>/LC_MESSAGES/
+3. Compile the translations (optional, usually handled by task):
 
-See our [Python Style Guide](https://www.python.org/doc/essays/styleguide/)
-and the
-[Python Naming Convention](https://github.com/naming-convention/naming-convention-guides/blob/master/python/README.md)
-on GitHub for more information on following the project's conventions.
+```bash
+   task compile-translations
+```
+
+### Update Qt Translations (.ts/.qm)
+
+1. Update Qt .ts and .qm files for GUI components:
+
+```bash
+    task extract-qt-translations
+```
+
+2. Edit the generated .ts files under src/jm-python-template/gui/translations/.
+3. Compile resources (handled automatically by translate-qt):
+
+```bash
+    task compile-translations
+```
+
+## 📦 Releases (Maintainers only)
+
+Releases are managed with Hatch.
+
+1. Update the version:
+
+```bash
+hatch version minor
+```
+
+2. Commit with chore: `release vX.Y.Z
+3. Create a GitHub release and tag
+4. Publish with:
+   ```bash
+   hatch build
+   hatch publish
+   ```
 
 ---
+
+## 📄 License
+
+Contributions to this project are licensed under the [EUPL-1.2](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12).
+
+---
+
+## 🙏 Thank You
+
+Your contributions make **jm-python-template** better for everyone.
+We truly appreciate your time, effort, and ideas 💙

@@ -1,46 +1,102 @@
-# My Project Name
-[![PyPI](https://img.shields.io/pypi/v/my-project)](https://pypi.org/project/my-project)
-[![GitHub Release](https://img.shields.io/github/v/release/your-username/your-repo)](https://github.com/your-username/your-repo/releases)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jmuelbert/my-project/ci.yml?branch=main)](https://github.com/jmuelbert/my-project/actions?query=workflow%3Aci)
-[![Pull Request Automation](https://img.shields.io/github/actions/workflow/status/jmuelbert/my-project/pr-automation.yml?branch=main)](https://github.com/jmuelbert/my-project/actions?query=workflow%3Aci)
-[![CodeQL Analysis](https://img.shields.io/github/actions/workflow/status/jmuelbert/my-project/codeql-analysis.yml?branch=main)](https://github.com/jmuelbert/my-project/actions?query=workflow%3Aci)
-[![Scorecard Security](https://img.shields.io/github/actions/workflow/status/jmuelbert/my-project/scorecard.yml?branch=main)](https://github.com/jmuelbert/my-project/actions?query=workflow%3Aci)
-[![Maintenance](https://img.shields.io/github/actions/workflow/status/jmuelbert/my-project/maintenance.yml?branch=main)](https://github.com/jmuelbert/my-project/actions?query=workflow%3Aci)
-[![Dependabot Auto-Merge](https://img.shields.io/github/actions/workflow/status/jmuelbert/my-project/dependabot-merge.yml?branch=main)](https://github.com/jmuelbert/my-project/actions?query=workflow%3Aci)
-[![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)](https://my-docs-url/coverage)
-[![License](https://img.shields.io/github/license/jmuelbert/my-project)](https://github.com/jmuelbert/my-project/blob/main/LICENSE)
+# jm-python-template
 
-A modern, fast, and comprehensive tool for validating web addresses and NTP servers, built on the latest Python standards.
+[![PyPI][PyPI-badge]][PyPI]
+[![Release Pipeline][wf-release-badge]][wf-release]
+[![Core CI][wf-core-ci-badge]][wf-core-ci]
+[![CodeQL Security Analysis][wf-code-ql-badge]][wf-code-ql]
+[![Security Scorecard][wf-scorecard-badge]][wf-scorecard]
+[![Repository Maintenance][wf-maintenance-badge]][wf-maintenance]
+[![Dependabot Auto-Merge][wf-dependabot-merge-badge]][wf-dependabot-merge]
+[![Pull Request Automation][wf-pr-automation-badge]][wf-pr-automation]
+[![Coverage][wf-coverage-badge]][wf-coverage]
+[![Documentation Deployment][wf-docs-deploy-badge]][wf-docs-deploy]
+[![Hatch][Hatch-badge]][Hatch]
+[![Ruff][Ruff-badge]][Ruff]
+[![Prettier][Prettier-badge]][Prettier]
+[![cSpell][cSpell-badge]][cSpell]
+[![docs-badge][documentation-badge]][documentation]
+[![License][License-badge]][EUPL V1.2 license]
+
+A template for my Python projects.
 
 ## Features
 
- - Fast and Lightweight: Built with a focus on performance.
- - Modern Tooling: Uses pyproject.toml and is compatible with Hatch and uv.
- - Extensive Checks: Verifies a wide range of connection and configuration parameters.
- - Cross-Platform: Works on macOS, Windows, and Linux
+- Fast and Lightweight: Built with a focus on performance.
+- Modern Tooling: Uses pyproject.toml and is compatible with [Hatch].
+- Extensive Checks: Verifies a wide range of connection and configuration parameters.
+- Cross-Platform: Works on macOS, Windows, and Linux
 
 ## Installation
 
-Recommends using [pip](https://pip.pypa.io/en/stable/) to install the package:
+Recommends using [pip] to install the package:
 
 ```bash
-pip install my-project
+pip install jm-python-template
 ```
 
 ## Quick Start/Usage
 
 ```bash
-my-project --help
+jm-python-template --help
 ```
 
 ## Documentation
 
-For more information, please refer to our [documentation](https://my-docs-url).
+For more information, please refer to our [documentation].
 
 ## Contributing
 
-We welcome contributions from the community. Please read our [contributing guidelines](https://my-docs-url/contributing) for more information.
+We welcome contributions from the community. Please read our [contributing guidelines]
+for more information.
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/jmuelbert/my-project/blob/main/LICENSE).
+This project is licensed under the [EUPL V1.2 license].
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+<!-- Project -->
+
+[EUPL V1.2 license]: https://github.com/jmuelbert/jm-python-template/blob/main/LICENSE
+[license-badge]: https://img.shields.io/badge/License-EUPL%201.2-blue.svg
+
+<!-- Workflows -->
+
+[wf-core-ci]: https://github.com/jmuelbert/jm-python-template/actions/workflows/ci.yml
+[wf-core-ci-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/ci.yml/badge.svg
+[wf-code-ql]: https://github.com/jmuelbert/jm-python-template/actions/workflows/codeql-analysis.yml
+[wf-code-ql-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/codeql-analysis.yml/badge.svg
+[wf-coverage]: https://jmuelbert.github.io/jm-python-template/coverage
+[wf-coverage-badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jmuelbert/jm-python-template/main/.github/badges/coverage.json
+[wf-docs-deploy]: https://github.com/jmuelbert/jm-python-template/actions/workflows/docs-deploy.yml
+[wf-docs-deploy-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/docs-deploy.yml/badge.svg
+[wf-dependabot-merge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/dependabot-merge.yml
+[wf-dependabot-merge-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/dependabot-merge.yml/badge.svg
+[wf-maintenance]: https://github.com/jmuelbert/jm-python-template/actions/workflows/maintenance.yml
+[wf-maintenance-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/maintenance.yml/badge.svg
+[wf-pr-automation]: https://github.com/jmuelbert/jm-python-template/actions/workflows/pr-automation.yml
+[wf-pr-automation-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/pr-automation.yml/badge.svg
+[wf-release]: https://github.com/jmuelbert/jm-python-template/actions/workflows/release.yml
+[wf-release-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/release.yml/badge.svg
+[wf-scorecard]: https://github.com/jmuelbert/jm-python-template/actions/workflows/scorecard.yml
+[wf-scorecard-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/scorecard.yml/badge.svg
+
+<!-- Project Docs -->
+
+[contributing guidelines]: https://jmuelbert.github.io/jm-python-template/contributing
+[documentation]: https://jmuelbert.github.io/jm-python-template/
+[documentation-badge]: https://img.shields.io/badge/Docs-github.io-blue
+
+ <!--- External -->
+
+[cSpell]: https://cspell.org/
+[cSpell-badge]: https://img.shields.io/badge/cSpell-checked-blue?logo=cspell
+[Hatch]: https://hatch.pypa.io/
+[Hatch-badge]: https://img.shields.io/badge/Hatch-2.x-blue
+[pip]: https://pip.pypa.io/en/stable/
+[Prettier]: https://prettier.io
+[Prettier-badge]: https://img.shields.io/badge/prettier-3.x-brightgreen?logo=prettier
+[PyPi]: https://pypi.org/project/jm-python-template
+[PyPi-badge]: https://img.shields.io/pypi/v/jm-python-template
+[Ruff]: https://github.com/astral-sh/ruff
+[Ruff-badge]: https://img.shields.io/badge/ruff-enabled-brightgreen?logo=ruff

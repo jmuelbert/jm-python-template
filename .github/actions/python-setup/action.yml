@@ -6,7 +6,7 @@ inputs:
     required: false
     type: string
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: 🐍 Set up Python (explicit version)
       if: inputs.python-version != ''
