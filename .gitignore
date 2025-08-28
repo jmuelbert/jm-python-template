@@ -1,5 +1,6 @@
 # Project parts
 resources_rc.py
+pnpm-lock.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

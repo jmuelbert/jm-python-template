@@ -23,7 +23,7 @@ permissions:
   security-events: write
 
 env:
-  PACKAGE_NAME: checkconnect
+  PACKAGE_NAME: jm-python-template
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -97,7 +97,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:${{matrix.language}}"
+          category: '/language:${{matrix.language}}'
           output: 'results'
 
       - name: 📊 Process Results
@@ -216,4 +216,4 @@ jobs:
               });
             }
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # You might need to set this for the script action to work
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # You might need to set this for the script action to work

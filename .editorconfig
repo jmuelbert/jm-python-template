@@ -1,0 +1,34 @@
+# top-most EditorConfig file
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+charset = utf-8
+
+[*.py]
+# Ruff's line length setting
+max_line_length = 120
+
+[*.md]
+# Prettier's markdown-specific settings
+# For markdown, prettier's `proseWrap` setting isn't directly translatable,
+# but `max_line_length` helps enforce a consistent wrapping strategy for lines.
+max_line_length = 80
+
+[*.yaml]
+# Yamllint's line length and indentation settings
+max_line_length = 80
+indent_size = 2
+
+[*.json]
+# Prettier settings for JSON
+indent_size = 2
+
+[*.js]
+# Prettier settings for JavaScript
+indent_size = 2
+max_line_length = 80
