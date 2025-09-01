@@ -1,7 +1,8 @@
 ---
 # SPDX-License-Identifier: EUPL-1.2
+# yamllint disable-line rule:line-length
 # SPDX-FileCopyrightText: 2023-present Jürgen Mülbert <juergen.muelbert@outlook.de>
-#
+# yamllint disable-line rule:line-length
 # Source: https://github.com/jmuelbert/jm-python-template/blob/main/workflow-templates/assets/mkdocs/mkdocs.yml
 # See: https://www.mkdocs.org/user-guide/configuration/
 
@@ -90,19 +91,19 @@ plugins:
   mkdocstrings:
     handlers:
       python:
-        paths: ['src'] # Point to the root 'src' directory
+        paths: ['src']
         options:
           show_source: false
           show_root_heading: true
           show_object_full_path: false
           show_category_heading: true
           show_bases: true
-          show_submodules: true # Crucial for documenting modules
+          show_submodules: true
           show_signature: true
           show_signature_annotations: true
           heading_level: 2
           separate_signature: true
-          filters: ['!^_'] # Exclude private methods
+          filters: ['!^_']
   i18n:
     docs_structure: suffix
     fallback_to_default: true
@@ -117,7 +118,6 @@ plugins:
       - locale: de
         name: Deutsch
         build: true
-        site_name: 'Meine Projekt-Dokumentation'
   git-revision-date-localized:
     type: date
     strict: false

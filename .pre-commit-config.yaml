@@ -9,7 +9,7 @@ fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
@@ -21,7 +21,7 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=500]
       - id: check-json
-        # exclude: "(\\.devcontainer/devcontainer\\.json|\\.vscode/.*)"
+        exclude: "(\\.devcontainer/devcontainer\\.json|\\.vscode/.*)"
       - id: check-merge-conflict
       - id: check-case-conflict
       - id: detect-private-key
@@ -35,7 +35,7 @@ repos:
 
   # Hook for consistent code style across files
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 2.7.3
+    rev: 3.4.0
     hooks:
       - id: editorconfig-checker
 
@@ -47,22 +47,28 @@ repos:
 
   # Comprehensive Linting
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.9.10
+    rev: v0.12.11
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
 
+  -   repo: https://github.com/koalaman/shellcheck-precommit
+      rev: v0.11.0
+      hooks:
+      -   id: shellcheck
+  #       args: ["--severity=warning"]  # Optionally only show errors and warnings
+  #
   # YAML Linter
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.35.1
+    rev: v1.37.1
     hooks:
       - id: yamllint
-        files: \.(yaml|yml)$
+
 
   # GitHub json checks
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.31.3
+    rev: 0.33.3
     hooks:
       - id: check-dependabot
         name: 'Check Dependabot configuration'
@@ -89,21 +95,20 @@ repos:
 
   # Markdown specific
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.44.0
+    rev: v0.45.0
     hooks:
       - id: markdownlint
         args: ['--config', '.markdownlint.json']
 
   # Links checker
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.13.6
+    rev: v3.13.7
     hooks:
       - id: markdown-link-check
         args: ['--config', '.markdown-link-check.json']
-        exclude: 'node_modules/'
 
   - repo: https://github.com/amperser/proselint
-    rev: 0.12.0 # Check for the latest release on GitHub
+    rev: 0.14.0 # Check for the latest release on GitHub
     hooks:
       - id: proselint
         # Or any other file extensions you use for prose

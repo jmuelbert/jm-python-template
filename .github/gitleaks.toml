@@ -1,21 +1,21 @@
 # Add to pre-commit gitleaks config
 [[rules]]
-id = "qt database connection"
 description = "Qt database connection string"
-regex = '''(?i)(?P<key>qt[._-]?db[._-]?(?:connection|string))\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
-tags = ["database", "Qt"]
+id          = "qt database connection"
+regex       = '''(?i)(?P<key>qt[._-]?db[._-]?(?:connection|string))\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
+tags        = ["database", "Qt"]
 
 [[rules]]
-id = "pyside api key"
 description = "PySide API key"
-regex = '''(?i)(?P<key>(?:pyside|qt)[._-]?api[._-]?key)\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
-tags = ["key", "PySide"]
+id          = "pyside api key"
+regex       = '''(?i)(?P<key>(?:pyside|qt)[._-]?api[._-]?key)\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
+tags        = ["key", "PySide"]
 
 [[rules]]
-id = "python secret"
 description = "Python secret"
-regex = '''(?i)(?P<key>secret[._-]?key)\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
-tags = ["key", "Python"]
+id          = "python secret"
+regex       = '''(?i)(?P<key>secret[._-]?key)\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
+tags        = ["key", "Python"]
 
 [allowlist]
 paths = [
@@ -24,5 +24,5 @@ paths = [
     '''tests/resources/''',
     '''**/test_*.py''',
     '''**/*.ui''',
-    '''**/*.qrc'''
-  ]
+    '''**/*.qrc''',
+]
