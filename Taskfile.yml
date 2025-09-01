@@ -1,5 +1,7 @@
+---
 # SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2023-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+# yamllint disable-line rule:line-length
+# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
 # https://taskfile.dev
 # ------------------------
@@ -42,7 +44,8 @@ tasks:
     cmds:
       - |
         echo "🧹 Cleaning up project..."
-        rm -rf dist htmlcov site .cache .ropeproject .ruff_cache .pytest_cache .venv
+        rm -rf dist htmlcov site .cache .ropeproject
+        rm -rf .ruff_cache .pytest_cache .venv
         rm -f coverage.xml uv.lock
         rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.mo
         rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.po
@@ -72,11 +75,11 @@ tasks:
     desc: Runs tests on multiple Python versions
     cmds:
       - task: test-with-version
-        vars: { VERSION: 3.11 }
+        vars: {VERSION: 3.11}
       - task: test-with-version
-        vars: { VERSION: 3.12 }
+        vars: {VERSION: 3.12}
       - task: test-with-version
-        vars: { VERSION: 3.13 }
+        vars: {VERSION: 3.13}
       - task: rm
 
   coverage:
@@ -88,31 +91,46 @@ tasks:
   # ------------------------
   # Linting & Quality
   # ------------------------
-  lint:
+  lint-python:
     desc: Runs all linting checks
     cmds:
       - hatch env create lint
       - hatch run lint:all
 
-  lintdocs:
+  spell-check:
+    desc: Runs spell check
+    cmds:
+      - pnpm install
+      - pnpm run lint:spell
+
+  lint-docs:
     desc: Lints documentation files
     cmds:
       - pnpm install
-      - pnpm dlx prettier --write .
-      - pnpm dlx markdownlint-cli .
-      - pnpm dlx markdown-link-check $(find . -type f -name '*.md' ! -path './node_modules/*')
-      - pnpm dlx cspell .
+      - pnpm run lint:prettier
+      - pnpm run lint:markdown
+      - pnpm run lint:links
+      - pnpm run lint:spell
+
+  lint-all:
+    desc: All Lints
+    cmds:
+      - task: lint-python
+      - task: lint-docs
+
+  format-all:
+    desc: Formats code
+    cmds:
+      - pnpm install
+      - pnpm run format
+      - hatch env create lint
+      - hatch run lint:format
 
   pre-commit:
     desc: Runs pre-commit hooks
     cmds:
       - hatch env create lint
       - hatch run lint:precommit
-
-  spell-check:
-    desc: Runs spell check
-    cmds:
-      - pnpm dlx cspell .
 
   # ------------------------
   # Documentation
@@ -135,55 +153,27 @@ tasks:
   extract-qt-translations:
     desc: Extracts Qt translation strings
     cmds:
-      - |
-        echo "Extracting Qt translations (.ts)..."
-        for lang in {{.LANGUAGES}}; do \
-          ts_file="{{.TRANSLATIONS_DIR}}/$${lang}.ts"; \
-          if [ ! -f "$${ts_file}" ]; then \
-            echo '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE TS><TS version="2.1" language="'"$${lang}"'"></TS>' > "$${ts_file}"; \
-          fi; \
-          hatch run pyside6-lupdate $(find "{{.GUI_DIR}}" -name '*.py') -ts "$${ts_file}"; \
-        done
+      # yamllint disable-line rule:line-length
+      - ./scripts/extract_qt_translations.sh {{.LANGUAGES}} {{.TRANSLATIONS_DIR}} {{.GUI_DIR}}
 
   compile-qt-translations:
     desc: Compiles Qt translations
     cmds:
-      - |
-        echo "Compiling Qt translations (.qm)..."
-        for lang in {{.LANGUAGES}}; do \
-          ts_file="{{.TRANSLATIONS_DIR}}/$${lang}.ts"; \
-          qm_file="{{.TRANSLATIONS_DIR}}/$${lang}.qm"; \
-          if [ -f "$${ts_file}" ]; then \
-            hatch run pyside6-lrelease "$${ts_file}" -qm "$${qm_file}"; \
-          fi; \
-        done
-        hatch run pyside6-rcc "{{.GUI_DIR}}/resources.qrc" -o "{{.GUI_DIR}}/resources_rc.py"
+      # yamllint disable-line rule:line-length
+      - ./scripts/compile_qt_translations.sh {{.LANGUAGES}} {{.TRANSLATIONS_DIR}} {{.GUI_DIR}}
+
 
   extract-babel-translations:
     desc: Extracts Babel translation strings
     cmds:
-      - |
-        echo "Extracting Babel translation strings (.pot)..."
-        pot_file="{{.LOCALES_DIR}}/{{.DOMAIN}}.pot"
-        hatch run pybabel extract -k translate -k _translate_func -o $$pot_file `find {{.SRC_DIR}} -name '*.py'`
+      # yamllint disable-line rule:line-length
+      - ./scripts/compile_babel_translations.sh {{.SRC_DR}} {{.LOCALES_DIR}} {{.DOMAIN}}
 
   compile-babel-translations:
     desc: Updates and compiles Babel translations
     cmds:
-      - |
-        echo "Updating and compiling Babel translations (.po → .mo)..."
-        for lang in {{.LANGUAGES}}; do \
-          po_dir="{{.LOCALES_DIR}}/$$lang/LC_MESSAGES"; \
-          mkdir -p $$po_dir; \
-          po_file="$$po_dir/messages.po"; \
-          pot_file="{{.LOCALES_DIR}}/{{.DOMAIN}}.pot"; \
-          if [ -f $$po_file ]; then \
-            hatch run pybabel update -i $$pot_file -d $$po_dir -l $$lang; \
-          else \
-            hatch run pybabel init -i $$pot_file -d $$po_dir -l $$lang; \
-          fi; \
-          hatch run pybabel compile -d $$po_dir -l $$lang; \
-        done
+      # yamllint disable-line rule:line-length
+      - ./scripts/compile_babel_translations.sh {{.LANGUAGES}} {{.LOCALES_DIR}} {{.DOMAIN}}
 
   translate-qt:
     desc: Extracts and compiles Qt translations

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+SRC_DIR=$1
+LOCALES_DIR=$2
+DOMAIN=$3
+
+
+echo "Extracting Babel translation strings (.pot)..."
+pot_file="$LOCALES_DIR/$DOMAIN.pot"
+hatch run pybabel extract -k translate -k _translate_func -o $$pot_file `find $SRC_DIR -name '*.py'`

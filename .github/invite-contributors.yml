@@ -15,6 +15,7 @@ contributors:
 #  message: "We appreciate your help in maintaining this project!"
 
 # Optional: Define a message to be sent with the invitation
+# yamllint disable-line rule:line-length
 invitation_message: We would like to invite you to contribute to our project. Your expertise would be invaluable!
 
 # Optional: Define a list of labels to apply to the invitations

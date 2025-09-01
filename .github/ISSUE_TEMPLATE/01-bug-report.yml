@@ -20,7 +20,7 @@ body:
 
         ✅ I am using the **latest versions of jm-python-template**.
   - type: input
-    id: jmbde-version
+    id: jm-python-template-version
     attributes:
       label: What version of `jm-python-template` are you using?
       placeholder: 0.0.0

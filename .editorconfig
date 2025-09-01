@@ -13,7 +13,7 @@ charset = utf-8
 # Ruff's line length setting
 max_line_length = 120
 
-[*.md]
+[*.{md,markdown,mdx,adoc,asciidoc}]
 # Prettier's markdown-specific settings
 # For markdown, prettier's `proseWrap` setting isn't directly translatable,
 # but `max_line_length` helps enforce a consistent wrapping strategy for lines.

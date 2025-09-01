@@ -1,61 +1,36 @@
 {
   "name": "jm-python-template",
-  "version": "0.0.0",
-  "description": "Checks the availability of web addresses and NTP servers.",
-  "main": "main.py",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "spellcheck": "cspell **",
-    "format": "prettier --write .",
-    "precommit": "lint-staged",
-    "lint": "trunk check",
-    "fmt": "trunk fmt",
-    "sync-labels": "node .github/scripts/sync-labels.js"
+    "lint:toml": "taplo check",
+    "format:toml": "taplo format",
+    "lint:prettier": "prettier --check .",
+    "format:prettier": "prettier --write .",
+    "lint:spell": "cspell",
+    "lint:markdown": "markdownlint --ignore node_modules --ignore .pytest_cache --dot --config .markdownlint.json '**/*.{md,markdown,mdx,adoc,asciidoc}'",
+    "format:markdown": "markdownlint --ignore node_modules --ignore .pytest_cache --dot --fix --config .markdownlint.json '**/*.{md,markdown,mdx,adoc,asciidoc}'",
+    "lint:links": "find . \\( -name '*.md' -o -name '*.markdown' -o -name '*.mdx' -o -name '*.adoc' -o -name '*.asciidoc' \\) -not -path './node_modules/*' -print0 | xargs -0 -n1 markdown-link-check -q -p --config .markdown-link-check.json",
+    "lint:docs": "pnpm run lint:prettier && pnpm run lint:markdown && pnpm run lint:links && pnpm run lint:spell",
+    "lint": "pnpm run lint:prettier &&  pnpm run lint:toml && pnpm run lint:markdown && pnpm run lint:links && pnpm run lint:spell",
+    "format": "pnpm run format:prettier &&  pnpm run format:toml && pnpm run format:markdown",
+    "cspell:project-words": "echo '# New Words' >> project-words.txt && cspell --words-only --unique  | sort --ignore-case >> project-words.txt",
+    "cspell:suggests": "cspell --no-progress --show-suggestions --show-context"
   },
-  "keywords": [
-    "python",
-    "linting",
-    "spellcheck",
-    "prettier"
-  ],
-  "author": "Jürgen Mülbert",
-  "license": "MIT",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0",
   "devDependencies": {
-    "@commitlint/cli": "^19.8.0",
-    "@commitlint/config-conventional": "^19.8.0",
-    "@cspell/dict-de-de": "^4.0.3",
-    "@cspell/dict-python": "^4.2.15",
-    "@trunkio/launcher": "^1.3.4",
-    "@typescript-eslint/eslint-plugin": "8.26.1",
-    "@typescript-eslint/parser": "8.26.1",
-    "chalk": "^4.1.2",
-    "cspell": "^5.21.2",
-    "eslint": "9.22.0",
-    "husky": "9.1.7",
-    "lint-staged": "^12.5.0",
+    "@cspell/dict-de-de": "^4.1.2",
+    "@cspell/dict-es-es": "^3.0.8",
+    "@cspell/dict-it-it": "^3.1.6",
+    "cspell": "^9.2.0",
+    "eslint": "^9.34.0",
     "markdown-link-check": "^3.13.7",
+    "markdownlint": "^0.38.0",
     "markdownlint-cli": "^0.45.0",
-    "prettier": "3.5.3",
-    "yaml": "^2.7.0"
-  },
-  "files": [
-    "main.py",
-    "src/"
-  ],
-  "private": true,
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "lint-staged": {
-    "*.(js|jsx|ts|tsx|json|css|scss|md)": [
-      "prettier --write"
-    ]
-  },
-  "engines": {
-    "node": ">=16"
-  },
-  "dependencies": {
-    "typescript": "5.8.2"
+    "prettier": "^3.6.2"
   }
 }

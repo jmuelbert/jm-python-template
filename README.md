@@ -8,7 +8,7 @@
 [![Repository Maintenance][wf-maintenance-badge]][wf-maintenance]
 [![Dependabot Auto-Merge][wf-dependabot-merge-badge]][wf-dependabot-merge]
 [![Pull Request Automation][wf-pr-automation-badge]][wf-pr-automation]
-[![Coverage][wf-coverage-badge]][wf-coverage]
+[![Coverage][wf-coverage-badge]]
 [![Documentation Deployment][wf-docs-deploy-badge]][wf-docs-deploy]
 [![Hatch][Hatch-badge]][Hatch]
 [![Ruff][Ruff-badge]][Ruff]
@@ -66,7 +66,6 @@ This project is licensed under the [EUPL V1.2 license].
 [wf-core-ci-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/ci.yml/badge.svg
 [wf-code-ql]: https://github.com/jmuelbert/jm-python-template/actions/workflows/codeql-analysis.yml
 [wf-code-ql-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/codeql-analysis.yml/badge.svg
-[wf-coverage]: https://jmuelbert.github.io/jm-python-template/coverage
 [wf-coverage-badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jmuelbert/jm-python-template/main/.github/badges/coverage.json
 [wf-docs-deploy]: https://github.com/jmuelbert/jm-python-template/actions/workflows/docs-deploy.yml
 [wf-docs-deploy-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/docs-deploy.yml/badge.svg
@@ -83,7 +82,7 @@ This project is licensed under the [EUPL V1.2 license].
 
 <!-- Project Docs -->
 
-[contributing guidelines]: https://jmuelbert.github.io/jm-python-template/contributing
+[contributing guidelines]: https://jmuelbert.github.io/jm-python-template/community/contributing
 [documentation]: https://jmuelbert.github.io/jm-python-template/
 [documentation-badge]: https://img.shields.io/badge/Docs-github.io-blue
 
