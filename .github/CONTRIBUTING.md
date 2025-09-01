@@ -13,7 +13,8 @@ This guide will walk you through the process.
 
 This project follows the
 [Contributor Covenant Code of Conduct v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
-By participating, you are expected to uphold this code. Please report unacceptable behavior to the maintainers.
+By participating, you are expected to uphold this code. Please report
+unacceptable behavior to the maintainers.
 
 ---
 
@@ -54,70 +55,86 @@ or
 
 If you have [`Task`](https://taskfile.dev) installed, you can simplify common commands:
 
-````bash
+```bash
 task test
 task translate-source
+```
 
 ### Documentation
 
 Documentation is built with [MkDocs](https://www.mkdocs.org/).
 Preview locally with:
+
 ```bash
    hatch run docs:serve
-````
+```
 
 ## ✅ How to Contribute
 
-**Reporting Bugs 🐛**
+### Reporting Bugs 🐛
 
 - Use the GitHub Issues page.
 - Include details:
-  - Steps to reproduce
-  - Expected behavior
-  - Actual behavior
-  - Environment (OS, Python version, dependencies)
+    - Steps to reproduce
+    - Expected behavior
+    - Actual behavior
+    - Environment (OS, Python version, dependencies)
 
-**Suggesting Features 💡**
+### Suggesting Features 💡
 
 - Open a Feature Request issue.
 - Explain the problem, proposed solution, and alternatives considered.
 
-**Submitting Changes 📝**
+### Submitting Changes 📝
 
-1. Fork the repository
-2. Create a new branch:
+1. **Fork the repository.**
 
-```bash
-   git checkout -b feature/your-feature-name
-```
+2. **Create a new branch.**
 
-3. Make your changes.
-4. Ensure all tests pass:
+   Use a clear, descriptive name for your branch.
 
-```bash
-   hatch test
-```
+   ```bash
+       git checkout -b feature/your-feature-name
+   ```
 
-5. Run linting and formatting:
+3. **Make your changes.**
 
-```bash
-   hatch lint:check-all
-```
+4. **Ensure all tests pass.**
 
-6. Commit your changes using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
+   Run the test suite to confirm your changes haven't introduced any bugs.
 
-```sql
-feat: add new feature
-fix: fix bug or correct some handling
-docs: update documentation
-```
+   ```bash
+     hatch test
+   ```
 
-7. Push your branch and open a Pull Request
+5. **Run linting and formatting.**
+
+   This ensures your code meets the project's quality standards.
+
+   ```bash
+     hatch lint:check-all
+   ```
+
+6. **Commit your changes.**
+
+   This helps maintain a clean and descriptive commit history.
+   Using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
+
+   ```sql
+     feat: add new feature
+     fix: fix bug or correct some handling
+     docs: update documentation
+   ```
+
+7. **Push your branch and open a Pull Request.**
+
+   Push your changes to your fork and then open a pull request against the main repository
 
 ## 📖 Coding Standards
 
 - **Python 3.11+ only**
-- Follow [PEP 8](https://peps.python.org/pep-0008/) with additional style enforced by [Ruff](https://docs.astral.sh/ruff/)
+- Follow [PEP 8](https://peps.python.org/pep-0008/) with additional
+  style enforced by [Ruff](https://docs.astral.sh/ruff/)
 - Use [type hints](https://docs.python.org/3/library/typing.html) everywhere
 - Write **docstrings** in [Google style](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings)
 - Keep functions small and focused
@@ -152,47 +169,52 @@ If you’d like to contribute translations, please follow the steps below.
 
 ### Update Babel (.po) Translations (Python)
 
-1. Extract and update translation strings for all languages:
+1. **Extract and update translation strings for all languages:**
 
-```bash
-   task extract-translations
-```
+   ```bash
+     task extract-translations
+   ```
 
-2. Edit the generated `.po` files under `src/jm-python-template/locales/<lang>/LC_MESSAGES/
-3. Compile the translations (optional, usually handled by task):
+2. **Edit the generated `.po` files under `src/jm-python-template/locales/<lang>/LC_MESSAGES/`**
 
-```bash
-   task compile-translations
-```
+3. **Compile the translations (optional, usually handled by task):**
+
+   ```bash
+     task compile-translations
+   ```
 
 ### Update Qt Translations (.ts/.qm)
 
-1. Update Qt .ts and .qm files for GUI components:
+1. **Update Qt .ts and .qm files for GUI components:**
 
-```bash
-    task extract-qt-translations
-```
+   ```bash
+       task extract-qt-translations
+   ```
 
-2. Edit the generated .ts files under src/jm-python-template/gui/translations/.
-3. Compile resources (handled automatically by translate-qt):
+2. **Edit the generated .ts files under src/jm-python-template/gui/translations/.**
 
-```bash
-    task compile-translations
-```
+3. **Compile resources (handled automatically by translate-qt):**
+
+   ```bash
+       task compile-translations
+   ```
 
 ## 📦 Releases (Maintainers only)
 
 Releases are managed with Hatch.
 
-1. Update the version:
+1. **Update the version:**
 
-```bash
-hatch version minor
-```
+   ```bash
+      hatch version minor
+   ```
 
-2. Commit with chore: `release vX.Y.Z
-3. Create a GitHub release and tag
-4. Publish with:
+2. **Commit with chore: `release vX.Y.Z`**
+
+3. **Create a GitHub release and tag**
+
+4. **Publish with:**
+
    ```bash
    hatch build
    hatch publish

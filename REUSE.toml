@@ -1,41 +1,49 @@
-version = 1
-SPDX-PackageName = "jm-python-template"
-SPDX-PackageSupplier = "<juergen.muelbert@outlook.de>"
 SPDX-PackageDownloadLocation = "https://www.github.com/jmuelbert/jm-python-template"
+SPDX-PackageName             = "jm-python-template"
+SPDX-PackageSupplier         = "<juergen.muelbert@outlook.de>"
+version                      = 1
 
 [[annotations]]
-path = ["src/**"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
+SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "EUPL-1.2"
+path                    = ["src/**"]
+precedence              = "aggregate"
 
 
 [[annotations]]
-path = ["README.md", "AUTHORS.md", "CHANGELOG.md", "SECURITY.md"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
+SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "EUPL-1.2"
+path                    = ["README.md", "AUTHORS.md", "CHANGELOG.md", "SECURITY.md"]
+precedence              = "aggregate"
 
 [[annotations]]
-path = [".github/CODE_OF_CONDUCT.md"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
+SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "CC-BY-2.0 "
+path                    = [".github/CODE_OF_CONDUCT.md"]
+precedence              = "aggregate"
 
 [[annotations]]
-path = [".gitattributes", ".gitignore", ".markdown-link-check.json", ".markdownlint.json", ".npmrc", ".pre-commit-config.yaml", ".python-version"]
-precedence = "aggregate"
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "BSD-3-Clause"
+path = [
+    ".gitattributes",
+    ".gitignore",
+    ".markdown-link-check.json",
+    ".markdownlint.json",
+    ".npmrc",
+    ".pre-commit-config.yaml",
+    ".python-version",
+]
+precedence = "aggregate"
 
 [[annotations]]
-path = ["docs/**/**.md", "docs/**/**.html", "docs/**/**.css"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
+SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "CC-BY-SA-4.0"
+path                    = ["docs/**/**.md", "docs/**/**.html", "docs/**/**.css"]
+precedence              = "aggregate"
 
 [[annotations]]
-path = ["docs/assets/**/**.png", "docs/assets/**/**.svg"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
+SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "BSD-3-Clause"
+path                    = ["docs/assets/**/**.png", "docs/assets/**/**.svg"]
+precedence              = "aggregate"

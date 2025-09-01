@@ -4,7 +4,7 @@ inputs:
   python-version:
     description: 'Python version to use (e.g., 3.9, 3.x). Leave empty to use .python-version file.'
     required: false
-    type: string
+    # type: string
 runs:
   using: 'composite'
   steps:

@@ -1,10 +1,11 @@
 ---
 # SPDX-License-Identifier: EUPL-1.2
+# yamllint disable-line rule:line-length
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
 name: Core CI
 run-name: "${{ github.event_name == 'workflow_dispatch' && format('CI: {0}', github.ref_name) || '' }}"
-
+# yamllint disable-line rule:truthy
 on:
   push:
     branches: [main, develop]
@@ -31,29 +32,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate:
-    name: Validate Dependencies
+  validate-dependencies:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     permissions:
       contents: read
-      pull-requests: write
       security-events: write
     steps:
-      - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-      - name: 🧐 Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: 🔎 Dependency Review
-        id: review
+      - uses: actions/checkout@v4
+      - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          comment-summary-in-pr: always
           fail-on-severity: moderate
+          comment-summary-in-pr: always
           retry-on-snapshot-warnings: true
           config-file: .github/dependency-review-config.yml
 
@@ -110,7 +100,8 @@ jobs:
             if (outputs.deniedChanges.length > 0) {
               report += '### ❌ Denied Changes\n\n';
               outputs.deniedChanges.forEach(change => {
-                report += `- **${change.package.name}@${change.package.version}**: ${change.reason}\n`;
+                report +=
+                   `- **${change.package.name}@${change.package.version}**: ${change.reason}\n`;
               });
             } else {
               report += '### ✅ No Denied Changes Found\n\n';
@@ -146,13 +137,29 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install pnpm
-        run: npm install -g pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: ✨ Run Prettier
+        run: pnpm run lint:prettier
+      - name: ✨ Lint docs include link-check and spellcheck
+        run: pnpm run lint:docs
+      - name: Install Taplo
+        run: cargo install taplo-cli --locked
+      - name: ✨ Run Taplo
+        run: pnpm run lint:toml
       - name: Call Python Environment Setup
         uses: ./.github/actions/python-setup
       - name: ⚙️ Install Python Dependencies
         run: hatch env create lint
-      - name: ✨ Run Prettier
-        run: pnpm dlx prettier --write .
       - name: 🔍 Run Linters & Checks
         run: hatch run lint:all
       - name: 🔍 Trivy Security Scan

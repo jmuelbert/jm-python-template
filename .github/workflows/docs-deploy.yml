@@ -1,8 +1,10 @@
 ---
 # SPDX-License-Identifier: EUPL-1.2
+# yamllint disable-line rule:line-length
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
 name: Documentation Deployment
+# yamllint disable-line rule:truthy
 on:
   push:
     branches: [main]
@@ -21,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      contents: read # Only needs permission to read the repository contents
+      contents: read  # Only needs permission to read the repository contents
     steps:
       - name: 🔒 Harden Runner
         uses: step-security/harden-runner@v2
@@ -39,7 +41,8 @@ jobs:
         id: build
         run: |
           hatch run docs:build
-          echo "doc-files=$(find site -type f -print | wc -l)" >> "$GITHUB_OUTPUT"
+          echo "doc-files=$(find site -type f -print | wc -l)" \
+                >> "$GITHUB_OUTPUT"
       - name: 📦 Setup Pages
         uses: actions/configure-pages@v5
       - name: 📤 Upload Pages Artifact
@@ -52,8 +55,9 @@ jobs:
     needs: build
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
-      pages: write # to deploy to Pages
-      id-token: write # to verify the deployment originates from an appropriate source
+      pages: write  # to deploy to Pages
+      # to verify the deployment originates from an appropriate source
+      id-token: write
     # Deploy to the github-pages environment
     environment:
       name: github-pages
@@ -75,8 +79,10 @@ jobs:
         if: needs.deploy.result != 'success'
         with:
           script: |
-            const message = `❌ Documentation deployment failed!\n` +
-                          `Please check: ${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const message =
+              `❌ Documentation deployment failed!\n` +
+              `Please check: ' +
+              '${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
 
             await github.rest.issues.create({
               ...context.repo,
