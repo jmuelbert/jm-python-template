@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -e
+
+LANGUAGES=$1
+TRANSLATIONS_DIR=$2
+GUI_DIR=$3
+
+
+echo "Compiling Qt translations (.qm)..."
+for lang in $LANGUAGES; do \
+  ts_file="$TRANSLATIONS_DIR/${lang}.ts"; \
+  qm_file="$TRANSLATIONS_DIR/${lang}.qm"; \
+  if [ -f "$${ts_file}" ]; then \
+    hatch run pyside6-lrelease "${ts_file}" -qm "${qm_file}"; \
+  fi; \
+done
+
+echo "Compiling Qt resources (.py)..."
+hatch run pyside6-rcc "$GUI_DIR/resources.qrc" -o "$GUI_DIR/resources_rc.py"
