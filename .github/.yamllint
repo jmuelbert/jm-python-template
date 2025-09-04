@@ -1,0 +1,18 @@
+extends: default
+strict: true
+format: parsable
+
+rules:
+  indentation:
+    spaces: 2
+    check-multi-line-strings: true
+
+  line-length:
+    max: 160
+    allow-non-breakable-inline-mappings: true
+
+  trailing-spaces: enable
+
+  # "on:" soll nicht als truthy-Fehler gewertet werden
+  truthy: disable
+
