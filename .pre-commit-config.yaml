@@ -1,7 +1,10 @@
 ---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-exclude: ^(LICENSE|.*\.(qrc|ts)$|LICENSES/|pnpm-lock.yaml)
+exclude: (?x)(
+  LICENSE|
+  LICENSES/|
+  pnpm-lock.yaml)
 ci:
   autofix_commit_msg: '🎨 [pre-commit.ci] Auto format from pre-commit.com hooks'
   autoupdate_commit_msg: '⬆ [pre-commit.ci] pre-commit autoupdate'
@@ -14,6 +17,8 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
       - id: check-yaml
         args: [--allow-multiple-documents]
         exclude: mkdocs.yml
@@ -28,16 +33,13 @@ repos:
       - id: debug-statements
       - id: check-builtin-literals
 
+  # ------------------------
+  # Git / commit checks
+  # ------------------------
   - repo: https://github.com/mxr/sync-pre-commit-deps
     rev: v0.0.3
     hooks:
       - id: sync-pre-commit-deps
-
-  # Hook for consistent code style across files
-  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 3.4.0
-    hooks:
-      - id: editorconfig-checker
 
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.19.1
@@ -45,7 +47,54 @@ repos:
       - id: gitlint
         args: [--contrib=CT1, --msg-filename]
 
-  # Comprehensive Linting
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0
+    hooks:
+      - id: git-check  # Configure in .gitattributes
+      - id: git-dirty  # Configure in .gitignore
+      - id: script-must-have-extension
+      - id: script-must-not-have-extension
+      - id: shellcheck
+      - id: shfmt
+
+  # ------------------------
+  # Local hooks using package.json scripts
+  # ------------------------
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Prettier (via pnpm)
+        entry: pnpm run format:prettier
+        language: system
+        types: [json, yaml, markdown]
+
+      - id: taplo
+        name: Taplo (TOML format)
+        entry: pnpm run format:toml
+        language: system
+        types: [toml]
+
+      - id: markdownlint
+        name: Markdownlint (via pnpm)
+        entry: pnpm run format:markdown
+        language: system
+        types: [markdown, mdx, asciidoc]
+
+      - id: markdown-link-check
+        name: Markdown links check (via pnpm)
+        entry: pnpm run lint:links
+        language: system
+        types: [markdown, mdx, asciidoc]
+
+      - id: cspell
+        name: Spellcheck (via pnpm)
+        entry: pnpm run lint:spell
+        language: system
+        types: [markdown, mdx, asciidoc, python, text]
+
+  # ------------------------
+  # Python linting
+  # ------------------------
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: v0.12.11
     hooks:
@@ -53,20 +102,39 @@ repos:
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
 
-  -   repo: https://github.com/koalaman/shellcheck-precommit
-      rev: v0.11.0
-      hooks:
-      -   id: shellcheck
-  #       args: ["--severity=warning"]  # Optionally only show errors and warnings
-  #
-  # YAML Linter
+  # ------------------------
+  # YAML linting
+  # ------------------------
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.37.1
     hooks:
       - id: yamllint
+        name: yamllint (general yaml)
+        args: ["-c", ".yamllint"]
+        files: \.(yaml|yml)$
+        exclude: ^\.github/workflows/
 
+      # ------------------------
+      # YAML linting for GitHub workflows
+      # ------------------------
+      - id: yamllint
+        name: yamllint (github workflows)
+        args: ["-c", ".github/.yamllint"]
+        files: (^\.github/workflows/.*\.(ya?ml)$|^\.github/actions/.*\.(ya?ml)$)
 
-  # GitHub json checks
+  # ------------------------
+  # GitHub Actions checks
+  # ------------------------
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.1
+    hooks:
+      - id: actionlint
+        name: actionlint (github workflows)
+        files: (^\.github/workflows/.*\.(ya?ml)$|^\.github/actions/.*\.(ya?ml)$)
+
+  # ------------------------
+  # GitHub JSON & project validation
+  # ------------------------
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.33.3
     hooks:
@@ -76,7 +144,6 @@ repos:
         args: ['--verbose']
         # The `files` regex ensures the hook only runs on this specific file.
         files: ^\.github/dependabot\.yml$
-
       - id: check-github-workflows
         name: 'Check GitHub Workflows'
         description: 'Validates all yaml files in .github/workflows.'
@@ -93,19 +160,6 @@ repos:
         # are often in a subdirectory.
         files: ^(\.github/actions/.*|action)\.ya?ml$
 
-  # Markdown specific
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.45.0
-    hooks:
-      - id: markdownlint
-        args: ['--config', '.markdownlint.json']
-
-  # Links checker
-  - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.13.7
-    hooks:
-      - id: markdown-link-check
-        args: ['--config', '.markdown-link-check.json']
 
   - repo: https://github.com/amperser/proselint
     rev: 0.14.0 # Check for the latest release on GitHub
@@ -113,13 +167,19 @@ repos:
       - id: proselint
         # Or any other file extensions you use for prose
         files: '\.(md|rst|txt)$'
+
+  # ------------------------
+  # pyproject.toml validation
+  # ------------------------
   - repo: https://github.com/abravalheri/validate-pyproject
     rev: v0.24.1
     hooks:
       - id: validate-pyproject
         name: Validate pyproject.toml
 
-  # Check and update pre-commit
+  # ------------------------
+  # Pre-commit meta checks
+  # ------------------------
   - repo: meta
     hooks:
       - id: check-hooks-apply
