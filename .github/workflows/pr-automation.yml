@@ -221,7 +221,7 @@ jobs:
                 body: checklist
               });
             }
-           # yamllint enable rule:indentation
+          # yamllint enable rule:indentation
 
   post-dependency-report:
     runs-on: ubuntu-latest
