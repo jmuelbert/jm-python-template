@@ -1,6 +1,5 @@
 ---
 # SPDX-License-Identifier: EUPL-1.2
-# yamllint disable-line rule:line-length
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
 name: Core CI
@@ -18,7 +17,7 @@ on:
     types: [opened, synchronize, reopened]
 
 env:
-  FORCE_COLOR: '1'
+  FORCE_COLOR: "1"
   PACKAGE_NAME: jm-python-template
 
 defaults:
@@ -40,92 +39,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Dependency Review
+        id: review
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: moderate
           comment-summary-in-pr: always
-          retry-on-snapshot-warnings: true
           config-file: .github/dependency-review-config.yml
 
-      - name: 📊 Generate Report
-        if: always()
-        env:
-          DEPENDENCY_CHANGES: ${{ steps.review.outputs.dependency-changes }}
-          VULNERABLE_CHANGES: ${{ steps.review.outputs.vulnerable-changes }}
-          LICENSE_CHANGES: ${{ steps.review.outputs.invalid-license-changes }}
-          DENIED_CHANGES: ${{ steps.review.outputs.denied-changes }}
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const outputs = {
-              dependencyChanges: JSON.parse(process.env.DEPENDENCY_CHANGES || '[]'),
-              vulnerableChanges: JSON.parse(process.env.VULNERABLE_CHANGES || '[]'),
-              licenseChanges: JSON.parse(process.env.LICENSE_CHANGES || '[]'),
-              deniedChanges: JSON.parse(process.env.DENIED_CHANGES || '[]'),
-            };
-
-            let report = '## 📋 Dependency Review Report\n\n';
-
-            // Dependency Summary
-            report += `### 📑 Summary\n`;
-            report += `- Total Changes: ${outputs.dependencyChanges.length}\n`;
-            report += `- Vulnerable Changes: ${outputs.vulnerableChanges.length}\n`;
-            report += `- License Issues: ${outputs.licenseChanges.length}\n`;
-            report += `- Denied Changes: ${outputs.deniedChanges.length}\n\n`;
-
-            // Vulnerabilities
-            if (outputs.vulnerableChanges.length > 0) {
-              report += '### ⚠️ Vulnerable Changes\n\n';
-              outputs.vulnerableChanges.forEach(change => {
-                report += `- **${change.package.name}@${change.package.version}**: ${change.advisory.title}\n`;
-                report += `  - Severity: ${change.advisory.severity}\n`;
-                report += `  - Advisory: [${change.advisory.url}](${change.advisory.url})\n\n`;
-              });
-            } else {
-              report += '### ✅ No Vulnerable Changes Found\n\n';
-            }
-
-            // License Issues
-            if (outputs.licenseChanges.length > 0) {
-              report += '### 🚫 License Issues\n\n';
-              outputs.licenseChanges.forEach(change => {
-                report += `- **${change.package.name}@${change.package.version}**: ${change.license}\n`;
-                report += `  - Allowed Licenses: ${change.allowedLicenses.join(', ')}\n\n`;
-              });
-            } else {
-              report += '### ✅ No License Issues Found\n\n';
-            }
-
-            // Denied Changes
-            if (outputs.deniedChanges.length > 0) {
-              report += '### ❌ Denied Changes\n\n';
-              outputs.deniedChanges.forEach(change => {
-                report +=
-                   `- **${change.package.name}@${change.package.version}**: ${change.reason}\n`;
-              });
-            } else {
-              report += '### ✅ No Denied Changes Found\n\n';
-            }
-
-            // Post Report only on pull_request
-            if (context.payload.pull_request) {
-              try {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.payload.pull_request.number,
-                  body: report
-                });
-              } catch (error) {
-                console.error("Failed to create comment:", error);
-              }
-            } else {
-              console.log("Not a pull request, skipping comment creation.");
-            }
-
-  lint-and-quality:
-    name: Lint & Quality Checks
+  lint-and-format:
+    name: Lint & Format
     runs-on: ubuntu-latest
+    needs: validate-dependencies
     timeout-minutes: 10
     steps:
       - name: 🔒 Harden Runner
@@ -140,38 +64,28 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 10
-          run_install: false
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - name: Install dependencies
+      - name: Install Node dependencies
         run: pnpm install
-      - name: ✨ Run Prettier
-        run: pnpm run lint:prettier
-      - name: ✨ Lint docs include link-check and spellcheck
-        run: pnpm run lint:docs
-      - name: Install Taplo
-        run: cargo install taplo-cli --locked
-      - name: ✨ Run Taplo
-        run: pnpm run lint:toml
-      - name: Call Python Environment Setup
+      - name: ✨ Run Node linters & formatting
+        run: |
+          pnpm run lint:prettier
+          pnpm run lint:docs
+      - name: Setup Python environment
         uses: ./.github/actions/python-setup
-      - name: ⚙️ Install Python Dependencies
+      - name: ⚙️ Install Python dev env
         run: hatch env create lint
-      - name: 🔍 Run Linters & Checks
-        run: hatch run lint:all
+      - name: 🔍 Run Python linters & checks
+        run: hatch run dev:lint
       - name: 🔍 Trivy Security Scan
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          severity: 'CRITICAL,HIGH'
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
 
   test:
-    name: Test with ${{ matrix.os }} / Python ${{ matrix.python-version }}
-    needs: [validate, lint-and-quality]
+    name: Test with ${{ matrix.os }}
+    needs: lint-and-format
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
@@ -185,35 +99,14 @@ jobs:
           egress-policy: audit
       - name: 🧰 Checkout Repository
         uses: actions/checkout@v4
-      - name: Call Python Environment Setup
+      - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
-      - name: 🧪 Run Tests & Generate Coverage
+      - name: ⚙️ Install Python dev env
+        run: hatch env create test
+      - name: 🧪 Run tests
         run: |
           hatch run test:cov
 
-      - name: 📊 Get Coverage Percentage
-        id: coverage
-        run: |
-          COVERAGE_PERCENTAGE=$(python -c "import xml.etree.ElementTree as ET; tree = ET.parse('coverage.xml'); print(tree.getroot().find('project').get('line-rate'))")
-          echo "coverage_percentage=$COVERAGE_PERCENTAGE" >> "$GITHUB_OUTPUT"
-
-      - name: 📦 Create Coverage Badge JSON
-        run: |
-          PERCENTAGE=${{ steps.coverage.outputs.coverage_percentage }}
-          COLOR="red"
-          if (( $(echo "$PERCENTAGE >= 0.8" | bc -l) )); then
-            COLOR="green"
-          elif (( $(echo "$PERCENTAGE >= 0.5" | bc -l) )); then
-            COLOR="orange"
-          fi
-
-          echo "{\"schemaVersion\":1,\"label\":\"coverage\",\"message\":\"$(printf "%.0f" "$PERCENTAGE" | sed 's/\\.//g')%\",\"color\":\"$COLOR\"}" > .github/badges/coverage.json
-
       - name: 📢 Push Coverage Badge JSON
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          git add .github/badges/coverage.json
-          git commit -m "chore: update coverage badge" || true
-          git push
+        run: bash .github/scripts/update-coverage-badge

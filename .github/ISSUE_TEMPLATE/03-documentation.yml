@@ -2,13 +2,13 @@
 # Documentation Request
 # This template is for feature requests. Please fill out as much information as possible.
 # SPDX-License-Identifier: CC-BY-SA-4.0
-# SPDX-FileCopyrightText: 2023 - 2024 Jürgen Mülbert <juergen.muelbert@outlook.de>
+# SPDX-FileCopyrightText: 2023 - present Jürgen Mülbert <juergen.muelbert@outlook.de>
 #
 # The name of the issue template
 name: Documentation
 description: Report an issue related to the jm-python-template documentation.
 title: "DOC: <Please write a comprehensive title after the 'DOC: ' prefix>"
-labels: [03 - Documentation]
+labels: "[03 - Documentation]"
 
 body:
   - type: markdown
@@ -27,11 +27,12 @@ body:
         If you're in the wrong place, here are some helpful links to find a better
         place to ask your question:
 
-          [jm-python-template documentation with the integrated search](https://jmuelbert.github.io/developer/jm-python-template/),
-          [API Reference](https://jmuelbert.github.io/developer/jm-python-template/developer/api/),
-          [GitHub search](https://github.com/jmuelbert/jm-python-template),
-          [jm-python-template Github Discussions](https://github.com/jmuelbert/jm-python-template/discussions),
-          [jm-python-template Github Issues](https://github.com/jmuelbert/jm-python-template/issues?q=is%3Aissue),
+        [jm-python-template documentation with the integrated search](https://jmuelbert.github.io/developer/jm-python-template/),
+        [API Reference](https://jmuelbert.github.io/developer/jm-python-template/developer/api/),
+        [GitHub search](https://github.com/jmuelbert/jm-python-template),
+        [jm-python-template Github Discussions](https://github.com/jmuelbert/jm-python-template/discussions),
+        [jm-python-template Github Issues](https://github.com/jmuelbert/jm-python-template/issues?q=is%3Aissue),
+
   - type: checkboxes
     id: checks
     attributes:
@@ -44,14 +45,14 @@ body:
           required: true
   - type: textarea
     attributes:
-      label: 'Issue with current documentation:'
+      label: "Issue with current documentation:"
       description: >
         Please make sure to leave a reference to the document/code you're
         referring to. Feel free to include names of classes, functions, methods
         or concepts you'd like to see documented more.
   - type: textarea
     attributes:
-      label: 'Idea or request for content:'
+      label: "Idea or request for content:"
       description: >
         Please describe as clearly as possible what topics you think are missing
         from the current documentation.

@@ -46,7 +46,9 @@ def version_callback(*, value: bool) -> None:
 @app.command()
 def comma(
     name: Annotated[str, typer.Option()] = "World",
-    _version: Annotated[bool | None, typer.Option("--version", callback=version_callback)] = None,
+    _version: Annotated[
+        bool | None, typer.Option("--version", callback=version_callback)
+    ] = None,
 ) -> None:
     """
     Main function of the application.

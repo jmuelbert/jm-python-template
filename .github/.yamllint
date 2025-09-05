@@ -1,3 +1,4 @@
+---
 extends: default
 strict: true
 format: parsable
@@ -11,8 +12,11 @@ rules:
     max: 160
     allow-non-breakable-inline-mappings: true
 
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed
+
   trailing-spaces: enable
 
   # "on:" soll nicht als truthy-Fehler gewertet werden
   truthy: disable
-

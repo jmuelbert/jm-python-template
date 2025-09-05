@@ -50,9 +50,9 @@ body:
       description: |
         After submitting this, I commit to one of:
 
-          * Read open questions until I find 2 where I can help someone and add a comment to help there.
-          * I already hit the "watch" button in this repository to receive notifications and I commit to help at least 2 people that ask questions in the future.
-          * Once my question is answered, I will mark the answer as "accepted".
+        * Read open questions until I find 2 where I can help someone and add a comment to help there.
+        * I already hit the "watch" button in this repository to receive notifications and I commit to help at least 2 people that ask questions in the future.
+        * Once my question is answered, I will mark the answer as "accepted".
       options:
         - label: I commit to help with one of those options 👆
           required: true

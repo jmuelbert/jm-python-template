@@ -47,13 +47,13 @@ theme:
 
   palette:
     # Palette toggle for light mode
-    - media: '(prefers-color-scheme: light)'
+    - media: "(prefers-color-scheme: light)"
       scheme: default
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     # Palette toggle for dark mode
-    - media: '(prefers-color-scheme: dark)'
+    - media: "(prefers-color-scheme: dark)"
       scheme: slate
       toggle:
         icon: material/brightness-4
@@ -91,7 +91,7 @@ plugins:
   mkdocstrings:
     handlers:
       python:
-        paths: ['src']
+        paths: [src]
         options:
           show_source: false
           show_root_heading: true
@@ -103,7 +103,7 @@ plugins:
           show_signature_annotations: true
           heading_level: 2
           separate_signature: true
-          filters: ['!^_']
+          filters: ["!^_"]
   i18n:
     docs_structure: suffix
     fallback_to_default: true
@@ -114,7 +114,7 @@ plugins:
         default: true
         name: English
         build: true
-        site_name: 'My Project Documentation'
+        site_name: My Project Documentation
       - locale: de
         name: Deutsch
         build: true

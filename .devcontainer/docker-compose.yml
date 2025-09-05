@@ -22,6 +22,6 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5' # Limit to 50% of one CPU core
+          cpus: "0.5" # Limit to 50% of one CPU core
         reservations:
-          cpus: '0.25' # Reserve 25% of one CPU core
+          cpus: "0.25" # Reserve 25% of one CPU core
