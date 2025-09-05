@@ -2,9 +2,9 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 exclude: (?x)(
-         LICENSE|
-         LICENSES/|
-         pnpm-lock.yaml)
+  LICENSE|
+  LICENSES/|
+  pnpm-lock.yaml)
 ci:
   autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
   autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate
@@ -129,7 +129,7 @@ repos:
     hooks:
       - id: actionlint
         name: actionlint (github workflows)
-        files: (^\.github/workflows/.*\.(ya?ml)$|^\.github/actions/.*\.(ya?ml)$)
+        files: (^\.github/workflows/.*\.(ya?ml)$)
 
   # ------------------------
   # GitHub JSON & project validation
@@ -154,8 +154,7 @@ repos:
       - id: check-github-actions
         name: Check GitHub Actions configuration
         description: Validates the action.yml file for a custom action.
-        args: [--verbose]
-        # This hook targets action definition files, which
+        args: [--verbose]        # This hook targets action definition files, which
         # are often in a subdirectory.
         files: ^(\.github/actions/.*|action)\.ya?ml$
 
