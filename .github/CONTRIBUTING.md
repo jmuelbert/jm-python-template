@@ -75,10 +75,10 @@ Preview locally with:
 
 - Use the GitHub Issues page.
 - Include details:
-    - Steps to reproduce
-    - Expected behavior
-    - Actual behavior
-    - Environment (OS, Python version, dependencies)
+  - Steps to reproduce
+  - Expected behavior
+  - Actual behavior
+  - Environment (OS, Python version, dependencies)
 
 ### Suggesting Features 💡
 

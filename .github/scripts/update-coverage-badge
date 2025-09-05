@@ -22,9 +22,9 @@ print(line_rate)
 
 # Determine badge color
 COLOR="red"
-if (( $(echo "$COVERAGE_PERCENTAGE >= 0.8" | bc -l) )); then
+if (($(echo "$COVERAGE_PERCENTAGE >= 0.8" | bc -l))); then
   COLOR="green"
-elif (( $(echo "$COVERAGE_PERCENTAGE >= 0.5" | bc -l) )); then
+elif (($(echo "$COVERAGE_PERCENTAGE >= 0.5" | bc -l))); then
   COLOR="orange"
 fi
 
@@ -35,7 +35,7 @@ PERCENT_INT=$(printf "%.0f" "$(echo "$COVERAGE_PERCENTAGE * 100" | bc -l)")
 mkdir -p .github/badges
 
 # Write badge JSON
-cat > .github/badges/coverage.json <<EOF
+cat >.github/badges/coverage.json <<EOF
 {
   "schemaVersion": 1,
   "label": "coverage",

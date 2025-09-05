@@ -26,13 +26,13 @@ precedence              = "aggregate"
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "BSD-3-Clause"
 path = [
-    ".gitattributes",
-    ".gitignore",
-    ".markdown-link-check.json",
-    ".markdownlint.json",
-    ".npmrc",
-    ".pre-commit-config.yaml",
-    ".python-version",
+  ".gitattributes",
+  ".gitignore",
+  ".markdown-link-check.json",
+  ".markdownlint.json",
+  ".npmrc",
+  ".pre-commit-config.yaml",
+  ".python-version",
 ]
 precedence = "aggregate"
 

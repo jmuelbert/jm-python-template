@@ -16,7 +16,7 @@ updates:
     groups:
       github-actions:
         patterns:
-          - '*'
+          - "*"
     labels:
       - dependencies
       - github-actions
@@ -29,13 +29,12 @@ updates:
     pull-request-branch-name:
       separator: /
     rebase-strategy: auto
-    reviewers:
-      - jmuelbert
     target-branch: develop
     versioning-strategy: lockfile-only
     ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major'] # yamlint disable-line
+      - dependency-name: "*"
+        # yamllint disable-line
+        update-types: ["version-update:semver-major"]
 
   # Python Dependencies
   - package-ecosystem: pip
@@ -64,14 +63,13 @@ updates:
     pull-request-branch-name:
       separator: /
     rebase-strategy: auto
-    reviewers:
-      - jmuelbert
     allow:
       - dependency-type: direct
       - dependency-type: indirect
     ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major'] # yamlint disable-line
+      - dependency-name: "*"
+        # yamllint disable-line
+        update-types: ["version-update:semver-major"] # yamlint disable-line
     versioning-strategy: lockfile-only
 
   # Docker Dependencies
@@ -86,8 +84,9 @@ updates:
       prefix: chore(deps)
       include: scope
     ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major']
+      - dependency-name: "*"
+        # yamllint disable-line
+        update-types: ["version-update:semver-major"] # yamlint disable-line
 
   # NPM Dependencies for Documentation
   - package-ecosystem: npm
@@ -97,7 +96,7 @@ updates:
     groups:
       documentation-dependencies:
         patterns:
-          - '*'
+          - "*"
     labels:
       - dependencies
       - documentation
@@ -111,5 +110,6 @@ updates:
     rebase-strategy: auto
     versioning-strategy: increase
     ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major'] # yamlint disable-line
+      - dependency-name: "*"
+        # yamllint disable-line
+        update-types: ["version-update:semver-major"] # yamlint disable-line

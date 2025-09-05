@@ -2,17 +2,17 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
-name: 'CodeQL Security Analysis'
+name: "CodeQL Security Analysis"
 
-on: # yamllint disable-line rule:truthy
+on:
   push:
     branches: [main, develop]
     paths-ignore:
-      - 'docs/'
+      - docs/
   pull_request:
     branches: [main, develop]
     paths-ignore:
-      - 'docs/'
+      - docs/
   schedule:
     - cron: 17 16 * * 3
   workflow_dispatch:
@@ -97,123 +97,5 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: '/language:${{matrix.language}}'
-          output: 'results'
-
-      - name: 📊 Process Results
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const language = "${{ matrix.language }}";  // Get the language from the matrix
-            let sarifFile = `results/${language}.sarif`;
-            // Correct the sarif file name if the language is javascript-typescript
-            if (language === 'javascript-typescript') {
-                sarifFile = 'results/javascript.sarif';
-            }
-            let allResults = []; // Accumulate results for all languages
-            let hasSecurityIssues = false;  // Track if any issues were found
-
-            try {
-              if (!fs.existsSync(sarifFile)) {
-                console.log(`No SARIF file found for ${language} at ${sarifFile}. Skipping results processing.`);
-                return;
-              }
-
-              const sarif = JSON.parse(fs.readFileSync(sarifFile, 'utf8'));
-              const results = sarif.runs[0].results || [];
-              allResults = results;
-
-              let languageSummary = `### ${language} Analysis\n`;
-
-              if (results.length === 0) {
-                languageSummary += `✅ No security issues found!\n`;
-              } else {
-                hasSecurityIssues = true; // Flag that we have issues
-
-                const severity = {
-                  error: 0,
-                  warning: 0,
-                  note: 0
-                };
-
-                results.forEach(result => {
-                  severity[result.level || 'warning']++;
-                });
-
-                languageSummary += `Found Issues:\n`;
-                languageSummary += `- 🔴 Errors: ${severity.error}\n`;
-                languageSummary += `- 🟡 Warnings: ${severity.warning}\n`;
-                languageSummary += `- 🔵 Notes: ${severity.note}\n\n`;
-
-                languageSummary += `Recommendations:\n`;
-                languageSummary += `1. Review the detailed analysis in the Security tab\n`;
-                languageSummary += `2. Follow the suggested fixes for each issue\n`;
-                languageSummary += `3. Run CodeQL locally using the GitHub CLI\n`;
-              }
-
-              console.log(languageSummary); // Log to the console for debugging
-
-
-              // Store the language-specific summary in an output variable.  This is needed to combine summaries
-              // in a later step if running in a matrix.
-              core.setOutput(`${language}-summary`, languageSummary);
-
-
-
-            } catch (error) {
-              console.error(`Error processing CodeQL results for ${language}:`, error);
-              core.setFailed(`CodeQL analysis failed for ${language}: ${error.message}`);
-
-            }
-
-      - name: Combine and Post Results
-        if: always()
-        uses: actions/github-script@v7
-        # TODO: #253 Run in failure. RequestError [HttpError]: Resource not accessible by integration
-        with:
-          script: |
-            const pythonSummary = core.getInput('python-summary', { required: false });
-            const javascriptTypescriptSummary = core.getInput('javascript-typescript-summary', { required: false });
-
-            let summary = `## 🛡️ CodeQL Security Analysis Results\n\n`;
-
-            if (pythonSummary) {
-              summary += pythonSummary + "\n";
-            }
-
-            if (javascriptTypescriptSummary) {
-              summary += javascriptTypescriptSummary + "\n";
-            }
-
-            if (!pythonSummary && !javascriptTypescriptSummary) {
-              summary += "✅ No CodeQL analysis was run or no results were found for any language.\n";
-            }
-
-            const hasSecurityIssues = pythonSummary?.includes("🔴 Errors:") || javascriptTypescriptSummary?.includes("🔴 Errors:");
-
-            if (context.payload.pull_request) {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.payload.pull_request.number,
-                  body: summary
-                  });
-              }
-
-            // Update PR labels (only if it's a pull request)
-            if (context.payload.pull_request) {
-              const labels = hasSecurityIssues
-                ? ['security-review-needed']
-                : ['security-validated'];
-
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                labels: labels
-              });
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # You might need to set this for the script action to work
+          category: /language:${{matrix.language}}
+          output: results

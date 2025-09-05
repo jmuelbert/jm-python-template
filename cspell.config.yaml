@@ -2,18 +2,18 @@
 # SPDX-FileCopyrightText: 2024 Jürgen Mülbert <juergen.muelbert@outlook.de>
 ---
 version: "0.2"
-language: "en"  # Set a single default language
+language: en  # Set a single default language
 
 # Files to ignore
 ignorePaths:
   - "**/node_modules"
-  - ".git"
-  - ".vscode"
-  - ".devcontainer"
-  - "package-lock.json"
-  - "pnpm-lock.yaml"
-  - "cspell.config.yaml"
-  - "project-words.txt" # Exclude the word list itself
+  - .git
+  - .vscode
+  - .devcontainer
+  - package-lock.json
+  - pnpm-lock.yaml
+  - cspell.config.yaml
+  - project-words.txt # Exclude the word list itself
 
 # Files to check
 files:
@@ -57,18 +57,18 @@ cache:
 # Overrides for specific files/globs
 overrides:
   - filename: "**/*.de.md"
-    language: "en,de"
+    language: en,de
   - filename: "**/*.es.md"
-    language: "en,es"
+    language: en,es
   - filename: "**/*.it.md"
-    language: "en,it"
+    language: en,it
   - filename: "**/*.py"
-    language: "en" # Example for a Python file
+    language: en # Example for a Python file
 
 # Project dictionary definitions
 dictionaryDefinitions:
   - name: project-words
-    path: "./project-words.txt"
+    path: ./project-words.txt
     addWords: true
 
 # Use the project dictionary

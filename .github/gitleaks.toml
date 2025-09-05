@@ -19,10 +19,10 @@ tags        = ["key", "Python"]
 
 [allowlist]
 paths = [
-    '''tests/fixtures/''',
-    '''tests/data/''',
-    '''tests/resources/''',
-    '''**/test_*.py''',
-    '''**/*.ui''',
-    '''**/*.qrc''',
+  '''tests/fixtures/''',
+  '''tests/data/''',
+  '''tests/resources/''',
+  '''**/test_*.py''',
+  '''**/*.ui''',
+  '''**/*.qrc''',
 ]
