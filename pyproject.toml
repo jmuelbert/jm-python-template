@@ -7,22 +7,22 @@ requires      = ["hatchling"]
 
 [project]
 authors = [
-    { name = "Jürgen Mülbert", email = "jmuelbert@users.noreply.github.com" },
+  { name = "Jürgen Mülbert", email = "jmuelbert@users.noreply.github.com" },
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Operating System :: OS Independent",
-    "Operating System :: MacOS",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX",
-    "Operating System :: Unix",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+  "Development Status :: 4 - Beta",
+  "Operating System :: OS Independent",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["typer", "rich", "babel"]
+dependencies = ["typer", "rich", "babel", "pyside6"]
 description = ''
 dynamic = ["version"]
 keywords = []
@@ -41,17 +41,17 @@ Source        = "https://github.com/jmuelbert//jm-python-template"
 
 [project.optional-dependencies]
 docs = [
-    "mkdocs>=1.6.1,<1.7",
-    "mkdocs-material[imaging]>=9.6.7,<9.7",
-    "mkdocs-awesome-pages-plugin>=2.10.1,<2.20",
-    "mkdocs-git-revision-date-localized-plugin>=1.3.0,<1.4",
-    "mkdocs-glightbox>=0.4.0,<0.5",
-    "mkdocs-include-markdown-plugin>=7.1.6, <8.0.0",
-    "mkdocs-section-index>=0.3.0,<0.4",
-    "mkdocs-static-i18n>=1.3.0,<1.4",
-    "mkdocs-typer2>=0.1.5, <0.2.0",
-    "mkdocstrings[python]",
-    "mike>=2.1.3,<3.0.0",
+  "mkdocs>=1.6.1,<1.7",
+  "mkdocs-material[imaging]>=9.6.7,<9.7",
+  "mkdocs-awesome-pages-plugin>=2.10.1,<2.20",
+  "mkdocs-git-revision-date-localized-plugin>=1.3.0,<1.4",
+  "mkdocs-glightbox>=0.4.0,<0.5",
+  "mkdocs-include-markdown-plugin>=7.1.6, <8.0.0",
+  "mkdocs-section-index>=0.3.0,<0.4",
+  "mkdocs-static-i18n>=1.3.0,<1.4",
+  "mkdocs-typer2>=0.1.5, <0.2.0",
+  "mkdocstrings[python]",
+  "mike>=2.1.3,<3.0.0",
 ]
 
 [tool.hatch.version]
@@ -61,8 +61,20 @@ path = "src/jm_python_template/__about__.py"
 installer = "uv"
 
 [tool.hatch.envs.dev]
-dependencies = []
-scripts      = { all = ["hatch run lint:check-all", "hatch run test:test"] }
+dependencies = [
+  "ruff>=0.12.11",
+  "taplo>=0.9.3",
+  "pre-commit>=3.6.0",
+  "pyright>=1.1.350",
+  "reuse>=5.0.2",
+]
+installer = "uv"
+[tool.hatch.envs.dev.scripts]
+fix       = "ruff check . --fix"
+format    = ["ruff format .", "taplo format"]
+lint      = ["ruff check .", "pyright", "reuse lint", "pre-commit run --all-files"]
+precommit = ["pre-commit {args}"]
+typing    = "pyright"
 
 [tool.hatch.entry_points."console_scripts"]
 main = "jm_python_template.main"
@@ -88,18 +100,18 @@ retries      = 2
 
 [tool.hatch.envs.test]
 dependencies = [
-    "coverage[toml]>=7.4.3",
-    "pytest>=8.2.1",
-    "pytest-mock>=3.14.0",
-    "pytest-cov>=4.1.0",
-    "pytest-timeout>=2.3.1",
-    "pytest-randomly>=3.15.0",
-    "fastapi>=0.115.8",
-    "typeguard>=4.1.5",
-    "xdoctest>=0.15.10",
-    "pytest-randomly>=3.15.0",
-    "pytest-sugar>=1.0.0",
-    "pylint-pytest>=1.1.2",
+  "coverage[toml]>=7.4.3",
+  "pytest>=8.2.1",
+  "pytest-mock>=3.14.0",
+  "pytest-cov>=4.1.0",
+  "pytest-timeout>=2.3.1",
+  "pytest-randomly>=3.15.0",
+  "fastapi>=0.115.8",
+  "typeguard>=4.1.5",
+  "xdoctest>=0.15.10",
+  "pytest-randomly>=3.15.0",
+  "pytest-sugar>=1.0.0",
+  "pylint-pytest>=1.1.2",
 ]
 installer = "uv"
 
@@ -114,13 +126,13 @@ typeguard = "pytest --typeguard-packages=src"
 addopts = ["-ra", "--strict-markers", "--strict-config", "--doctest-modules"]
 filterwarnings = ["error"]
 markers = [
-    "unit: mark a test as a unit test",
-    "integration: mark a test as an integration test",
-    "e2e: mark a test as an end-to-end test",
-    "component: mark a test as a component test",
-    "slow: mark a test as slow",
-    "smoke: mark a test as a smoke test",
-    "regression: mark a test as a regression test",
+  "unit: mark a test as a unit test",
+  "integration: mark a test as an integration test",
+  "e2e: mark a test as an end-to-end test",
+  "component: mark a test as a component test",
+  "slow: mark a test as slow",
+  "smoke: mark a test as a smoke test",
+  "regression: mark a test as a regression test",
 ]
 minversion = "6.0"
 testpaths = ["tests"]
@@ -134,8 +146,8 @@ source_pkgs = ["jm_python_template", "tests"]
 
 [tool.coverage.paths]
 jm_python_template = [
-    "src/jm_python_template",
-    "*/jm_python_template/src/jm_python_template",
+  "src/jm_python_template",
+  "*/jm_python_template/src/jm_python_template",
 ]
 tests = ["tests", "*/jm_python_template/tests"]
 
@@ -144,56 +156,33 @@ exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
 fail_under    = 90
 show_missing  = true
 
-[tool.hatch.envs.lint]
-dependencies = [
-    "pre-commit>=3.6.0",
-    "ruff>=0.1.0",
-    "reuse>=5.0.2",
-    "pyright>=1.1.350",
-]
-installer = "uv"
-
-[tool.hatch.envs.lint.scripts]
-# Combined style linting
-check     = "ruff check ."
-fix       = "ruff check . --fix"
-format    = "ruff format ."
-license   = "reuse lint"
-precommit = "pre-commit run --all-files"
-style     = ["ruff check .", "ruff format --check ."]
-typing    = "pyright"
-
-# Aggregate linting tasks
-all       = ["style", "typing", "license"]
-check-all = ["check", "typing", "license", "precommit"]
-
 [tool.hatch.envs.docs]
 dependencies = [
-    "mkdocs>=1.6.1,<1.7",
-    "mkdocs-material[imaging]>=9.6.7,<9.7",
-    "mkdocs-awesome-pages-plugin>=2.10.1,<2.20",
-    "mkdocs-git-revision-date-localized-plugin>=1.3.0,<1.4",
-    "mkdocs-glightbox>=0.4.0,<0.5",
-    "mkdocs-include-markdown-plugin>=7.1.6, <8.0.0",
-    "mkdocs-section-index>=0.3.0,<0.4",
-    "mkdocs-static-i18n>=1.3.0,<1.4",
-    "mkdocs-typer2>=0.1.5, <0.2.0",
-    "mkdocstrings[python]",
-    "mike>=2.1.3,<3.0.0",
-    "jm-reusable-scripts @ git+https://github.com/jmuelbert/jm-reusable-scripts.git",
+  "mkdocs>=1.6.1,<1.7",
+  "mkdocs-material[imaging]>=9.6.7,<9.7",
+  "mkdocs-awesome-pages-plugin>=2.10.1,<2.20",
+  "mkdocs-git-revision-date-localized-plugin>=1.3.0,<1.4",
+  "mkdocs-glightbox>=0.4.0,<0.5",
+  "mkdocs-include-markdown-plugin>=7.1.6,<8.0.0",
+  "mkdocs-section-index>=0.3.0,<0.4",
+  "mkdocs-static-i18n>=1.3.0,<1.4",
+  "mkdocs-typer2>=0.1.5,<0.2.0",
+  "mkdocstrings[python]",
+  "mike>=2.1.3,<3.0.0",
+  "jm-reusable-scripts @ git+https://github.com/jmuelbert/jm-reusable-scripts.git",
 ]
-installer = "uv"
 
 [tool.hatch.envs.docs.scripts]
-build          = ["build-only {args}", "prettify"]
-build-only     = ["mkdocs build --clean {args}"]
-prettify       = "hatch run python -m json.tool --sort-keys --no-indent ./site/search/search_index.json ./site/search/search_index.json"
-qualitycheck   = "doc-quality-check"                                                                                                     # Calls the installed command
-serve          = "mkdocs serve --dev-addr localhost:8090 {args}"
-validate-links = "mkdocs linkcheck"
+build = [
+  "mkdocs build --clean {args}",
+  "python -m json.tool --sort-keys --no-indent ./site/search/search_index.json ./site/search/search_index.json",
+]
+qualitycheck = "doc-quality-check"
+serve = "mkdocs serve --dev-addr localhost:8090 {args}"
+
 [tool.ruff]
 # The target Python version.
-line-length    = 120
+line-length    = 88
 target-version = "py312"
 
 [tool.ruff.format]
@@ -212,67 +201,67 @@ select = ["ALL"]
 
 # Rules to ignore.
 ignore = [
-    # Docstring rules (D): Generally ignored for brevity or handled by other tools.
-    "D100",
-    "D101",
-    "D103",
-    "D104",
-    "D105",
-    "D107", # Missing docstrings
-    "D203",
-    "D212",
-    "D213", # Blank lines/summary position
-    # "D406", "D407", "D413", "D416", "D417", # Section formatting/missing descriptions
+  # Docstring rules (D): Generally ignored for brevity or handled by other tools.
+  "D100",
+  "D101",
+  "D103",
+  "D104",
+  "D105",
+  "D107", # Missing docstrings
+  "D203",
+  "D212",
+  "D213", # Blank lines/summary position
+  # "D406", "D407", "D413", "D416", "D417", # Section formatting/missing descriptions
 
-    # Type annotation rules (ANN): Rely on dedicated type checker (e.g., MyPy).
-    "ANN401", # Disallowed Any
+  # Type annotation rules (ANN): Rely on dedicated type checker (e.g., MyPy).
+  "ANN401", # Disallowed Any
 
-    # Pylint rules (PL):
-    "PLR0913", # Too many arguments
-    "PLR0911", # Too many return statements
-    "PLR0912", # Too many branches (complexity, covered by C901 often)
-    "PLW0603", # Using the global statement
-    "PLR0402", # Consider using a generator instead of a list comprehension
-    "PLW2901", # Loop variable `X` overwritten by assignment
-    "PLW1514", # Using `open` without explicit encoding
-    "PLW0120", # Else clause on loop without a break statement
-    "PLW0602", # Using `global` statement
+  # Pylint rules (PL):
+  "PLR0913", # Too many arguments
+  "PLR0911", # Too many return statements
+  "PLR0912", # Too many branches (complexity, covered by C901 often)
+  "PLW0603", # Using the global statement
+  "PLR0402", # Consider using a generator instead of a list comprehension
+  "PLW2901", # Loop variable `X` overwritten by assignment
+  "PLW1514", # Using `open` without explicit encoding
+  "PLW0120", # Else clause on loop without a break statement
+  "PLW0602", # Using `global` statement
 
-    # Security rules (S): High false positive rates for linting; prefer dedicated security scanners.
-    "S101", # Use of `assert`
-    "S301",
-    "S307",
-    "S311", # Insecure modules/functions (pickle, eval, random)
-    "S603",
-    "S607",
-    "S608",
-    "S609",
-    "S701", # Subprocess, hardcoded password, yaml.load
+  # Security rules (S): High false positive rates for linting; prefer dedicated security scanners.
+  "S101", # Use of `assert`
+  "S301",
+  "S307",
+  "S311", # Insecure modules/functions (pickle, eval, random)
+  "S603",
+  "S607",
+  "S608",
+  "S609",
+  "S701", # Subprocess, hardcoded password, yaml.load
 
-    # Other common ignores (often handled by formatter, or subjective):
-    "E501",   # Line too long (handled by `ruff format`)
-    "COM812", # Missing trailing comma (handled by `ruff format`)
-    "ISC001", # Implicit string concatenation (handled by `ruff format`)
-    "W191",   # Indentation contains tabs (formatter ensures spaces)
-    "ERA001", # Commented out code
-    "UP006",  # dict.keys() == other_dict.keys() should be dict.keys() == other_dict.keys()
-    # If you want to enable these, remove from ignore:
-    # "UP007", # Use X | Y for type hints in Python 3.10+
-    # "UP009", # Use `X` instead of `typing.X`
-    # "UP010", # Unnecessary `else` after `return`
-    # "UP038", # `f""` instead of `"{}".format()`
-    # "UP039", # Use `tuple` instead of `(X,)` for single-element tuples
-    # "UP040", # Use `.` instead of `os.path.join`
-    # "UP041", # Use `Path.joinpath` instead of `Path / "child"`
-    # Pytest rules (PT): Ignore if you prefer non-snake_case for fixtures.
-    "PT006",
-    "PT007",
-    "PT013",
-    "PT015",
+  # Other common ignores (often handled by formatter, or subjective):
+  "E501",   # Line too long (handled by `ruff format`)
+  "COM812", # Missing trailing comma (handled by `ruff format`)
+  "ISC001", # Implicit string concatenation (handled by `ruff format`)
+  "W191",   # Indentation contains tabs (formatter ensures spaces)
+  "ERA001", # Commented out code
+  "UP006",  # dict.keys() == other_dict.keys() should be dict.keys() == other_dict.keys()
+  # If you want to enable these, remove from ignore:
+  # "UP007", # Use X | Y for type hints in Python 3.10+
+  # "UP009", # Use `X` instead of `typing.X`
+  # "UP010", # Unnecessary `else` after `return`
+  # "UP038", # `f""` instead of `"{}".format()`
+  # "UP039", # Use `tuple` instead of `(X,)` for single-element tuples
+  # "UP040", # Use `.` instead of `os.path.join`
+  # "UP041", # Use `Path.joinpath` instead of `Path / "child"`
+  # Pytest rules (PT): Ignore if you prefer non-snake_case for fixtures.
+  "PT006",
+  "PT007",
+  "PT013",
+  "PT015",
 
-    # Relative imports (TID252): Can be useful in some package structures.
-    "TID252",
-    "Q000",   # This one is often specific and might not be universally applicable for ignoring.
+  # Relative imports (TID252): Can be useful in some package structures.
+  "TID252",
+  "Q000",   # This one is often specific and might not be universally applicable for ignoring.
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -305,9 +294,9 @@ config_file = ".markdownlint.json" # Specify the config file
 
 [tool.yamllint]
 extends = "default"
+format  = "parsable"
 ignore  = [".github/workflows/", "LICENSES/", "assets/translations/"]
-strict = true
-format = "parsable"
+strict  = true
 
 [tool.yamllint.rules]
 braces          = { max-spaces-inside = 1 }
@@ -331,7 +320,7 @@ truthy          = { allowed-values = ["true", "false"] }
 include = ["src", "tests"]
 # Exclude specific files or directories
 exclude = [
-    "src/some_module.py", # Exclude specific files
+  "src/some_module.py", # Exclude specific files
 ]
 
 # Specify type checking mode
@@ -344,33 +333,47 @@ reportUnusedFunction    = true
 reportUnusedImports     = true
 reportUnusedVariable    = true
 
+[tool.taplo]
+format = { check = true, write = true }
+lint   = { check = true }
+
+[tool.black]
+line-length    = 88
+target-version = ["py311"]
+
+[tool.isort]
+known_first_party = ["jm_python_template"]
+line_length       = 88
+multi_line_output = 3
+profile           = "black"
+
 [tool.proselint]
 checks = [
-    "typography.diacritical_marks",
-    "typography.exclamation",
-    "typography.quotes",
-    "misc.annotations",
-    "misc.link_review",
-    "security.password",
-    # cspell:disable-next-line
-    "spelling.able_atable",
-    # cspell:disable-next-line
-    "spelling.able_ible",
-    "spelling.athletes",
-    "spelling.em_im_en_in",
-    "spelling.er_or",
-    "spelling.in_un",
-    "spelling.misc",
-    "consistency.spacing",
-    "consistency.spelling",
-    # Additional recommended checks
-    "misc.tense",
-    # cspell:disable-next-line
-    "uncomparables.misc",
-    "weasel_words.misc",
-    "cliches.misc",
-    "conditional.misc",
-    "passive.misc",
+  "typography.diacritical_marks",
+  "typography.exclamation",
+  "typography.quotes",
+  "misc.annotations",
+  "misc.link_review",
+  "security.password",
+  # cspell:disable-next-line
+  "spelling.able_atable",
+  # cspell:disable-next-line
+  "spelling.able_ible",
+  "spelling.athletes",
+  "spelling.em_im_en_in",
+  "spelling.er_or",
+  "spelling.in_un",
+  "spelling.misc",
+  "consistency.spacing",
+  "consistency.spelling",
+  # Additional recommended checks
+  "misc.tense",
+  # cspell:disable-next-line
+  "uncomparables.misc",
+  "weasel_words.misc",
+  "cliches.misc",
+  "conditional.misc",
+  "passive.misc",
 ]
 max-line-length = 80
 

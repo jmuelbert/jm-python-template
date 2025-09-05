@@ -21,7 +21,9 @@ def docs(name: str = typer.Option(..., help="The name of the project")) -> None:
 @sub_app.command(hidden=True)
 def hello(
     name: Annotated[str, typer.Argument(..., help="The name of the person to greet")],
-    color: Annotated[str | None, typer.Option("--color", help="The color of the output")] = None,
+    color: Annotated[
+        str | None, typer.Option("--color", help="The color of the output")
+    ] = None,
 ) -> None:
     """Some docstring content."""
     _str = f"Hello {name}"

@@ -6,15 +6,15 @@ name: Release Pipeline
 on:
   push:
     tags:
-      - 'v*.*.*'
-  # release:
-  #   types: [published]
+      - v*.*.*
+  release:
+    types: [published]
 permissions:
   contents: write
   id-token: write
 jobs:
   build:
-    name: Build
+    name: Build Package
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -34,8 +34,8 @@ jobs:
       - name: 📚 Compile Translations
         uses: arduino/task-action@v2
         with:
-          version: '3.31.0'
-          args: 'compile-babel-translations'
+          version: 3.31.0
+          args: compile-babel-translations
 
       - name: 📦 Build Python Package
         run: hatch build
@@ -45,9 +45,23 @@ jobs:
           name: dist
           path: dist/
 
+  validate-dist:
+    name: Validate Distribution
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: 🔍 Twine Check
+        run: python -m twine check dist/*
+
   test-pypi-upload:
     name: Create Test-Release & Publish to PyPi
-    needs: [build]
+    needs: [validate-dist]
     if: github.event.release.prerelease == true
     runs-on: ubuntu-latest
     permissions:
@@ -59,15 +73,15 @@ jobs:
         with:
           name: dist
           path: dist/
-      - name: Publish package to TestPyPI
+      - name: 📢 Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
   release:
-    name: Create Release & Publish
-    needs: [build]
+    name: Full Release → PyPI
+    needs: [validate-dist]
     runs-on: ubuntu-latest
     if: github.event.release.prerelease == false
     permissions:
@@ -83,6 +97,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+
       - name: Build Changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v5

@@ -7,7 +7,7 @@
     "lint:toml": "taplo check",
     "format:toml": "taplo format",
     "lint:prettier": "prettier --check .",
-    "format:prettier": "prettier --write .",
+    "format:prettier": "prettier  --write .",
     "lint:spell": "cspell",
     "lint:markdown": "markdownlint --ignore node_modules --ignore .pytest_cache --dot --config .markdownlint.json '**/*.{md,markdown,mdx,adoc,asciidoc}'",
     "format:markdown": "markdownlint --ignore node_modules --ignore .pytest_cache --dot --fix --config .markdownlint.json '**/*.{md,markdown,mdx,adoc,asciidoc}'",

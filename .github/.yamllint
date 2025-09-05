@@ -1,3 +1,4 @@
+---
 extends: default
 strict: true
 format: parsable
@@ -10,6 +11,10 @@ rules:
   line-length:
     max: 160
     allow-non-breakable-inline-mappings: true
+
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed
 
   trailing-spaces: enable
 

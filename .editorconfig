@@ -8,10 +8,11 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 2
 charset = utf-8
+max_line_length = 100
 
 [*.py]
 # Ruff's line length setting
-max_line_length = 120
+max_line_length = 88
 
 [*.{md,markdown,mdx,adoc,asciidoc}]
 # Prettier's markdown-specific settings
@@ -19,9 +20,8 @@ max_line_length = 120
 # but `max_line_length` helps enforce a consistent wrapping strategy for lines.
 max_line_length = 80
 
-[*.yaml]
+[*.{yaml,yml}]
 # Yamllint's line length and indentation settings
-max_line_length = 80
 indent_size = 2
 
 [*.json]

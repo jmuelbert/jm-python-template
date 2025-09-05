@@ -1,194 +1,311 @@
 ---
 # SPDX-License-Identifier: EUPL-1.2
-# yamllint disable-line rule:line-length
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
-# https://taskfile.dev
-# ------------------------
-# Global Settings
-# ------------------------
-version: '3'
+version: "3"
 
 vars:
-  LOG: 'warn'
-  DOMAIN: 'jm-python-template'
-  SRC_DIR: 'src'
-  LOCALES_DIR: '{{.SRC_DIR}}/{{.DOMAIN}}/locales'
-  GUI_DIR: '{{.SRC_DIR}}/{{.DOMAIN}}/gui'
-  TRANSLATIONS_DIR: '{{.GUI_DIR}}/translations'
-  LANGUAGES: 'en es fr de it pt pt_BR ru zh_CN zh_TW ja ko hi tr ar vi pl nl sv'
+  LOG: warn
+  DOMAIN: jm_python_template
+  SRC_DIR: src
+  LOCALES_DIR: "{{.SRC_DIR}}/{{.DOMAIN}}/locales"
+  GUI_DIR: "{{.SRC_DIR}}/{{.DOMAIN}}/gui"
+  GUI_TRANSLATIONS_DIR: "{{.GUI_DIR}}/translations"
+  LANGUAGES: en es fr de it pt pt_BR ru zh_CN zh_TW ja ko hi tr ar vi pl nl sv
+  PYTHON: python3
 
-# ------------------------
-# Tasks
-# ------------------------
 tasks:
-  # ------------------------
-  # Default
-  # ------------------------
   default:
-    desc: Lists available tasks
+    desc: Lists all available tasks
     cmds:
       - task --list
 
-  # ------------------------
-  # Environment
-  # ------------------------
-  sync:
-    desc: Synchronizes dependencies and installs pre-commit hooks
+  # ----------------------
+  # Code Quality & Linting
+  # ----------------------
+  lint:
+    desc: Run linting checks (pre-commit)
     cmds:
-      - uv sync {{.CLI_ARGS}}
-      - pre-commit install
+      - pnpm run lint:prettier
+      - hatch run dev:pre-commit run --all-files --hook-stage manual
 
-  rm:
-    desc: Cleans up the project by removing generated files
+  fmt:
+    desc: Run formatting hooks (Prettier, Ruff, Taplo, Black)
     cmds:
-      - |
-        echo "🧹 Cleaning up project..."
-        rm -rf dist htmlcov site .cache .ropeproject
-        rm -rf .ruff_cache .pytest_cache .venv
-        rm -f coverage.xml uv.lock
-        rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.mo
-        rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.po
-        rm -rf {{.TRANSLATIONS_DIR}}/*.ts {{.TRANSLATIONS_DIR}}/*.qm
-        rm -f {{.GUI_DIR}}/resources_rc.py
-        hatch env prune || true
+      - hatch run dev:precommit run --all-files --hook-stage manual --all-files --verbose
 
-  # ------------------------
-  # Tests & Coverage
-  # ------------------------
+  check:
+    desc: Run linting and tests (CI-like local check)
+    cmds:
+      - task: lint
+      - task: test
+
+  # ----------------------
+  # Testing & Coverage
+  # ----------------------
   test:
-    desc: Runs tests with a specific Hatch environment
+    desc: Run all tests with pytest
     cmds:
-      - hatch env create test
-      - hatch run test:test {{.CLI_ARGS}}
-
-  test-with-version:
-    desc: Runs tests for a specific Python version
-    cmds:
-      - task: rm
-      - hatch env create test
-      - hatch run +py={{.VERSION}} test:test
-    vars:
-      VERSION: ''
-
-  test-py:
-    desc: Runs tests on multiple Python versions
-    cmds:
-      - task: test-with-version
-        vars: {VERSION: 3.11}
-      - task: test-with-version
-        vars: {VERSION: 3.12}
-      - task: test-with-version
-        vars: {VERSION: 3.13}
-      - task: rm
+      - hatch run test:all
 
   coverage:
-    desc: Runs code coverage tests
+    desc: Run tests with coverage report
     cmds:
-      - hatch env create test
       - hatch run test:coverage
 
-  # ------------------------
-  # Linting & Quality
-  # ------------------------
-  lint-python:
-    desc: Runs all linting checks
+  # ----------------------
+  # Environment Cleanup
+  # ----------------------
+  clean:
+    desc: Clean caches, builds, and translation files
     cmds:
-      - hatch env create lint
-      - hatch run lint:all
+      - rm -rf dist build htmlcov site .cache .ropeproject
+      - rm -rf .pytest_cache .mypy_cache .ruff_cache .venv
+      - rm -f coverage.xml uv.lock .coverage
+      - rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.mo
+      - rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.po
+      - rm -rf {{.GUI_TRANSLATIONS_DIR}}/*.ts {{.GUI_TRANSLATIONS_DIR}}/*.qm
+      - rm -f {{.GUI_DIR}}/resources_rc.py
+      - hatch env prune || true
 
-  spell-check:
-    desc: Runs spell check
+  reset:
+    desc: Reset environment including hooks
     cmds:
-      - pnpm install
-      - pnpm run lint:spell
+      - task: clean
+      - hatch env remove default
+      - hatch env create
+      - task: hooks:install
 
-  lint-docs:
-    desc: Lints documentation files
+  # ----------------------
+  # Pre-commit Hooks
+  # ----------------------
+  hooks:install:
+    desc: Install pre-commit hooks
     cmds:
-      - pnpm install
-      - pnpm run lint:prettier
-      - pnpm run lint:markdown
-      - pnpm run lint:links
-      - pnpm run lint:spell
+      - hatch run dev:pre-commit install
+      - hatch run dev:pre-commit install --hook-type commit-msg
 
-  lint-all:
-    desc: All Lints
+  hooks:update:
+    desc: Update pre-commit hooks
     cmds:
-      - task: lint-python
-      - task: lint-docs
+      - hatch run dev:pre-commit autoupdate
 
-  format-all:
-    desc: Formats code
-    cmds:
-      - pnpm install
-      - pnpm run format
-      - hatch env create lint
-      - hatch run lint:format
-
-  pre-commit:
-    desc: Runs pre-commit hooks
-    cmds:
-      - hatch env create lint
-      - hatch run lint:precommit
-
-  # ------------------------
+  # ----------------------
   # Documentation
-  # ------------------------
+  # ----------------------
+  spell-check:
+    desc: Check spelling in documentation
+    cmds:
+      - pnpm run lint:spell
+
+  update-project-words:
+    desc: Update project words
+    cmds:
+      - pnpm run cspell:project-words
+
   serve:
-    desc: Serves documentation locally
+    desc: Serve docs locally
     cmds:
       - hatch env create docs
       - hatch run docs:serve
 
   docs-build:
-    desc: Builds documentation
+    desc: Build documentation
     cmds:
       - hatch env create docs
       - hatch run docs:build
 
-  # ------------------------
-  # Translations
-  # ------------------------
+  # ----------------------
+  # Translations (Cross-Platform)
+  # ----------------------
   extract-qt-translations:
-    desc: Extracts Qt translation strings
+    desc: Extract Qt translation strings
     cmds:
-      # yamllint disable-line rule:line-length
-      - ./scripts/extract_qt_translations.sh {{.LANGUAGES}} {{.TRANSLATIONS_DIR}} {{.GUI_DIR}}
+      # yamllint disable rule:indentation
+      - cmd: |
+          echo "Extracting Qt translations (.ts)..."
+          if [ -d "{{.GUI_TRANSLATIONS_DIR}}" ]; then
+            for lang in {{.LANGUAGES}}; do
+              echo "Extract Qt translations for $lang..."
+              ts_file="{{.GUI_TRANSLATIONS_DIR}}/${lang}.ts"
+              if [ ! -f "${ts_file}" ]; then
+                echo '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE TS><TS version="2.1" language="'"${lang}"'"></TS>' > "${ts_file}"
+              fi
+              hatch run pyside6-lupdate $(find "{{.GUI_DIR}}" -name '*.py') -ts "${ts_file}"
+            done
+          else
+            echo "Can't run GUI translations, there's no gui."
+          fi
+        platforms: [darwin, linux]
+      - cmd: |
+          Write-Host "Extracting Qt translations (.ts)..."
+          if (Test-Path -Path "{{.GUI_TRANSLATIONS_DIR}}" -PathType Directory) {
+            foreach ($lang in '{{.LANGUAGES}}'.Split(' ')) {
+              Write-Host "Extract Qt translations for $lang..."
+              $ts_file = "{{.GUI_TRANSLATIONS_DIR}}/$lang.ts"
+              if (-not (Test-Path -Path $ts_file -PathType Leaf)) {
+                Set-Content -Path $ts_file -Value '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE TS><TS version="2.1" language="'"$lang"'"></TS>'
+              }
+              $gui_files = Get-ChildItem -Path "{{.GUI_DIR}}" -Recurse -Filter "*.py" | Select-Object -ExpandProperty FullName
+              hatch run pyside6-lupdate $gui_files -ts $ts_file
+            }
+          }
+          else {
+            Write-Host "Can't run GUI translations, the GUI directory is missing."
+          }
+
+        platforms: [windows]
+        # yamllint enable
 
   compile-qt-translations:
-    desc: Compiles Qt translations
+    desc: Compile Qt translations
     cmds:
-      # yamllint disable-line rule:line-length
-      - ./scripts/compile_qt_translations.sh {{.LANGUAGES}} {{.TRANSLATIONS_DIR}} {{.GUI_DIR}}
+      # yamllint disable rule:indentation
+      - cmd: |
+          echo "Compiling Qt translations (.qm)..."
+          if [ -d "{{.GUI_TRANSLATIONS_DIR}}" ]; then
+            for lang in {{.LANGUAGES}}; do
+              echo "Compile Qt translations for $lang..."
+              ts_file="{{.GUI_TRANSLATIONS_DIR}}/${lang}.ts"
+              qm_file="{{.GUI_TRANSLATIONS_DIR}}/${lang}.qm"
+              if [ -f "${ts_file}" ]; then
+                hatch run pyside6-lrelease "${ts_file}" -qm "${qm_file}"
+              fi
+              done
+              hatch run pyside6-rcc "{{.GUI_DIR}}/resources.qrc" -o "{{.GUI_DIR}}/resources_rc.py"
+              echo "All translations updated and compiled."
+          else
+              echo "Can't run GUI translations, there's no gui."
+          fi
 
+        platforms: [darwin, linux]
+      - cmd: |
+          if (Test-Path -Path "{{.GUI_TRANSLATIONS_DIR}}" -PathType Directory) {
+            Write-Host "Compiling Qt translations (.qm)..."
+            foreach ($lang in '{{.LANGUAGES}}'.Split(' ')) {
+              Write-Host "Compile Qt translations for $lang..."
+              $ts_file="{{.GUI_TRANSLATIONS_DIR}}/$lang.ts"
+              $qm_file="{{.GUI_TRANSLATIONS_DIR}}/$lang.qm"
+              if (Test-Path -Path $ts_file -PathType Leaf) {
+                hatch run pyside6-lrelease "$ts_file" -qm "$qm_file"
+              }
+            }
+            hatch run pyside6-rcc "{{.GUI_DIR}}/resources.qrc" -o "{{.GUI_DIR}}/resources_rc.py"
+            Write-Host "All translations updated and compiled.
+          else {
+            Write-Host "Can't run GUI translations, the GUI directory is missing."
+          }
+        platforms: [windows]
+        # yamllint enable
 
   extract-babel-translations:
-    desc: Extracts Babel translation strings
+    desc: Extract Babel translation strings
     cmds:
-      # yamllint disable-line rule:line-length
-      - ./scripts/compile_babel_translations.sh {{.SRC_DR}} {{.LOCALES_DIR}} {{.DOMAIN}}
+      # yamllint disable rule:indentation
+      - cmd: |
+          echo "Extracting Babel translation strings (.pot)..."
+          mkdir -p "{{.LOCALES_DIR}}"
+          pot_file="{{.LOCALES_DIR}}/{{.DOMAIN}}.pot"
+          hatch run pybabel extract -k translate -k _translate_func -o $pot_file `find {{.SRC_DIR}} -name '*.py'`
+        platforms: [darwin, linux]
+      - cmd: |
+          Write-Host "Extracting Babel translation strings (.pot)..."
+          $pot_file="{{.LOCALES_DIR}}/{{.DOMAIN}}.pot"
+          hatch run pybabel extract -k translate -k _translate_func -o $pot_file `find {{.SRC_DIR}} -name '*.py'`
+        platforms: [windows]
+        # yamllint enable
 
   compile-babel-translations:
-    desc: Updates and compiles Babel translations
+    desc: Compile Babel translations
     cmds:
-      # yamllint disable-line rule:line-length
-      - ./scripts/compile_babel_translations.sh {{.LANGUAGES}} {{.LOCALES_DIR}} {{.DOMAIN}}
+      # yamllint disable rule:indentation
+      - cmd: |
+          echo "Updating and compiling Babel translations (.po → .mo)..."
+          for lang in {{.LANGUAGES}}; do
+            echo "Processing language: ${lang}..."
 
+            # Use proper variable expansion with curly braces for clarity.
+            po_dir="{{.LOCALES_DIR}}/${lang}/LC_MESSAGES"
+            po_file="${po_dir}/messages.po"
+            pot_file="{{.LOCALES_DIR}}/{{.DOMAIN}}.pot"
+
+            # Create the directory if it doesn't exist.
+            mkdir -p "${po_dir}"
+
+            # Check if the .po file already exists.
+            # If it exists, update it. If not, initialize it.
+            if [ -f "${po_file}" ]; then
+              echo "Updating existing translation file for ${lang}..."
+              hatch run pybabel update -i "${pot_file}" -d "${po_dir}" -l "${lang}"
+            else
+              echo "Initializing new translation file for ${lang}..."
+              hatch run pybabel init -i "${pot_file}" -d "${po_dir}" -l "${lang}"
+            fi
+
+            # Compile the .po file into a .mo file.
+            echo "Compiling translation file for ${lang}..."
+            hatch run pybabel compile -d "${po_dir}" -l "${lang}"
+          done
+          echo "All translations updated and compiled."
+          # yamllint enable rule: indentation
+        platforms: [darwin, linux]
+      - cmd: |
+          # yamllint disable rule: indentation
+          Write-Host "Updating and compiling Babel translations (.po → .mo)..."
+          # PowerShell variables start with a single $.
+          $languages = {{.LANGUAGES}}
+          $localesDir = "{{.LOCALES_DIR}}"
+          $domain = "{{.DOMAIN}}"
+
+          foreach ($lang in '{{.LANGUAGES}}'.Split(' ')) {
+            # Construct paths using join-path for robustness.
+            $po_dir = Join-Path -Path $localesDir -ChildPath "$lang\LC_MESSAGES"
+            $po_file = Join-Path -Path $po_dir -ChildPath "messages.po"
+            $pot_file = Join-Path -Path $localesDir -ChildPath "$domain.pot"
+
+            Write-Host "Processing language: $lang..."
+
+            # Create the directory if it doesn't exist.
+            if (-not (Test-Path -Path $po_dir)) {
+                New-Item -ItemType Directory -Path $po_dir | Out-Null
+            }
+
+            # Check if the .po file already exists using Test-Path.
+            if (Test-Path -Path $po_file) {
+                Write-Host "Updating existing translation file for $lang..."
+                hatch run pybabel update -i $pot_file -d $po_dir -l $lang
+            }
+            else {
+                Write-Host "Initializing new translation file for $lang..."
+                hatch run pybabel init -i $pot_file -d $po_dir -l $lang
+            }
+
+            # Compile the .po file into a .mo file.
+            Write-Host "Compiling translation file for $lang..."
+            hatch run pybabel compile -d $po_dir -l $lang
+          }
+          Write-Host "All translations updated and compiled."
+          # yamllint enable rule: indentation
+        platforms: [windows]
+        # yamllint enable
+
+  # ----------------------
+  # Composite Translation Tasks
+  # ----------------------
   translate-qt:
-    desc: Extracts and compiles Qt translations
+    desc: Extract & compile Qt translations
     cmds:
       - task: extract-qt-translations
       - task: compile-qt-translations
 
   translate-babel:
-    desc: Extracts and compiles Babel translations
+    desc: Extract & compile Babel translations
     cmds:
       - task: extract-babel-translations
       - task: compile-babel-translations
 
   translate-all:
-    desc: Extracts and compiles all translations
+    desc: Extract & compile all translations (Qt + Babel)
     cmds:
       - task: translate-qt
       - task: translate-babel
