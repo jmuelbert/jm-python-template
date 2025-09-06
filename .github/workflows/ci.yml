@@ -50,16 +50,11 @@ jobs:
           version: 10.15.0
       - name: Install Node dependencies
         run: pnpm install
-      - name: ✨ Run Node linters & formatting
-        run: |
-          pnpm run lint:prettier
-          pnpm run lint:docs
-      - name: Setup Python environment
-        uses: ./.github/actions/python-setup
-      - name: ⚙️ Install Python dev env
-        run: hatch env create lint
-      - name: 🔍 Run Python linters & checks
-        run: hatch run dev:lint
+      - name: ✨ Run Linter Tasks
+        uses: arduino/task-action@v2
+        with:
+          version: 3.31.0
+          args: lint
       - name: 🔍 Trivy Security Scan
         uses: aquasecurity/trivy-action@master
         with:
