@@ -26,13 +26,13 @@ tasks:
   lint:
     desc: Run linting checks (pre-commit)
     cmds:
-      - pnpm run lint:prettier
-      - hatch run dev:pre-commit run --all-files --hook-stage manual
+      - hatch run dev:pre-commit autoupdate
+      - hatch run dev:pre-commit run --all-files
 
   fmt:
     desc: Run formatting hooks (Prettier, Ruff, Taplo, Black)
     cmds:
-      - hatch run dev:precommit run --all-files --hook-stage manual --all-files --verbose
+      - hatch run dev:precommit run --all-files --hook-stage manual --all-files
 
   check:
     desc: Run linting and tests (CI-like local check)

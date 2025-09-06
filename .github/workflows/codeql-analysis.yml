@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
-name: "CodeQL Security Analysis"
+name: CodeQL Security Analysis
 
 on:
   push:
@@ -63,7 +63,10 @@ jobs:
             build-mode: none
           - language: python
             build-mode: none
-            # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
+            # yamllint disable rule:line-length
+            # CodeQL supports the following values keywords for
+            # 'language':
+            # 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
             # Use `c-cpp` to analyze code written in C, C++ or both
             # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
             # Use 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
@@ -71,7 +74,7 @@ jobs:
             # see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning.
             # If you are analyzing a compiled language, you can modify the 'build-mode' for that language to customize how
             # your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
-
+            # yamllint enable rule:line-length
     steps:
       - name: 🔒 Harden Runner
         uses: step-security/harden-runner@v2
@@ -91,8 +94,10 @@ jobs:
           # By default, queries listed here will override any specified in a config file.
           # Prefix the list here with "+" to use these queries and those in the config file.
 
+          # yamllint disable rule:line-length
           # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
           # queries: security-extended,security-and-quality
+          # yamllint enable rule:line-length
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
