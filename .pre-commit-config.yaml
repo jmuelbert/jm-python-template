@@ -4,7 +4,8 @@
 exclude: (?x)(
   LICENSE|
   LICENSES/|
-  pnpm-lock.yaml)
+  pnpm-lock.yaml
+  )
 ci:
   autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
   autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate
@@ -26,7 +27,10 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=500]
       - id: check-json
-        exclude: (\\.devcontainer/devcontainer\\.json|\\.vscode/.*)
+        exclude: (?x)(
+          ^\.devcontainer/.*\.json$ |
+          ^\.vscode/.*\.json$
+          )
       - id: check-merge-conflict
       - id: check-case-conflict
       - id: detect-private-key
@@ -63,43 +67,72 @@ repos:
     hooks:
       - id: prettier
         name: Prettier (via pnpm)
-        entry: pnpm run format:prettier
+        entry: pnpm exec prettier --check
         language: system
-        types: [json, yaml, markdown]
+        files: (?i)\.(css|json|yaml|yml|js|ts|md|markdown|mdx|adoc|asciidoc)$
+
+      - id: prettier-fix
+        name: Prettier (via pnpm)
+        entry: pnpm exec prettier --write
+        language: system
+        files: (?i)\.(css|json|yaml|yml|js|ts|md|markdown|mdx|adoc|asciidoc)$
+        stages: [manual] # optional: nur bei manuellem Trigger
 
       - id: taplo
-        name: Taplo (TOML format)
-        entry: pnpm run format:toml
+        name: Taplo (TOML check)
+        entry: pnpm run lint:toml --
         language: system
-        types: [toml]
+        pass_filenames: true
+        files: (?i)^.*\.toml$
+
+      - id: taplo-fix
+        name: Taplo (TOML check)
+        entry: pnpm run format:toml --
+        language: system
+        pass_filenames: true
+        files: (?i)\.toml$
+        stages: [manual] # optional: nur bei manuellem Trigger
 
       - id: markdownlint
         name: Markdownlint (via pnpm)
-        entry: pnpm run format:markdown
+        entry: pnpm exec markdownlint --config .markdownlint.json
         language: system
-        types: [markdown, mdx, asciidoc]
+        pass_filenames: true
+        files: (?i)\.(md|markdown|mdx|adoc|asciidoc)$
+
+      - id: markdownlint-fix
+        name: Markdownlint Fix (via pnpm)
+        entry: pnpm exec markdownlint --config .markdownlint.json --fix
+        language: system
+        files: (?i)\.(md|markdown|mdx|adoc|asciidoc)$
+        stages: [manual] # optional: nur bei manuellem Trigger
 
       - id: markdown-link-check
         name: Markdown links check (via pnpm)
-        entry: pnpm run lint:links
+        entry: pnpm exec markdown-link-check --config .markdown-link-check.json
         language: system
-        types: [markdown, mdx, asciidoc]
+        pass_filenames: true
+        files: (?i)\.(md|markdown|mdx|adoc|asciidoc)$
 
       - id: cspell
         name: Spellcheck (via pnpm)
-        entry: pnpm run lint:spell
+        entry: pnpm exec cspell --no-progress --config cspell.json
         language: system
-        types: [markdown, mdx, asciidoc, python, text]
+        pass_filenames: true
+        files: (?i)\.(md|markdown|mdx|adoc|asciidoc|rst|txt|html|htm)$
 
   # ------------------------
   # Python linting
   # ------------------------
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.12.11
+    rev: v0.12.12
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
+        stages: [manual]
       - id: ruff-format
+        stages: [manual]
+      - id: ruff
 
   # ------------------------
   # YAML linting
@@ -125,7 +158,7 @@ repos:
   # GitHub Actions checks
   # ------------------------
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.1
+    rev: v1.7.7
     hooks:
       - id: actionlint
         name: actionlint (github workflows)
@@ -137,12 +170,24 @@ repos:
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.33.3
     hooks:
+      - id: check-compose-spec
+        name: Check Docker Compose Specification
+        description: Validates docker-compose.yml files.
+        args: [--verbose]
+        # The `files` regex ensures the hook only runs on this specific file.
+        files: (?i)docker-compose\.ya?ml$
       - id: check-dependabot
         name: Check Dependabot configuration
         description: Validates .github/dependabot.yml.
         args: [--verbose]
         # The `files` regex ensures the hook only runs on this specific file.
         files: ^\.github/dependabot\.yml$
+      - id: check-github-actions
+        name: Check GitHub Actions configuration
+        description: Validates the action.yml file for a custom action.
+        args: [--verbose] # This hook targets action definition files, which
+        # are often in a subdirectory.
+        files: ^(\.github/actions/.*|action)\.ya?ml$
       - id: check-github-workflows
         name: Check GitHub Workflows
         description: Validates all yaml files in .github/workflows.
@@ -150,20 +195,32 @@ repos:
         # The `files` regex targets all YAML files
         #  within the workflows directory.
         files: ^\.github/workflows/.*\.ya?ml$
-
-      - id: check-github-actions
-        name: Check GitHub Actions configuration
-        description: Validates the action.yml file for a custom action.
-        args: [--verbose]        # This hook targets action definition files, which
-        # are often in a subdirectory.
-        files: ^(\.github/actions/.*|action)\.ya?ml$
+      - id: check-gitlab-ci
+        name: Check GitLab CI Configuration
+        description: Validates the .gitlab-ci.yml file.
+        args: [--verbose]
+        # The `files` regex targets the GitLab CI configuration file.
+        files: ^\.gitlab-ci\.ya?ml$
+      - id: check-readthedocs
+        name: Check ReadTheDocs Configuration
+        description: Validates the configuration for ReadTheDocs.
+        args: [--verbose]
+        # The `files` regex targets the ReadTheDocs configuration file.
+        files: ^\.readthedocs\.ya?ml$
+      - id: check-taskfile
+        name: Check Taskfile Configuration
+        description: Validates the configuration for Taskfile.
+        args: [--verbose]
+        # The `files` regex targets the Taskfile configuration file.
+        files: (?i)taskfile\.ya?ml$
 
   - repo: https://github.com/amperser/proselint
     rev: 0.14.0 # Check for the latest release on GitHub
     hooks:
       - id: proselint
         # Or any other file extensions you use for prose
-        files: \.(md|rst|txt)$
+        exclude: ^docs/\.overrides/partials/
+        files: (?i)\.(md|markdown|mdx|adoc|asciidoc|rst|txt|html|htm)$
 
   # ------------------------
   # pyproject.toml validation

@@ -6,9 +6,7 @@ build-backend = "hatchling.build"
 requires      = ["hatchling"]
 
 [project]
-authors = [
-  { name = "Jürgen Mülbert", email = "jmuelbert@users.noreply.github.com" },
-]
+authors = [{ name = "Jürgen Mülbert", email = "juergen.muelbert@outlook.de" }]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Operating System :: OS Independent",

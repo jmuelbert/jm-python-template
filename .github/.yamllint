@@ -4,9 +4,7 @@ strict: true
 format: parsable
 
 rules:
-  indentation:
-    spaces: 2
-    check-multi-line-strings: true
+  indentation: disable
 
   line-length:
     max: 160

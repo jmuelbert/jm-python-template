@@ -3,7 +3,7 @@
 # This template is for reporting bugs in the jm-python-template project.
 # It is based on the GitHub Issue Template schema.
 # SPDX-License-Identifier: CC-BY-SA-4.0
-# SPDX-FileCopyrightText: 2023 - 2024 Jürgen Mülbert <juergen.muelbert@outlook.de>
+# SPDX-FileCopyrightText: 2023 - present Jürgen Mülbert <juergen.muelbert@outlook.de>
 # yaml-language-server: $schema= https://json.schemastore.org/github-issue-template-1.0.0.json
 # The name of the issue template
 name: \U0001F41E Bug report
@@ -20,7 +20,7 @@ body:
 
         ✅ I am using the **latest versions of jm-python-template**.
   - type: input
-    id: jmbde-version
+    id: jm-python-template-version
     attributes:
       label: What version of `jm-python-template` are you using?
       placeholder: 0.0.0

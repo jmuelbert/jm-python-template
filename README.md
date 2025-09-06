@@ -14,6 +14,7 @@
 [![Ruff][Ruff-badge]][Ruff]
 [![Prettier][Prettier-badge]][Prettier]
 [![cSpell][cSpell-badge]][cSpell]
+[![pre-commit][pre-commit-badge]][pre-commit]
 [![docs-badge][documentation-badge]][documentation]
 [![License][License-badge]][EUPL V1.2 license]
 
@@ -93,6 +94,8 @@ This project is licensed under the [EUPL V1.2 license].
 [Hatch]: https://hatch.pypa.io/
 [Hatch-badge]: https://img.shields.io/badge/Hatch-2.x-blue
 [pip]: https://pip.pypa.io/en/stable/
+[pre-commit]: https://pre-commit.com/
+[pre-commit-badge]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit
 [Prettier]: https://prettier.io
 [Prettier-badge]: https://img.shields.io/badge/prettier-3.x-brightgreen?logo=prettier
 [PyPi]: https://pypi.org/project/jm-python-template
