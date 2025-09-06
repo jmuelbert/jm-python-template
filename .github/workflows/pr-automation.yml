@@ -31,6 +31,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependency Review
+        id: review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          comment-summary-in-pr: always
+          config-file: .github/dependency-review-config.yml
   analyze_and_label:
     name: Analyze and Label Pull Request
     if: github.actor != 'dependabot[bot]'

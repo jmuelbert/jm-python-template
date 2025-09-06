@@ -28,7 +28,8 @@
   color: 7057ff
   description: Good for newcomers
 - name: help wanted
-  color: 008672
+  # yamllint disable-line rule:quoted-strings
+  color: "008672"
   description: Extra attention is needed
 
 # Type Labels
@@ -105,6 +106,7 @@
 
 # Size Labels
 - name: size/xs
+  # yamllint disable-line rule:quoted-strings
   color: 009900
   description: Extra small change (0-10 lines)
 - name: size/s
@@ -167,7 +169,7 @@
   color: 0075ca
   description: Automated changes
 - name: github_actions
-  color: 000000
+  color: "000000"
   description: GitHub Actions related changes
 
 # Process Labels
