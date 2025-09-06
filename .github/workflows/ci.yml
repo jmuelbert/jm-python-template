@@ -50,11 +50,14 @@ jobs:
           version: 10.15.0
       - name: Install Node dependencies
         run: pnpm install
-      - name: ✨ Run Linter Tasks
-        uses: arduino/task-action@v2
+      - name: ⚙️  Install Tasks
+        uses: arduino/setup-task@v2
         with:
-          version: 3.31.0
-          args: lint
+          version: 3.x
+
+      - name: ✨ Run Linter Tasks
+        run: task lint
+
       - name: 🔍 Trivy Security Scan
         uses: aquasecurity/trivy-action@master
         with:
