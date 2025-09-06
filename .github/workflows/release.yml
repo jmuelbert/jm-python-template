@@ -31,10 +31,16 @@ jobs:
       - name: Get Project Version
         id: version
         run: echo "version=$(hatch version)" >> "$GITHUB_OUTPUT"
-      - name: ⚙️  Install Tasks
-        uses: arduino/setup-task@v2
+        # Installs the Go runtime environment. This is good practice for Go-based tools.
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          version: 3.x
+          go-version: 1.22
+          check-latest: true
+
+      # Installs the Task binary. The v3 is important.
+      - name: Install Task 🚀
+        run: go install github.com/go-task/task/v3/cmd/task@latest
       - name: 📚 Compile Translations
         run: task lint
 
