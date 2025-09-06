@@ -60,6 +60,9 @@ jobs:
           go-version: 1.22
           check-latest: true
 
+      - name: Cleanup Proselint cache
+        run: rm -rf /home/runner/.cache/proselint
+
       # Installs the Task binary. The v3 is important.
       - name: Install Task 🚀
         run: go install github.com/go-task/task/v3/cmd/task@latest
