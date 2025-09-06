@@ -53,11 +53,19 @@ jobs:
           version: 10.15.0
       - name: Install Node dependencies
         run: pnpm install
-      - name: ⚙️  Install Tasks
-        uses: arduino/setup-task@v2
+        # Installs the Go runtime environment. This is good practice for Go-based tools.
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          version: 3.x
-      - name: ✨ Run Linter Tasks
+          go-version: 1.22
+          check-latest: true
+
+      # Installs the Task binary. The v3 is important.
+      - name: Install Task 🚀
+        run: go install github.com/go-task/task/v3/cmd/task@latest
+
+      # Runs the 'test' task from your Taskfile.yml
+      - name: Run test task ▶️
         run: task lint
       - name: 🔍 Trivy Security Scan
         uses: aquasecurity/trivy-action@master
