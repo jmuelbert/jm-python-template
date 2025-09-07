@@ -102,6 +102,15 @@ jobs:
       - name: 🧪 Run tests
         run: |
           hatch run test:coverage
+          hatch shell test.py3.12
+          coverage combine
+          coverage xml
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data-${{ matrix.os }}
+          path: .coverage
 
   combine-and-badge:
     runs-on: ubuntu-latest
