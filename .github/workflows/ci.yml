@@ -109,5 +109,5 @@ jobs:
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: chore: update coverage badge
+          commit_message: "chore: update coverage badge"
           file_pattern: .github/badges/coverage.json
