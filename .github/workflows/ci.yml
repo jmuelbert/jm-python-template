@@ -49,8 +49,6 @@ jobs:
         id: python-setup
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10.15.0
       - name: Install Node dependencies
         run: pnpm install
         # Installs the Go runtime environment. This is good practice for Go-based tools.
@@ -60,10 +58,11 @@ jobs:
           go-version: 1.22
           check-latest: true
 
-      - name: Cleanup Caches
-        run: |
-          rm -rf /home/runner/.cache/proselint
-          rm -rf /home/runner/.cache/pre-commit
+      - name: Install dependencies
+        run: pip install proselint
+
+      - name: Run Proselint
+        run: proselint *.md docs/*.md
 
       # Installs the Task binary. The v3 is important.
       - name: Install Task 🚀

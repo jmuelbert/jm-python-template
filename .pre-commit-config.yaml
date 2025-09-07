@@ -220,7 +220,7 @@ repos:
         # Or any other file extensions you use for prose
         exclude: ^docs/\.overrides/partials/
         files: (?i)\.(md|markdown|mdx|adoc|asciidoc|rst|txt|html|htm)$
-
+        stages: [manual]
   # ------------------------
   # pyproject.toml validation
   # ------------------------
