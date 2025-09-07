@@ -101,7 +101,7 @@ jobs:
         run: hatch env create test
       - name: 🧪 Run tests
         run: |
-          hatch run test:cov
+          hatch run test:coverage
 
       - name: 📢 Push Coverage Badge JSON
         run: bash .github/scripts/update-coverage-badge
