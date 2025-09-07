@@ -62,7 +62,7 @@ jobs:
         run: pip install proselint
 
       - name: Run Proselint
-        run: proselint *.md docs/*.md
+        run: proselint ./*.md docs/*.md
 
       # Installs the Task binary. The v3 is important.
       - name: Install Task 🚀
