@@ -105,7 +105,7 @@ jobs:
 
       - name: 📢 Push Coverage Badge JSON
         run: bash .github/scripts/update-coverage-badge
-        
+
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
