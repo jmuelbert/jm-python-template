@@ -40,6 +40,7 @@ pytest
 Roboto
 sarif
 sdist
+stefanzweifel
 taplo
 twemoji
 typer
