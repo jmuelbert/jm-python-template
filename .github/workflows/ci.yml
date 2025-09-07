@@ -78,7 +78,7 @@ jobs:
           scan-ref: .
           severity: CRITICAL,HIGH
 
-  test:
+  tests:
     name: Test with ${{ matrix.os }}
     needs: lint-and-format
     runs-on: ${{ matrix.os }}
@@ -102,6 +102,36 @@ jobs:
       - name: 🧪 Run tests
         run: |
           hatch run test:coverage
+
+  combine-and-badge:
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download all coverage data artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+
+      - name: Setup Python
+        uses: ./.github/actions/python-setup
+        id: python-setup
+
+      - name: Combine coverage data
+        run: |
+          pip install coverage
+          python -m coverage combine
+
+      - name: Generate final coverage.xml
+        run: python -m coverage xml
 
       - name: 📢 Push Coverage Badge JSON
         run: bash .github/scripts/update-coverage-badge
