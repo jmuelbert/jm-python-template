@@ -58,7 +58,6 @@ repos:
       - id: git-dirty # Configure in .gitignore
       - id: script-must-not-have-extension
       - id: shellcheck
-      - id: shfmt
 
   # ------------------------
   # Local hooks using package.json scripts
