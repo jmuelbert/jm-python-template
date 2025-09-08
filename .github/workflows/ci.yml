@@ -99,12 +99,9 @@ jobs:
         id: python-setup
       - name: ⚙️ Install Python dev env
         run: hatch env create test
-      - name: 🧪 Run tests
+      - name: 🧪📊 Run tests and coverage
         run: |
-          hatch run test:coverage
-          hatch shell test.py3.12
-          coverage combine
-          coverage xml
+          hatch test --cover -all
 
       - name: Upload coverage data
         uses: actions/upload-artifact@v4
