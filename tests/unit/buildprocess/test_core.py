@@ -1,13 +1,19 @@
+
+from typing import Final
+
 import pytest
+
 from jm_python_template.buildprocess import core
 
 
 class TestBuildProcess:
     def test_add(self):
-        assert core.add(2, 3) == 5
+        expected_value: Final[int] = 5
+        assert core.add(2, 3) == expected_value
 
     def test_divide_normal(self):
-        assert core.divide(10, 2) == 5
+        expected_value: Final[int] = 5
+        assert core.divide(10, 2) == expected_value
 
     def test_divide_by_zero(self):
         with pytest.raises(ZeroDivisionError):
