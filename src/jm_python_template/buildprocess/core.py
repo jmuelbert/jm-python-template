@@ -1,6 +1,4 @@
-"""
-Example build process functions for testing coverage and pytest.
-"""
+"""Example build process functions for testing coverage and pytest."""
 
 from __future__ import annotations
 
@@ -17,8 +15,9 @@ def divide(a: float, b: float) -> float:
     Raises:
         ZeroDivisionError: If `b` is zero.
     """
+    msg = "Division by zero is not allowed."
     if b == 0:
-        raise ZeroDivisionError("Division by zero is not allowed.")
+        raise ZeroDivisionError(msg)
     return a / b
 
 
@@ -36,15 +35,12 @@ def build_pipeline(steps: list[str]) -> str:
         return "No steps to run."
 
     executed = []
-    for step in steps:
-        executed.append(f"Executed {step}")
+    executed.append(f"Executed {step}" for step in steps)
     return " | ".join(executed)
 
 
-def conditional_process(flag: bool) -> str:
-    """
-    Run a conditional process depending on the flag.
-    """
+def conditional_process(*, flag: bool) -> str:
+    """Run a conditional process depending on the flag."""
     if flag:
         return "Process executed."
     return "Process skipped."
