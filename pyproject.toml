@@ -6,13 +6,6 @@ build-backend = "hatchling.build"
 requires      = ["hatchling"]
 
 [project]
-name = "jm-python-template"
-dynamic = ["version"]
-description = ''
-readme = "README.md"
-requires-python = ">=3.11"
-license = "EUPL-1.2"
-keywords = []
 authors = [{ name = "Jürgen Mülbert", email = "juergen.muelbert@outlook.de" }]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -27,19 +20,22 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = [
-"typer~=0.17",
-"rich~=14.1",
-"babel~=2.17",
-"pyside6~=6.9"]
+dependencies = ["typer~=0.17", "rich~=14.1", "babel~=2.17", "pyside6~=6.9"]
+description = ''
+dynamic = ["version"]
+keywords = []
+license = "EUPL-1.2"
+name = "jm-python-template"
+readme = "README.md"
+requires-python = ">=3.11"
 
 [project.urls]
-Documentation = "https://jmuelbert.github.io/jm-python-template/"
-Issues        = "https://github.com/jmuelbert//jm-python-template/issues"
-Source        = "https://github.com/jmuelbert//jm-python-template"
-Homepage      = "https://github.com/jmuelbert//jm-python-template"
-Repository    = "https://github.com/jmuelbert//jm-python-template.git"
 Changelog     = "https://github.com/jmuelbert//jm-python-template/blob/main/CHANGELOG.md"
+Documentation = "https://jmuelbert.github.io/jm-python-template/"
+Homepage      = "https://github.com/jmuelbert//jm-python-template"
+Issues        = "https://github.com/jmuelbert//jm-python-template/issues"
+Repository    = "https://github.com/jmuelbert//jm-python-template.git"
+Source        = "https://github.com/jmuelbert//jm-python-template"
 
 [tool.hatch.version]
 path = "src/jm_python_template/__about__.py"
@@ -69,15 +65,16 @@ dependencies = [
   "taplo~=0.9",
   "pre-commit~=4.3",
   "pyright~=1.1",
-  "reuse~=5.1"
+  "reuse~=5.1",
 ]
 installer = "uv"
 [tool.hatch.envs.dev.scripts]
+check     = "ruff check ."
 fix       = "ruff check . --fix"
 format    = ["ruff format .", "taplo format"]
 lint      = ["ruff check .", "pyright", "reuse lint", "pre-commit run --all-files"]
 precommit = ["pre-commit {args}"]
-typing    = ["pyright {args}" ]
+typing    = ["pyright {args}"]
 
 [tool.hatch.entry_points."console_scripts"]
 main = "jm_python_template.main"
@@ -96,14 +93,14 @@ exclude = ["/.github", "/scripts"]
 python = ["3.11", "3.12", "3.13"]
 
 [tool.hatch.envs.hatch-test]
-parallel     = true
-randomize    = true
-retries      = 2
 extra-dependencies = [
   "pytest-sugar~=1.1",
   "pytest-timeout~=2.4",
-  "xdoctest~=1.2"
+  "xdoctest~=1.2",
 ]
+parallel = true
+randomize = true
+retries = 2
 
 
 [tool.pytest.ini_options]
@@ -113,7 +110,7 @@ addopts = [
   "--strict-markers",
   "--strict-config",
   "--doctest-modules",
-  "--xdoctest"
+  "--xdoctest",
 ]
 filterwarnings = ["error"]
 markers = [
@@ -130,27 +127,20 @@ testpaths = ["tests"]
 timeout = "300"
 
 [tool.coverage.run]
-source_pkgs = ["jm_python_template", "tests"]
 branch      = true
-parallel    = true
 omit        = ["src/jm_python_template/__about__.py"]
+parallel    = true
+source_pkgs = ["jm_python_template", "tests"]
 
 [tool.coverage.paths]
 jm_python_template = [
   "src/jm_python_template",
   "*/jm_python_template/src/jm_python_template",
 ]
-tests = [
-  "tests",
-  "*/jm_python_template/tests"
-]
+tests = ["tests", "*/jm_python_template/tests"]
 
 [tool.coverage.report]
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:"
-]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
 fail_under    = 50
 show_missing  = true
 
