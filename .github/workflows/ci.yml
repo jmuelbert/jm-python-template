@@ -47,30 +47,25 @@ jobs:
       - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
+
+      # Lint the Codebase
+      - name: Run lint Codebase ▶️
+        run: hatch run dev:lint
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-      - name: Install Node dependencies
+
+      - name: Install tools
         run: pnpm install
-        # Installs the Go runtime environment. This is good practice for Go-based tools.
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.22
-          check-latest: true
 
-      - name: Install dependencies
-        run: pip install proselint
+      # Lint toml.
+      - name: Lint configs.
+        run: pnpm run lint:toml
 
-      - name: Run Proselint
-        run: proselint ./*.md docs/*.md
+      # Lint prettier.
+      - name: Lint prettier.
+        run: pnpm run lint:prettier
 
-      # Installs the Task binary. The v3 is important.
-      - name: Install Task 🚀
-        run: go install github.com/go-task/task/v3/cmd/task@latest
-
-      # Runs the 'test' task from your Taskfile.yml
-      - name: Run test task ▶️
-        run: task lint
       - name: 🔍 Trivy Security Scan
         uses: aquasecurity/trivy-action@master
         with:
@@ -97,8 +92,6 @@ jobs:
       - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
-      - name: ⚙️ Install Python dev env
-        run: hatch env create test
       - name: 🧪📊 Run tests and coverage
         run: |
           hatch test --cover -all
