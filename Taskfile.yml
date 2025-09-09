@@ -27,6 +27,7 @@ tasks:
     desc: Run linting checks for documentation
     cmds:
       - pnpm run lint:docs
+      - vale docs/ README.md
     silent: true
 
   lint-code:

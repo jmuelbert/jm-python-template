@@ -36,9 +36,12 @@ jobs:
       - name: Install tools
         run: pnpm install
 
-      # Vale
-      - name: Run vale
-        run: pnpm run lint:vale
+      - name: Vale Lint
+        uses: errata-ai/vale-action@v2
+        with:
+          version: "2.25.3"
+          use-prebuilt: true
+          run: vale docs/ README.md
 
       # Prettier
       - name: Run prettier
