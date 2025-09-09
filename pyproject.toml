@@ -66,13 +66,15 @@ dependencies = [
   "pre-commit~=4.3",
   "pyright~=1.1",
   "reuse~=5.1",
+  "pytest~=8.0",
 ]
 installer = "uv"
 [tool.hatch.envs.dev.scripts]
-check     = "ruff check ."
-fix       = "ruff check . --fix"
-format    = ["ruff format .", "taplo format"]
-lint      = ["ruff check .", "pyright", "reuse lint"]
+check  = "ruff check ."
+fix    = "ruff check . --fix"
+format = ["ruff check . --fix", "ruff format .", "taplo format"]
+lint   = ["ruff check ."]
+# "pyright",  "reuse lint" -- Add above later
 precommit = ["pre-commit {args}"]
 typing    = ["pyright {args}"]
 

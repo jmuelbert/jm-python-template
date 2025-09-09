@@ -34,7 +34,7 @@ jobs:
   lint-and-format:
     name: Lint & Format
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - name: 🔒 Harden Runner
         uses: step-security/harden-runner@v2
@@ -54,6 +54,8 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Install tools
         run: pnpm install
