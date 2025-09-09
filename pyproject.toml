@@ -72,7 +72,7 @@ installer = "uv"
 check     = "ruff check ."
 fix       = "ruff check . --fix"
 format    = ["ruff format .", "taplo format"]
-lint      = ["ruff check .", "pyright", "reuse lint", "pre-commit run --all-files"]
+lint      = ["ruff check .", "pyright", "reuse lint"]
 precommit = ["pre-commit {args}"]
 typing    = ["pyright {args}"]
 
@@ -334,36 +334,6 @@ known_first_party = ["jm_python_template"]
 line_length       = 88
 multi_line_output = 3
 profile           = "black"
-
-[tool.proselint]
-checks = [
-  "typography.diacritical_marks",
-  "typography.exclamation",
-  "typography.quotes",
-  "misc.annotations",
-  "misc.link_review",
-  "security.password",
-  # cspell:disable-next-line
-  "spelling.able_atable",
-  # cspell:disable-next-line
-  "spelling.able_ible",
-  "spelling.athletes",
-  "spelling.em_im_en_in",
-  "spelling.er_or",
-  "spelling.in_un",
-  "spelling.misc",
-  "consistency.spacing",
-  "consistency.spelling",
-  # Additional recommended checks
-  "misc.tense",
-  # cspell:disable-next-line
-  "uncomparables.misc",
-  "weasel_words.misc",
-  "cliches.misc",
-  "conditional.misc",
-  "passive.misc",
-]
-max-line-length = 80
 
 [tool.xdoctest]
 style = "google"
