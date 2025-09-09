@@ -1,0 +1,71 @@
+---
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+
+name: Docs Lint
+
+on:
+  push:
+    paths:
+      - docs/**
+      - "*.md"
+      - .github/workflows/docs-lint.yml
+      - .vale.ini
+  pull_request:
+    paths:
+      - docs/**
+      - "*.md"
+      - .github/workflows/docs-lint.yml
+      - .vale.ini
+
+jobs:
+  docs-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: 🧐 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install tools
+        run: pnpm install
+
+      - name: Vale Lint
+        uses: errata-ai/vale-action@v2
+        with:
+          use-prebuilt: true
+          run: vale docs/ README.md
+
+      # Prettier
+      - name: Run prettier
+        run: pnpm run lint:prettier
+
+      # Markdownlint
+      - name: Run markdownlint
+        run: pnpm run lint:markdown
+
+      # - Markdown-link-check
+      - name: Check Markdown links
+        run: pnpm run lint:markdown-links
+
+      # Spellcheck (z.B. cspell)
+      - name: Spellcheck
+        run: pnpm run lint:spell
+
+      # Build docs with strict option
+      - name: Setup Python
+        uses: ./.github/actions/python-setup
+        id: python-setup
+
+      - name: Build docs with strict option
+        run: |
+          hatch run docs:build

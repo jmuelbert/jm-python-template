@@ -4,6 +4,10 @@
 
 name: Pull Request Automation
 on:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     paths-ignore:
@@ -31,9 +35,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  commit-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📝 Lint Commit Messages
+        uses: ahmadnassri/action-commit-lint@v2
+        with:
+          config: conventional
+
   analyze_and_label:
     name: Analyze and Label Pull Request
-    if: github.actor != 'dependabot[bot]'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -51,11 +63,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: 📝 Lint Commit Messages
-        uses: ahmadnassri/action-commit-lint@v2
-        with:
-          config: conventional
 
       - name: 🔄 Check Merge Conflicts
         id: conflicts
@@ -225,6 +232,7 @@ jobs:
 
   post-dependency-report:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     permissions:
       pull-requests: write
     steps:
@@ -236,7 +244,7 @@ jobs:
           comment-summary-in-pr: false
           fail-on-severity: none # We don't want this action to fail the build
           retry-on-snapshot-warnings: true
-          config-file: .github/dependency-review-config.yml
+          config-file: ./.github/dependency-review-config.yml
 
       - name: 📊Generate and Post Report
         if: always()

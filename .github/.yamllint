@@ -16,5 +16,5 @@ rules:
 
   trailing-spaces: enable
 
-  # "on:" soll nicht als truthy-Fehler gewertet werden
+  # "on:" Should not be used as a truthy value
   truthy: disable
