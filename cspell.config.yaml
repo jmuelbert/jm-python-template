@@ -7,13 +7,19 @@ language: en  # Set a single default language
 # Files to ignore
 ignorePaths:
   - "**/node_modules"
+  - "**/*.svg"
+  - "**/*.qrc"
   - .git
+  - .gitignore
+  - .gitattributes
   - .vscode
   - .devcontainer
   - package-lock.json
   - pnpm-lock.yaml
   - cspell.config.yaml
   - project-words.txt # Exclude the word list itself
+  - LICENSE
+  - LICENSES/
 
 # Files to check
 files:
