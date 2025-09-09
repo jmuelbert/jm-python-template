@@ -10,11 +10,14 @@ on:
       - docs/**
       - "*.md"
       - .github/workflows/docs-lint.yml
+      - .vale.ini
   pull_request:
     paths:
       - docs/**
       - "*.md"
       - .github/workflows/docs-lint.yml
+      - .vale.ini
+
 jobs:
   docs-lint:
     runs-on: ubuntu-latest
