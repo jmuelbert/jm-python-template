@@ -39,7 +39,6 @@ jobs:
       - name: Vale Lint
         uses: errata-ai/vale-action@v2
         with:
-          version: "2.25.3"
           use-prebuilt: true
           run: vale docs/ README.md
 
