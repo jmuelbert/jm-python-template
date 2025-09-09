@@ -34,8 +34,7 @@ def build_pipeline(steps: list[str]) -> str:
     if not steps:
         return "No steps to run."
 
-    executed = []
-    executed.append(f"Executed {step}" for step in steps)
+    executed = [f"Executed {step}" for step in steps]
     return " | ".join(executed)
 
 

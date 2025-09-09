@@ -1,4 +1,3 @@
-
 from typing import Final
 
 import pytest
@@ -31,4 +30,4 @@ class TestBuildProcess:
         "flag,expected", [(True, "Process executed."), (False, "Process skipped.")]
     )
     def test_conditional_process(self, flag, expected):
-        assert core.conditional_process(flag) == expected
+        assert core.conditional_process(flag=flag) == expected
