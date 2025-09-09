@@ -64,7 +64,6 @@ jobs:
         with:
           fetch-depth: 0
 
-
       - name: 🔄 Check Merge Conflicts
         id: conflicts
         uses: eps1lon/actions-label-merge-conflict@v3
@@ -245,7 +244,7 @@ jobs:
           comment-summary-in-pr: false
           fail-on-severity: none # We don't want this action to fail the build
           retry-on-snapshot-warnings: true
-          config-file: .github/dependency-review-config.yml
+          config-file: ./.github/dependency-review-config.yml
 
       - name: 📊Generate and Post Report
         if: always()
