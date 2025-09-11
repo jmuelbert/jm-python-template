@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+
+
 from typing import Final
 
 import pytest
@@ -29,5 +33,5 @@ class TestBuildProcess:
     @pytest.mark.parametrize(
         "flag,expected", [(True, "Process executed."), (False, "Process skipped.")]
     )
-    def test_conditional_process(self, flag, expected):
+    def test_conditional_process(self, *, flag: bool, expected: bool):
         assert core.conditional_process(flag=flag) == expected

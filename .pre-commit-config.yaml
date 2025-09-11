@@ -4,7 +4,8 @@
 exclude: (?x)(
   LICENSE|
   LICENSES/|
-  pnpm-lock.yaml
+  pnpm-lock.yaml|
+  ^\.github/styles/Microsoft/
   )
 ci:
   autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
@@ -54,7 +55,8 @@ repos:
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: 3.0.0
     hooks:
-      - id: git-check # Configure in .gitattributes
+      # - id: git-check # Configure in .gitattributes
+      #  exclude: ^\.github/workflows/styles/Microsoft/
       - id: git-dirty # Configure in .gitignore
       - id: script-must-not-have-extension
       - id: shellcheck

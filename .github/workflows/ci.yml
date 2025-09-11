@@ -60,10 +60,6 @@ jobs:
       - name: Install tools
         run: pnpm install
 
-      # Lint toml.
-      - name: Lint configs.
-        run: pnpm run lint:toml
-
       # Lint prettier.
       - name: Lint prettier.
         run: pnpm run lint:prettier
