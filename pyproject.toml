@@ -70,10 +70,10 @@ dependencies = [
 ]
 installer = "uv"
 [tool.hatch.envs.dev.scripts]
-check     = "ruff check ."
-fix       = "ruff check . --fix"
-format    = ["ruff check . --fix", "ruff format .", "taplo format"]
-lint      = ["ruff check .", "pyright", "reuse lint", "pre-commit run --all-files"]
+check  = "ruff check ."
+fix    = "ruff check . --fix"
+format = ["ruff check . --fix", "ruff format .", "taplo format"]
+lint   = ["ruff check .", "pyright", "reuse lint", "pre-commit run --all-files"]
 precommit = ["pre-commit {args}"]
 typing    = ["pyright {args}"]
 

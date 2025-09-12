@@ -39,7 +39,7 @@ theme:
     - header.autohide
     - navigation.expand
     - navigation.footer
-    # - navigation.instant
+    - navigation.instant
     - navigation.indexes
     - navigation.top
     - search.suggest
