@@ -4,7 +4,6 @@
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
 name: Documentation Deployment
-# yamllint disable-line rule:truthy
 on:
   push:
     branches: [main]
@@ -21,9 +20,9 @@ jobs:
   build:
     name: Build Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     permissions:
-      contents: read # Only needs permission to read the repository contents
+      contents: read
     steps:
       - name: 🔒 Harden Runner
         uses: step-security/harden-runner@v2

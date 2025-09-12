@@ -6,15 +6,16 @@
 #
 # For more information, visit https://prettier.io/docs/en/ignore.html.
 
+.github/styles/**
+benchmark/
+build/
+cspell.config.yaml
+dist/
 LICENSE
 LICENSES/**
-src/checkconnect/gui/locales
-benchmark/
-dist/
-build/
-**/*.pyc
-**/.*egg-info
-**/src/**/gui/**
-cspell.config.yaml
 pnpm-lock.yaml
-*.lock
+src/checkconnect/gui/locales
+**/.*egg-info
+**/*.lock
+**/*.pyc
+**/src/**/gui/**

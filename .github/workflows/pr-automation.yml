@@ -113,8 +113,11 @@ jobs:
             **/doc/**
             **/docs/**
             **/*.md
+            .github/styles/**
             package-lock.json
+            pnpm-lock.yaml
             poetry.lock
+            uv.lock
 
       - name: 🏷️ Apply Scope Labels
         id: labeler
