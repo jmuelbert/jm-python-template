@@ -1,14 +1,9 @@
-# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <jmuelbert@users.noreply.github.com>
-#
-# SPDX-License-Identifier: MIT
-
 import logging
 from typing import Annotated
 
 import typer
 from rich.console import Console
 
-from jm_python_template.__about__ import __version__
 from jm_python_template.app import sub_app
 
 console = Console()
@@ -18,6 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
+__version__ = "0.1.0"
 
 app = typer.Typer(
     name="cli",
@@ -59,7 +55,7 @@ def comma(
 
     Args:
         name (str): The name to greet.
-        _version (Optional[bool]): Whether to print the version.
+        version (Optional[bool]): Whether to print the version.
 
     Returns:
         None
