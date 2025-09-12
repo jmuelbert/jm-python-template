@@ -6,7 +6,11 @@ version                      = 1
 [[annotations]]
 SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "EUPL-1.2"
-path                    = ["src/**", "tests/**", "package.json"]
+path                    = [
+"src/**",
+"tests/**",
+"package.json"
+]
 precedence              = "aggregate"
 
 
@@ -17,17 +21,17 @@ path                    = ["README.md", "AUTHORS.md", "CHANGELOG.md", "SECURITY.
 precedence              = "aggregate"
 
 [[annotations]]
-SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
+SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "CC-BY-2.0 "
-path = [
+path                    = [
   ".github/CODE_OF_CONDUCT.md",
   ".github/CONTRIBUTING.md",
   ".github/PULL_REQUEST_TEMPLATE.md",
   ".github/styles/Microsoft/*",
   ".github/styles/Readability/*",
   ".github/styles/proselint/*",
-]
-precedence = "aggregate"
+  ]
+precedence              = "aggregate"
 
 [[annotations]]
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
@@ -52,7 +56,7 @@ path = [
   ".vala.ini",
   ".vscode/*",
   "cspell.json",
-  "project-words.txt",
+  "project-words.txt"
 ]
 precedence = "aggregate"
 
