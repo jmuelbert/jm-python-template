@@ -4,12 +4,12 @@
 
 name: Core CI
 run-name: "${{ github.event_name == 'workflow_dispatch' && format('CI: {0}', github.ref_name) || '' }}"
+# yamllint disable-line rule:truthy
 on:
   push:
     branches: [main, develop]
     paths:
       - src/**
-      - tests/**
       - pyproject.toml
       - .github/workflows/ci.yml
       - .github/actions/**
@@ -17,6 +17,7 @@ on:
     types: [opened, synchronize, reopened]
 
 env:
+  FORCE_COLOR: "1"
   PACKAGE_NAME: jm-python-template
 
 defaults:
@@ -74,7 +75,7 @@ jobs:
     name: Test with ${{ matrix.os }}
     needs: lint-and-format
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 5
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:

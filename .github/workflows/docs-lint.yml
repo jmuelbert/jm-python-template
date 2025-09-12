@@ -43,9 +43,7 @@ jobs:
         uses: errata-ai/vale-action@v2
         with:
           use-prebuilt: true
-
-      - name: Run Vale Lint
-        run: vale docs/ README.md
+          run: vale docs/ README.md
 
       # Prettier
       - name: Run prettier
