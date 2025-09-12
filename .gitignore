@@ -1,7 +1,6 @@
 # Project parts
 resources_rc.py
-.benchmarks/**
-
+.benchmarks
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
