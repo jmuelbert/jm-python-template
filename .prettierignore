@@ -6,6 +6,7 @@
 #
 # For more information, visit https://prettier.io/docs/en/ignore.html.
 
+.github/styles/**
 LICENSE
 LICENSES/**
 src/checkconnect/gui/locales
