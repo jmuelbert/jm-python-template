@@ -5,6 +5,9 @@
 name: Release Pipeline
 on:
   push:
+    branches:
+      - main
+      - release/*
     tags:
       - v*.*.*
   release:
@@ -83,6 +86,7 @@ jobs:
     name: Full Release → PyPI
     needs: [validate-dist]
     runs-on: ubuntu-latest
+    environment: production
     if: github.event.release.prerelease == false
     permissions:
       contents: write
