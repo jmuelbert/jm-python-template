@@ -1,14 +1,10 @@
----
-# SPDX-FileCopyrightText: GitHub, Inc.
+# SPDX-FileCopyrightText: 2025-present <Jürgen Mülbert>
 # SPDX-License-Identifier: MIT
-
-# Dependabot Configuration
-# Documentation: https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
 
 updates:
-  # GitHub Actions Dependencies
+  # --- GitHub Actions ---
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -20,59 +16,47 @@ updates:
     labels:
       - dependencies
       - github-actions
-      - security
     commit-message:
-      prefix: chore(deps)
-      prefix-development: chore(deps-dev)
+      prefix: "chore(actions)"
       include: scope
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     pull-request-branch-name:
-      separator: /
+      separator: "/"
     rebase-strategy: auto
-    target-branch: develop
-    versioning-strategy: lockfile-only
     ignore:
       - dependency-name: "*"
-        # yamllint disable-line
         update-types: ["version-update:semver-major"]
 
-  # Python Dependencies
+  # --- Python (pip) ---
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: weekly
     groups:
-      production-dependencies:
+      production:
         dependency-type: production
-        update-types:
-          - minor
-          - patch
-      development-dependencies:
+        update-types: [minor, patch]
+      development:
         dependency-type: development
-        update-types:
-          - minor
-          - patch
+        update-types: [minor, patch]
     labels:
       - dependencies
       - python
     commit-message:
-      prefix: chore(deps)
-      prefix-development: chore(deps-dev)
+      prefix: "chore(pip)"
       include: scope
-    open-pull-requests-limit: 15
+    open-pull-requests-limit: 10
     pull-request-branch-name:
-      separator: /
+      separator: "/"
     rebase-strategy: auto
     allow:
       - dependency-type: direct
       - dependency-type: indirect
     ignore:
       - dependency-name: "*"
-        # yamllint disable-line
-        update-types: ["version-update:semver-major"] # yamlint disable-line
-    versioning-strategy: lockfile-only
+        update-types: ["version-update:semver-major"]
 
-  # Docker Dependencies
+  # --- Docker ---
   - package-ecosystem: docker
     directory: /
     schedule:
@@ -81,35 +65,34 @@ updates:
       - dependencies
       - docker
     commit-message:
-      prefix: chore(deps)
+      prefix: "chore(docker)"
       include: scope
+    open-pull-requests-limit: 5
+    rebase-strategy: auto
     ignore:
       - dependency-name: "*"
-        # yamllint disable-line
-        update-types: ["version-update:semver-major"] # yamlint disable-line
+        update-types: ["version-update:semver-major"]
 
-  # NPM Dependencies for Documentation
+  # --- npm (für Dokumentation) ---
   - package-ecosystem: npm
     directory: /docs
     schedule:
       interval: monthly
     groups:
-      documentation-dependencies:
+      documentation:
         patterns:
           - "*"
     labels:
       - dependencies
-      - documentation
+      - docs
       - javascript
     commit-message:
-      prefix: chore(docs)
+      prefix: "chore(docs)"
       include: scope
     open-pull-requests-limit: 5
     pull-request-branch-name:
-      separator: /
+      separator: "/"
     rebase-strategy: auto
-    versioning-strategy: increase
     ignore:
       - dependency-name: "*"
-        # yamllint disable-line
-        update-types: ["version-update:semver-major"] # yamlint disable-line
+        update-types: ["version-update:semver-major"]
