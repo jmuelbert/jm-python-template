@@ -11,6 +11,10 @@ on:
     types: [created]
   workflow_dispatch:
 
+defaults:
+  run:
+    shell: bash
+
 permissions:
   contents: write
 
@@ -34,16 +38,16 @@ jobs:
 
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
 
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@v4 # Required to read .github/workflows directory for default location.
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
 
       - name: 🏷️ Process Issue
         id: triage
-        uses: actions/github-script@v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         with:
           # yamllint disable rule:indentation
           script: |
@@ -180,14 +184,14 @@ jobs:
 
       - name: 📝 Generate Report
         if: always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         with:
           script: |
             const duration = Date.now() - new Date(context.payload.issue.created_at).getTime();
             console.log(`Processing completed in ${duration}ms`);
 
       - name: Authenticate with PAT
-        uses: actions/github-script@v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         with:
           script: |
             github.auth(`token: ${{ secrets.PROJECT_ACCESS_TOKEN }}`);
@@ -195,7 +199,7 @@ jobs:
 
       - name: 🏗️ Manage Project
         id: project
-        uses: actions/github-script@v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         with:
           # yamllint disable rule:indentation
           script: |
@@ -280,7 +284,7 @@ jobs:
 
       - name: 📢 Notify Team
         if: steps.triage.outputs.priority == 'high' && steps.project.outputs.project-managed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         with:
           # yamllint disable rule:indentation
           script: |
@@ -316,14 +320,14 @@ jobs:
 
     steps:
       - name: Authenticate with PAT
-        uses: actions/github-script@v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         with:
           script: |
             github.auth(`token: ${{ secrets.PROJECT_ACCESS_TOKEN }}`);
             console.log('Authenticated with PAT successfully.');
 
       - name: 🔄 Update Project Views
-        uses: actions/github-script@v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         with:
           script: |
             // Add custom project view updates here
