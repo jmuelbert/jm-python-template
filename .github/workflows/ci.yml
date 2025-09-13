@@ -16,13 +16,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-env:
-  FORCE_COLOR: "1"
-  PACKAGE_NAME: jm-python-template
-
 defaults:
   run:
     shell: bash
+
 permissions:
   contents: read
 
@@ -37,13 +34,15 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
-      - name: 🧐 Checkout Repository
-        uses: actions/checkout@v4
+
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           fetch-depth: 0
+
       - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
@@ -53,7 +52,7 @@ jobs:
         run: hatch run dev:lint
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda #v4.1.0
         with:
           version: 10
 
@@ -65,15 +64,33 @@ jobs:
         run: pnpm run lint:prettier
 
       - name: 🔍 Trivy Security Scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 #v0.33.1
         with:
           scan-type: fs
           scan-ref: .
           severity: CRITICAL,HIGH
 
+  commit-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+        with:
+          fetch-depth: 0
+
+      - name: 📝 Lint Commit Messages
+        uses: ahmadnassri/action-commit-lint@c46b910837381d1b39c7b7ede72666d7f3e83222 #v2.1.17
+        with:
+          config: "@commitlint/config-conventional"
+
   tests:
     name: Test with ${{ matrix.os }}
-    needs: lint-and-format
+    needs: [lint-and-format, commit-lint]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
@@ -82,11 +99,13 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
+
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+
       - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
@@ -94,8 +113,8 @@ jobs:
         run: |
           hatch test --cover -all
 
-      - name: Upload coverage data
-        uses: actions/upload-artifact@v4
+      - name: 📤 Upload coverage data
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: coverage-data-${{ matrix.os }}
           path: .coverage
@@ -107,14 +126,14 @@ jobs:
 
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
 
-      - name: Download all coverage data artifacts
-        uses: actions/download-artifact@v4
+      - name: 📥 Download all coverage data artifacts
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           path: .
 
@@ -134,7 +153,7 @@ jobs:
         run: bash .github/scripts/update-coverage-badge
 
       - name: Git Auto Commit
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 #v6.0.1
         with:
           commit_message: "chore: update coverage badge"
           file_pattern: .github/badges/coverage.json
