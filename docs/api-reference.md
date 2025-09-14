@@ -1,7 +1,7 @@
-# API Reference
+# API reference
 
 This is a crucial part of a Python project's documentation.
-It should be auto-generated from your docstrings.
+It should be auto generated from your docstrings.
 
 ## Tool
 
