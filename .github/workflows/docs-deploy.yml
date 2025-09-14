@@ -22,7 +22,7 @@ defaults:
     shell: bash
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -31,8 +31,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build Documentation
+  build-and-deploy:
+    name: Build and Deploy Documentation
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -53,75 +53,20 @@ jobs:
         uses: ./.github/actions/python-setup
         id: python-setup
 
-      - name: 📚 Build Documentation
-        id: build
+      - name: 📦 Install Documentation Dependencies
+        # This command installs all dependencies from your Hatch `docs` environment
         run: |
-          hatch run docs:build
-          echo "doc-files=$(find site -type f -print | wc -l)" >> "$GITHUB_OUTPUT"
+          hatch env run docs:install
 
-      - name: 📦 Setup Pages
-        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b #v5.0.0
-
-      - name: 📤 Upload Pages Artifact
-        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b v4.0.0
-        with:
-          path: site/
-
-  # Deploy job
-  deploy:
-    # Add a dependency to the build job
-    needs: build
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write # to deploy to Pages
-      # to verify the deployment originates from an appropriate source
-      id-token: write
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
-        with:
-          egress-policy: audit
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e #v4.0.5
-
-  notify:
-    needs: deploy
-    if: always()
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
-        with:
-          egress-policy: audit
-
-      - name: 📧 Process Status
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
-        if: needs.deploy.result != 'success'
-        with:
-          script: |
-            const message =
-            `❌ Documentation deployment failed!\n` +
-            `Please check: ' +
-            '${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
-
-            await github.rest.issues.create({
-            ...context.repo,
-            title: '📚 Documentation Deployment Failed',
-            body: message,
-            labels: ['documentation', 'bug']
-            });
+      - name: 📝 Get Project Version and Deploy Docs
+        # This single step combines both actions for efficiency
+        run: |
+          VERSION=$(hatch version)
+          # Use `hatch env run` to execute mike within the docs environment
+          hatch env run --env docs mike deploy --push --update-aliases "${VERSION}"
 
   verify:
-    needs: [build, deploy]
+    needs: [build-and-deploy]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
