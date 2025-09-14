@@ -152,6 +152,15 @@ repos:
         files: (?i)taskfile\.ya?ml$
 
   # ------------------------
+  # Secrets Detection
+  # ------------------------
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.23.1
+    hooks:
+      - id: gitleaks
+        args: [--config, .github/config/gitleaks.toml]
+
+  # ------------------------
   # pyproject.toml validation
   # ------------------------
   - repo: https://github.com/abravalheri/validate-pyproject
