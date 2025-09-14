@@ -8,7 +8,7 @@
     "format:toml": "taplo format",
     "lint:prettier": "prettier --check .",
     "format:prettier": "prettier --write .",
-    "lint:spell": "cspell --no-progress --verbose .",
+    "lint:spell": "cspell --no-progress .",
     "lint:markdown": "markdownlint --ignore node_modules --ignore .pytest_cache --ignore .venv --dot --config .markdownlint.json '**/*.{md,markdown,mdx,adoc,asciidoc}'",
     "format:markdown": "markdownlint --ignore node_modules --ignore .pytest_cache --ignore .venv --dot --fix --config .markdownlint.json '**/*.{md,markdown,mdx,adoc,asciidoc}'",
     "lint:links": "find . \\( -name '*.md' -o -name '*.markdown' -o -name '*.mdx' -o -name '*.adoc' -o -name '*.asciidoc' \\) -not -path './node_modules/*' -not -path './.venv/*' -print0 | xargs -0 -n1 markdown-link-check -q -p --config .markdown-link-check.json",
