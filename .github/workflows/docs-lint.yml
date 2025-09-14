@@ -8,13 +8,13 @@ on:
   push:
     paths:
       - docs/**
-      - "*+/*.md"
+      - "**/*.md"
       - .github/workflows/docs-lint.yml
       - .vale.ini
   pull_request:
     paths:
       - docs/**
-      - "*+/*.md"
+      - "**/*.md"
       - .github/workflows/docs-lint.yml
       - .vale.ini
 
