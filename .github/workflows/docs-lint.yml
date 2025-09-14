@@ -58,7 +58,7 @@ jobs:
       - name: 🔧 Install vale
         uses: errata-ai/vale-action@d89dee975228ae261d22c15adcd03578634d429c #v2.1.1
         with:
-          use-prebuilt: true
+          files: docs/**/*.md README.md
 
       # Prettier
       - name: 🔍 Lint with prettier
@@ -75,10 +75,6 @@ jobs:
       # Spellcheck (z.B. cspell)
       - name: 🔍 Spellcheck
         run: pnpm run lint:spell
-
-        # Vale
-      - name: 🔍 Lint with vale
-        run: pnpm run lint:vale
 
       # Build docs with strict option
       - name: 🔧 Call Python Environment Setup
