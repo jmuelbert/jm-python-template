@@ -32,6 +32,7 @@ tags        = ["key"]
 [[rules]]
 description = "AWS Access Key ID"
 id          = "aws-access-key"
+# cspell:disable-next-line
 regex       = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|ASYA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16,64}'''
 tags        = ["aws"]
 
