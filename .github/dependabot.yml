@@ -77,7 +77,7 @@ updates:
         # yamllint disable-line rule:quoted-strings
         update-types: ["version-update:semver-major"]
 
-  # --- npm (für Dokumentation) ---
+  # --- npm (for documentation) ---
   - package-ecosystem: npm
     directory: /docs
     schedule:
