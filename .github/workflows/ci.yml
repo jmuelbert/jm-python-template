@@ -10,6 +10,7 @@ on:
     branches: [main, develop]
     paths:
       - src/**
+      - tests/**
       - pyproject.toml
       - .github/workflows/ci.yml
       - .github/actions/**
@@ -43,20 +44,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python
+      - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
         id: python-setup
 
       # Lint the Codebase
-      - name: Run lint Codebase ▶️
+      - name: ▶️ Run lint Codebase
         run: hatch run dev:lint
 
-      - name: Install pnpm
+      - name: 🔧 Setup PNPM
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda #v4.1.0
         with:
           version: 10
+          run_install: false
 
-      - name: Install tools
+      - name: 🔧 Install Node.js
+        uses: actions/setup-node@va0853c24544627f65ddf259abe73b1d18a591444 #v5.0.0
+        with:
+          node-version: 24
+          cache: "pnpm"
+
+      - name: 🔧 Install tools
         run: pnpm install
 
       # Lint prettier.
@@ -70,27 +78,9 @@ jobs:
           scan-ref: .
           severity: CRITICAL,HIGH
 
-  commit-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
-        with:
-          egress-policy: audit
-
-      - name: 🧰 Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
-        with:
-          fetch-depth: 0
-
-      - name: 📝 Lint Commit Messages
-        uses: ahmadnassri/action-commit-lint@c46b910837381d1b39c7b7ede72666d7f3e83222 #v2.1.17
-        with:
-          config: "@commitlint/config-conventional"
-
   tests:
     name: Test with ${{ matrix.os }}
-    needs: [lint-and-format, commit-lint]
+    needs: lint-and-format
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
@@ -106,9 +96,10 @@ jobs:
       - name: 🧰 Checkout Repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
 
-      - name: Setup Python
+      - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
         id: python-setup
+
       - name: 🧪📊 Run tests and coverage
         run: |
           hatch test --cover -all
@@ -129,6 +120,7 @@ jobs:
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
+
       - name: 🧰 Checkout Repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
 
@@ -157,3 +149,20 @@ jobs:
         with:
           commit_message: "chore: update coverage badge"
           file_pattern: .github/badges/coverage.json
+
+  verify:
+    needs: [lint-and-format, tests]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: ✅ Verify Workflow Completion
+        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

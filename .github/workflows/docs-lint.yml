@@ -2,24 +2,29 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
-name: Docs Lint
+name: Documentation lint
 
 on:
   push:
     paths:
       - docs/**
-      - "*.md"
+      - "*+/*.md"
       - .github/workflows/docs-lint.yml
       - .vale.ini
   pull_request:
     paths:
       - docs/**
-      - "*.md"
+      - "*+/*.md"
       - .github/workflows/docs-lint.yml
       - .vale.ini
+
 defaults:
   run:
     shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   docs-lint:
@@ -35,41 +40,68 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install pnpm
+      - name: 🔧 Setup PNPM
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda #v4.1.0
         with:
           version: 10
+          run_install: false
 
-      - name: Install tools
+      - name: 🔧 Install Node.js
+        uses: actions/setup-node@va0853c24544627f65ddf259abe73b1d18a591444 #v5.0.0
+        with:
+          node-version: 24
+          cache: "pnpm"
+
+      - name: 🔧 Install tools
         run: pnpm install
 
-      - name: Vale Lint
+      - name: 🔧 Install vale
         uses: errata-ai/vale-action@d89dee975228ae261d22c15adcd03578634d429c #v2.1.1
         with:
           use-prebuilt: true
-          run: vale docs/ README.md
 
       # Prettier
-      - name: Run prettier
+      - name: 🔍 Lint with prettier
         run: pnpm run lint:prettier
 
       # Markdownlint
-      - name: Run markdownlint
+      - name: 🔍 Lint with markdownlint
         run: pnpm run lint:markdown
 
       # - Markdown-link-check
-      - name: Check Markdown links
-        run: pnpm run lint:markdown-links
+      - name: 🔍 Check Markdown links
+        run: pnpm run lint:links
 
       # Spellcheck (z.B. cspell)
-      - name: Spellcheck
+      - name: 🔍 Spellcheck
         run: pnpm run lint:spell
 
+        # Vale
+      - name: 🔍 Lint with vale
+        run: pnpm run lint:vale
+
       # Build docs with strict option
-      - name: Setup Python
+      - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
         id: python-setup
 
-      - name: Build docs with strict option
+      - name: 📦 Build docs with strict option
         run: |
           hatch run docs:build
+
+  verify:
+    needs: docs-lint
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: ✅ Verify Workflow Completion
+        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

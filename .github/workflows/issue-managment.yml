@@ -51,24 +51,7 @@ jobs:
         with:
           # yamllint disable rule:indentation
           script: |
-            const CONFIG = {
-              labels: {
-                types: {
-                  '[BUG]': ['type-bug', 'needs-triage'],
-                  '[FEATURE]': ['type-feature', 'needs-triage'],
-                  '[DOCS]': ['documentation', 'needs-triage'],
-                  '[QUESTION]': ['question', 'needs-triage']
-                },
-                triggers: {
-                  'Traceback (most recent call last)': ['type-crash', 'high-priority'],
-                  'SecurityError': ['security', 'high-priority'],
-                  'regression': ['regression', 'needs-investigation']
-                },
-                sizes: {
-                  small: 500,
-                  medium: 2000
-                }
-              },
+            const config = require('./.github/config/issue-triage.json');
               templates: {
                 welcome: `👋 Thanks for opening this issue!\n\n Please make sure you have:
                   - [ ] Checked existing issues
@@ -174,7 +157,7 @@ jobs:
           # yamllint enable
 
       - name: 📊 Process Stale Issues
-        uses: actions/stale@v9
+        uses: actions/stale@3a9db7e6a41a89f618792c92c0e97cc736e1b13f #v10.0.0
         with:
           stale-issue-message: This issue hasn't had recent activity.
           close-issue-message: Closing due to inactivity.
@@ -203,14 +186,7 @@ jobs:
         with:
           # yamllint disable rule:indentation
           script: |
-            const PROJECT_CONFIG = {
-              name: 'checkconnect',
-              columns: {
-                triage: 'Triage',
-                inProgress: 'In Progress',
-                highPriority: 'High Priority'
-              }
-            };
+            const projectConfig = require('./.github/config/project-management.json');
 
             async function manageProject() {
               let projectId = '';

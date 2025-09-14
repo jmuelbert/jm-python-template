@@ -10,16 +10,27 @@ on:
       - release/*
     tags:
       - v*.*.*
+
   release:
     types: [published]
+
+defaults:
+  run:
+    shell: bash
+
 permissions:
   contents: write
   id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
@@ -31,7 +42,7 @@ jobs:
       - name: 🧰 Checkout Repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
 
-      - name: Call Python Environment Setup
+      - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
 
       - name: Get Project Version
@@ -58,6 +69,11 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
       - name: 📥 Download Artifacts
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
@@ -77,6 +93,11 @@ jobs:
       contents: write
       id-token: write
     steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
       - name: 📥 Download Artifacts
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
@@ -101,6 +122,10 @@ jobs:
       contents: read # for retrieving artifacts
 
     steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
       - name: 📥 Download Artifacts
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
@@ -114,7 +139,7 @@ jobs:
         id: github_release
         uses: mikepenz/release-changelog-builder-action@c9dc8369bccbc41e0ac887f8fd674f5925d315f7 #v5.4.1
         with:
-          configuration: .github/release-changelog-config.json
+          configuration: .github/config/release-changelog-config.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -122,3 +147,21 @@ jobs:
         uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 #v2.3.3
         with:
           body: ${{steps.github_release.outputs.changelog}}
+
+  verify:
+    needs: [build, validate-dist, test-pypi-upload, release]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: ✅ Verify Workflow Completion
+        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
+        with:
+          allowed-skips: test-pypi-upload, release
+          jobs: ${{ toJSON(needs) }}

@@ -10,13 +10,26 @@ on:
     branches: [main]
     paths:
       - docs/**
+      - CHANGELOG.md
+      - .github/CONTRIBUTING.md
+      - .github/CODE_OF_CONDUCT.md
       - mkdocs.yml
       - .github/workflows/docs-deploy.yml
   workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build Documentation
@@ -36,9 +49,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Call Python Environment Setup
+      - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
         id: python-setup
+
       - name: 📚 Build Documentation
         id: build
         run: |
@@ -47,10 +61,12 @@ jobs:
 
       - name: 📦 Setup Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b #v5.0.0
+
       - name: 📤 Upload Pages Artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b v4.0.0
         with:
           path: site/
+
   # Deploy job
   deploy:
     # Add a dependency to the build job
@@ -66,9 +82,15 @@ jobs:
     # Specify runner + deployment step
     runs-on: ubuntu-latest
     steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e #v4.0.5
+
   notify:
     needs: deploy
     if: always()
@@ -76,6 +98,11 @@ jobs:
     permissions:
       issues: write
     steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
       - name: 📧 Process Status
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         if: needs.deploy.result != 'success'
@@ -92,3 +119,19 @@ jobs:
             body: message,
             labels: ['documentation', 'bug']
             });
+
+  verify:
+    needs: [build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+      - name: ✅ Verify Workflow Completion
+        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}
