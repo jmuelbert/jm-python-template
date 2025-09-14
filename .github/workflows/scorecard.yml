@@ -35,7 +35,7 @@ on:
 
   schedule:
     - cron: 0 4 * * 1 # Run at 04:00 UTC every Monday
-    
+
 permissions: read-all
 
 concurrency:
