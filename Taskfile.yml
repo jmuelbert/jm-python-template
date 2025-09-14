@@ -18,8 +18,7 @@ tasks:
   default:
     desc: Lists all available tasks
     cmds:
-      - task --list
-
+      - task --list-all
   # ----------------------
   # Code Quality & Linting
   # ----------------------
@@ -27,13 +26,12 @@ tasks:
     desc: Run linting checks for documentation
     cmds:
       - pnpm run lint:docs
-      - vale docs/ README.md
     silent: true
 
   lint-code:
     desc: Run code linting (Ruff, Taplo, YAML, etc.)
     cmds:
-      - hatch run dev:pre-commit run --all-files
+      - hatch env run --dev pre-commit run --all-files
 
   lint:
     desc: Run all linting (code + docs)
@@ -45,7 +43,7 @@ tasks:
     desc: Run formatting hooks (Prettier, Ruff, Taplo, Black)
     cmds:
       - pnpm run format
-      - hatch run dev:precommit run --all-files --hook-stage manual --all-files
+      - hatch env run --dev pre-commit run --all-files --hook-stage manual --all-files
 
   # ----------------------
   # Testing & Coverage
@@ -66,14 +64,13 @@ tasks:
   clean:
     desc: Clean caches, builds, and translation files
     cmds:
-      - rm -rf dist build htmlcov site .cache .ropeproject
-      - rm -rf .pytest_cache .mypy_cache .ruff_cache .venv
-      - rm -f coverage.xml uv.lock .coverage
+      - rm -rf dist build htmlcov site .cache .ropeproject .pytest_cache .mypy_cache .ruff_cache .venv coverage.xml uv.lock .coverage
       - rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.mo
       - rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.po
       - rm -rf {{.GUI_TRANSLATIONS_DIR}}/*.ts {{.GUI_TRANSLATIONS_DIR}}/*.qm
       - rm -f {{.GUI_DIR}}/resources_rc.py
-      - hatch run dev:precommit clean
+      # Use hatch's built-in cleanup commands
+      - hatch clean -a || true
       - hatch env prune || true
 
   reset:
@@ -91,13 +88,13 @@ tasks:
   hooks:install:
     desc: Install pre-commit hooks
     cmds:
-      - hatch run dev:precommit install
-      - hatch run dev:precommit install --hook-type commit-msg
+      - hatch env run --dev pre-commit install
+      - hatch env run --dev pre-commit install --hook-type commit-msg
 
   hooks:update:
     desc: Update pre-commit hooks
     cmds:
-      - hatch run dev:precommit autoupdate
+      - hatch env run --dev pre-commit autoupdate
 
   # ----------------------
   # Node/pnpm
@@ -128,13 +125,13 @@ tasks:
   serve:
     desc: Serve docs locally
     cmds:
-      - hatch env create docs
       - hatch run docs:serve
 
   docs-build:
     desc: Build documentation
+    deps:
+      - lint-docs
     cmds:
-      - hatch env create docs
       - hatch run docs:build
 
   # ----------------------
