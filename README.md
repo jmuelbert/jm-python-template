@@ -1,4 +1,4 @@
-# jm-python-template
+# jm python template
 
 [![PyPI][PyPI-badge]][PyPI]
 [![Release Pipeline][wf-release-badge]][wf-release]
@@ -6,7 +6,7 @@
 [![CodeQL Security Analysis][wf-code-ql-badge]][wf-code-ql]
 [![Security Scorecard][wf-scorecard-badge]][wf-scorecard]
 [![Repository Maintenance][wf-maintenance-badge]][wf-maintenance]
-[![Dependabot Auto-Merge][wf-dependabot-merge-badge]][wf-dependabot-merge]
+[![Dependabot Auto Merge][wf-dependabot-merge-badge]][wf-dependabot-merge]
 [![Pull Request Automation][wf-pr-automation-badge]][wf-pr-automation]
 [![Coverage][wf-coverage-badge]]
 [![Documentation Deployment][wf-docs-deploy-badge]][wf-docs-deploy]
@@ -35,7 +35,7 @@ Recommends using [pip] to install the package:
 pip install jm-python-template
 ```
 
-## Quick Start/Usage
+## Quick start/usage
 
 ```bash
 jm-python-template --help

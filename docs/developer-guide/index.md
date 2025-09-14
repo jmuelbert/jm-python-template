@@ -1,13 +1,13 @@
-# Developer Guide
+# Developer guide
 
 This section is for contributors. It should provide
 everything a developer needs to work on the project.
 
-## Development Setup
+## Development setup
 
 How to clone the repository and set up the local development environment using hatch.
 
-## Running Tests
+## Running tests
 
 The Hatch command to run tests (hatch run test).
 

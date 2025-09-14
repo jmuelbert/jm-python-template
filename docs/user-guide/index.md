@@ -1,4 +1,4 @@
-# User Guide
+# User guide
 
 This is where you explain the "what" and "how" of your project's features.
 
@@ -7,7 +7,7 @@ This is where you explain the "what" and "how" of your project's features.
 Explain how users can configure the project, including examples of
 the `pyproject.toml` or `config.toml` file.
 
-## CLI Commands
+## Command line commands
 
 If your project has a command-line interface, document each command,
 its arguments, and options. Using a tool like mkdocs-typer2 can automate this.
@@ -24,6 +24,6 @@ its arguments, and options. Using a tool like mkdocs-typer2 can automate this.
 :name: app # Use the real-name from the root Typer-Object
 :pretty: true
 
-## Advanced Usage
+## Advanced usage
 
 Describe more complex use cases or features.
