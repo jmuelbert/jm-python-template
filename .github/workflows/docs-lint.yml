@@ -58,7 +58,7 @@ jobs:
       - name: 🔧 Install vale
         uses: errata-ai/vale-action@d89dee975228ae261d22c15adcd03578634d429c #v2.1.1
         with:
-          files: README.md, SECURITY.md, docs/
+          files: "README.md,SECURITY.md, docs/"
           separator: ","
 
       # Prettier
