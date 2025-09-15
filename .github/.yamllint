@@ -4,7 +4,7 @@
 
 extends: default
 ignore: |
-  .github/styles/
+  .github/config/styles/
 strict: true
 format: parsable
 
