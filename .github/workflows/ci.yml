@@ -4,7 +4,6 @@
 
 name: Core CI
 run-name: "${{ github.event_name == 'workflow_dispatch' && format('CI: {0}', github.ref_name) || '' }}"
-# yamllint disable-line rule:truthy
 on:
   push:
     branches: [main, develop]
@@ -62,7 +61,7 @@ jobs:
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 #v5.0.0
         with:
           node-version: 24
-          cache: "pnpm"
+          cache: pnpm
 
       - name: 🔧 Install tools
         run: pnpm install

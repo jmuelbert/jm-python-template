@@ -54,8 +54,7 @@ jobs:
 
       - name: 📝 Lint Commit Messages
         uses: ahmadnassri/action-commit-lint@c46b910837381d1b39c7b7ede72666d7f3e83222 #v2.1.17
-        with:
-          config: "@commitlint/config-conventional"
+        # with config: conventional is default
 
   analyze_and_label:
     name: Analyze and Label Pull Request
@@ -135,7 +134,7 @@ jobs:
 
       - name: 🏷️ Apply Scope Labels
         id: labeler
-        uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b v6.0.0
+        uses: actions/labeler@f1a63e87db0c6baf19c5713083f8d00d789ca184 #v6.0.0
         timeout-minutes: 5
         continue-on-error: true
         with:
@@ -266,7 +265,7 @@ jobs:
           comment-summary-in-pr: false
           fail-on-severity: none # We don't want this action to fail the build
           retry-on-snapshot-warnings: true
-          config-file: config/dependency-review-config.yml
+          config-file: .github/config/dependency-review-config.yml
 
       - name: 📊Generate and Post Report
         if: always()
@@ -357,15 +356,6 @@ jobs:
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
-
-      - name: Check Labeler Status
-        if: always()
-        # yamllint disable rule:indentation
-        run: |
-          if [ "${{ needs.analyze_and_label.result }}" == "failure" ]; then
-            echo "::warning::Labeler job failed but continuing workflow"
-          fi
-        # yamllint enable rule:indentation
 
       - name: ✅ Verify Workflow Completion
         uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
