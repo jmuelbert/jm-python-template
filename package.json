@@ -23,6 +23,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@cspell/dict-de-de": "^4.1.2",
     "@cspell/dict-es-es": "^3.0.8",
     "@cspell/dict-it-it": "^3.1.6",
