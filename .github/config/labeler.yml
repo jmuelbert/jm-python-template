@@ -19,40 +19,40 @@ type/docs:
       - "*.md"
       - "*.markdown"
       - "*.mdx"
-      - "mkdocs.yml"
+      - mkdocs.yml
 
 type/test:
   - any:
       - "**/tests/**"
       - "**/test/**"
       - "**/*_test.py"
-      - "conftest.py"
+      - conftest.py
 
 type/ci:
   - any:
-      - ".github/workflows/**"
-      - ".github/actions/**"
-      - ".gitlab-ci.yml"
-      - ".travis.yml"
+      - .github/workflows/**
+      - .github/actions/**
+      - .gitlab-ci.yml
+      - .travis.yml
 
 dependencies:
   - any:
-      - "pyproject.toml"
-      - "requirements.txt"
-      - "package.json"
+      - pyproject.toml
+      - requirements.txt
+      - package.json
       - "*-lock.*"
-      - "poetry.lock"
-      - "pnpm-lock.yaml"
-      - ".pre-commit-config.yaml"
+      - poetry.lock
+      - pnpm-lock.yaml
+      - .pre-commit-config.yaml
 
 type/chore:
   - any:
-      - ".editorconfig"
-      - ".gitignore"
-      - "Taskfile.yml"
-      - ".github/workflows/**"
-      - "bin/**"
-      - ".yamllint"
-      - "LICENSE*"
-      - "LICENSES/**"
-      - "REUSE.toml"
+      - .editorconfig
+      - .gitignore
+      - Taskfile.yml
+      - .github/workflows/**
+      - bin/**
+      - .yamllint
+      - LICENSE*
+      - LICENSES/**
+      - REUSE.toml
