@@ -12,33 +12,39 @@ precedence              = "aggregate"
 
 [[annotations]]
 SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
-SPDX-License-Identifier = "CC-BY-2.0 "
+SPDX-License-Identifier = "CC-BY-SA-4.0 "
 path                    = ["README.md", "AUTHORS.md", "CHANGELOG.md", "SECURITY.md"]
 precedence              = "aggregate"
 
 [[annotations]]
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
-SPDX-License-Identifier = "CC-BY-2.0 "
+SPDX-License-Identifier = "CC-BY-4.0 "
 path = [
   ".github/CODE_OF_CONDUCT.md",
   ".github/CONTRIBUTING.md",
   ".github/PULL_REQUEST_TEMPLATE.md",
-  ".github/styles/Microsoft/*",
-  ".github/styles/Readability/*",
-  ".github/styles/proselint/*",
+  ".github/config/styles/Microsoft/*",
+  ".github/config/styles/Readability/*",
+  ".github/config/styles/proselint/*",
 ]
 precedence = "aggregate"
 
 [[annotations]]
 SPDX-FileCopyrightText = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
-SPDX-License-Identifier = "BSD-3-Clause"
+SPDX-License-Identifier = "EUPL-1.2"
 path = [
   ".gitattributes",
   ".gitignore",
   ".github/branch-name-patterns.yml",
-  ".github/gitleaks.toml",
+  ".github/config/dependency-review-config.yml",
+  ".github/config/gitleaks.toml",
+  ".github/config/issue-triage.json",
+  ".github/config/labeler.yml",
+  ".github/config/labels.yml",
+  ".github/config/project-management.json",
+  ".github/config/release-changelog-config.json",
+  ".github/config/release-drafter.yml",
   ".github/invite-contributors.yml",
-  ".github/release-changelog-config.json",
   ".github/repo-metadata.yml",
   ".github/badges/coverage.json",
   ".github/PULL_REQUEST_TEMPLATE.md",
