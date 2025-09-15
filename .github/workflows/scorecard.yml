@@ -16,7 +16,6 @@ on:
       - LICENSES/**
       - LICENSE
       - .gitignore
-
   pull_request:
     types:
       - opened

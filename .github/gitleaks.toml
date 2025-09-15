@@ -1,0 +1,28 @@
+# Add to pre-commit gitleaks config
+[[rules]]
+description = "Qt database connection string"
+id          = "qt database connection"
+regex       = '''(?i)(?P<key>qt[._-]?db[._-]?(?:connection|string))\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
+tags        = ["database", "Qt"]
+
+[[rules]]
+description = "PySide API key"
+id          = "pyside api key"
+regex       = '''(?i)(?P<key>(?:pyside|qt)[._-]?api[._-]?key)\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
+tags        = ["key", "PySide"]
+
+[[rules]]
+description = "Python secret"
+id          = "python secret"
+regex       = '''(?i)(?P<key>secret[._-]?key)\s*[=:]\s*[\'\"](?P<value>[^\'\"]+)[\'\"]'''
+tags        = ["key", "Python"]
+
+[allowlist]
+paths = [
+  '''tests/fixtures/''',
+  '''tests/data/''',
+  '''tests/resources/''',
+  '''**/test_*.py''',
+  '''**/*.ui''',
+  '''**/*.qrc''',
+]

@@ -147,21 +147,3 @@ jobs:
         uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 #v2.3.3
         with:
           body: ${{steps.github_release.outputs.changelog}}
-
-  verify:
-    needs: [build, validate-dist, test-pypi-upload, release]
-    if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-
-    steps:
-      - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
-        with:
-          egress-policy: audit
-
-      - name: ✅ Verify Workflow Completion
-        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
-        with:
-          allowed-skips: test-pypi-upload, release
-          jobs: ${{ toJSON(needs) }}
