@@ -6,7 +6,7 @@
 [![CodeQL Security Analysis][wf-code-ql-badge]][wf-code-ql]
 [![OpenSSF Scorecard][wf-scorecard-badge]][wf-scorecard]
 [![Repository Maintenance][wf-maintenance-badge]][wf-maintenance]
-[![Dependabot Auto Merge][wf-dependabot-merge-badge]][wf-dependabot-merge]
+[![Dependabot Auto Merge]][wf-dependabot-merge-badge][wf-dependabot-merge]
 [![Pull Request Automation][wf-pr-automation-badge]][wf-pr-automation]
 [![Ruff][Ruff-badge]][Ruff]
 [![Prettier][Prettier-badge]][Prettier]
