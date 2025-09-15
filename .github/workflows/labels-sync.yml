@@ -63,13 +63,12 @@ jobs:
 
       - name: 🔧 Install tools
         run: |
-          pnpm install
           pnpm add yaml chalk
+          pnpm install
 
       - name: 📝 Generate Report
         if: always()
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
-
         with:
           # yamllint disable-line rule:indentation
           script: |
