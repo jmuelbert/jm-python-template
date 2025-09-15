@@ -52,6 +52,8 @@ jobs:
       security-events: write
       # Needed for GitHub OIDC token if publish_results is true
       id-token: write
+      pull-requests: read
+      checks: read
     steps:
       - name: 🔒 Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
@@ -68,7 +70,7 @@ jobs:
         id: scorecard
         uses: ossf/scorecard-action@05b42c624433fc40578a4040d5cf5e36ddca8cde # v2.4.2
         with:
-          policy_file: .github/config/scorecard-policy.yml
+          # policy_file: .github/config/scorecard-policy.yml
           results_file: scorecard.sarif
           results_format: sarif
           publish_results: true
@@ -82,8 +84,6 @@ jobs:
 
       # Upload the results to GitHub's code scanning dashboard.
       - name: 📤 Upload to code-scanning
-        uses: github/codeql-action/upload-sarif@181d5eefc20863364f96762470ba6f862bdef56b # v3.29.2
+        uses: github/codeql-action/upload-sarif@192325c86100d080feab897ff886c34abd4c83a3 # v3.30.3
         with:
           sarif_file: scorecard.sarif
-          checkout_path: ${{ github.workspace }}
-          wait-for-processing: true
