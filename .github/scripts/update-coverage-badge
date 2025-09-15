@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert
 # This script reads coverage.xml and generates a JSON badge for GitHub.
 
 set -euo pipefail
