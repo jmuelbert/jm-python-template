@@ -43,7 +43,7 @@ tasks:
     desc: Run formatting hooks (Prettier, Ruff, Taplo, Black)
     cmds:
       - pnpm run format
-      - hatch env run --dev pre-commit run --all-files --hook-stage manual --all-files
+      - hatch run dev:precommit run --hook-stage manual --all-files
 
   # ----------------------
   # Testing & Coverage
