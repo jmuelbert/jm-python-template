@@ -58,14 +58,13 @@ repos:
       # - id: git-check # Configure in .gitattributes
       #  exclude: ^\.github/workflows/styles/Microsoft/
       - id: git-dirty # Configure in .gitignore
-      - id: script-must-not-have-extension
       - id: shellcheck
 
   # ------------------------
   # Python linting
   # ------------------------
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.12.12
+    rev: v0.13.0
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -155,7 +154,7 @@ repos:
   # Secrets Detection
   # ------------------------
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.23.1
+    rev: v8.28.0
     hooks:
       - id: gitleaks
         args: [--config, .github/config/gitleaks.toml]
