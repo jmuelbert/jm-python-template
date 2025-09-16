@@ -8,6 +8,6 @@ jm-python-template is licensed under the [European Union Public License].
 
 ## Authors
 
-{% include-markdown "../../AUTHORS.md" %}
+{% include-markdown "../../../AUTHORS.md" %}
 
 [European Union Public License]: https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
