@@ -5,6 +5,8 @@
 [![Core CI][wf-core-ci-badge]][wf-core-ci]
 [![CodeQL Security Analysis][wf-code-ql-badge]][wf-code-ql]
 [![OpenSSF Scorecard][wf-scorecard-badge]][wf-scorecard]
+[![Coverage]][wf-coverage-badge]
+[![Documentation Deployment][wf-docs-deploy]][wf-docs-deploy-badge]
 [![Repository Maintenance][wf-maintenance-badge]][wf-maintenance]
 [![Dependabot Auto Merge]][wf-dependabot-merge-badge][wf-dependabot-merge]
 [![Pull Request Automation][wf-pr-automation-badge]][wf-pr-automation]
@@ -89,7 +91,9 @@ This project is licensed under the [EUPL V1.2 license].
 [cSpell]: https://cspell.org/
 [cSpell-badge]: https://img.shields.io/badge/cSpell-checked-blue?logo=cspell
 [Hatch]: https://hatch.pypa.io/
-[Hatch-badge]: https://img.shields.io/badge/Hatch-2.x-blue
+
+<!-- [Hatch-badge]: https://img.shields.io/badge/Hatch-2.x-blue -->
+
 [pip]: https://pip.pypa.io/en/stable/
 [pre-commit]: https://pre-commit.com/
 [pre-commit-badge]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit
