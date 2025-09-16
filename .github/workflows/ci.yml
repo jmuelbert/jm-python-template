@@ -108,7 +108,9 @@ jobs:
         with:
           name: coverage-data-${{ matrix.os }}
           path: ./.coverage
+          include-hidden-files: true
           if-no-files-found: error
+          retention-days: 3
 
   combine-and-badge:
     runs-on: ubuntu-latest
