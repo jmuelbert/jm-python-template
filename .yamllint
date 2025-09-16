@@ -1,4 +1,7 @@
 ---
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+
 extends: default
 ignore: |
   LICENSES/
@@ -6,6 +9,7 @@ ignore: |
   node_modules/
   pnpm-lock.yaml
   .venv/
+  .github/config/styles/
 strict: true
 format: parsable
 

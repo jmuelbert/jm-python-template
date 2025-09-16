@@ -14,6 +14,7 @@ glightbox
 inlinehilite
 ipynb
 isort
+interruptible
 KHTML
 kwds
 linenums
@@ -40,6 +41,7 @@ pytest
 Roboto
 sarif
 sdist
+stefanzweifel
 taplo
 twemoji
 typer

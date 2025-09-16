@@ -1,6 +1,6 @@
-# Security Policy
+# Security policy
 
-## Supported Versions
+## Supported versions
 
 At the moment jm-python-template only considers the latest commit to be supported.
 We combine that with our fast response to incidents and the automated updates
@@ -13,9 +13,9 @@ to minimize the time between vulnerability publication and patch release.
 
 In the near future we will introduce versioning, so expect this section to change.
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
-**Do not submit an issue or pull request**: this might reveal the vulnerability.
+**Don't submit an issue or pull request**: this might reveal the vulnerability.
 
 **Please submit your vulnerability report to** [GitHub advisories].
 

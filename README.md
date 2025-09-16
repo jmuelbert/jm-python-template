@@ -1,15 +1,15 @@
-# jm-python-template
+# jm python template
 
 [![PyPI][PyPI-badge]][PyPI]
 [![Release Pipeline][wf-release-badge]][wf-release]
 [![Core CI][wf-core-ci-badge]][wf-core-ci]
 [![CodeQL Security Analysis][wf-code-ql-badge]][wf-code-ql]
-[![Security Scorecard][wf-scorecard-badge]][wf-scorecard]
-[![Repository Maintenance][wf-maintenance-badge]][wf-maintenance]
-[![Dependabot Auto-Merge][wf-dependabot-merge-badge]][wf-dependabot-merge]
-[![Pull Request Automation][wf-pr-automation-badge]][wf-pr-automation]
-[![Coverage][wf-coverage-badge]]
+[![OpenSSF Scorecard][wf-scorecard-badge]][wf-scorecard]
+[![Coverage][wf-coverage-badge]][wf-core-ci]
 [![Documentation Deployment][wf-docs-deploy-badge]][wf-docs-deploy]
+[![Repository Maintenance][wf-maintenance-badge]][wf-maintenance]
+[![Dependabot Auto Merge][wf-dependabot-merge-badge]][wf-dependabot-merge]
+[![Pull Request Automation][wf-pr-automation-badge]][wf-pr-automation]
 [![Hatch][Hatch-badge]][Hatch]
 [![Ruff][Ruff-badge]][Ruff]
 [![Prettier][Prettier-badge]][Prettier]
@@ -35,7 +35,7 @@ Recommends using [pip] to install the package:
 pip install jm-python-template
 ```
 
-## Quick Start/Usage
+## Quick start/usage
 
 ```bash
 jm-python-template --help
@@ -78,8 +78,8 @@ This project is licensed under the [EUPL V1.2 license].
 [wf-pr-automation-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/pr-automation.yml/badge.svg
 [wf-release]: https://github.com/jmuelbert/jm-python-template/actions/workflows/release.yml
 [wf-release-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/release.yml/badge.svg
-[wf-scorecard]: https://github.com/jmuelbert/jm-python-template/actions/workflows/scorecard.yml
-[wf-scorecard-badge]: https://github.com/jmuelbert/jm-python-template/actions/workflows/scorecard.yml/badge.svg
+[wf-scorecard]: https://scorecard.dev/viewer/?uri=github.com/jmuelbert/jm-python-template
+[wf-scorecard-badge]: https://api.scorecard.dev/projects/github.com/jmuelbert/jm-python-template/badge
 
 <!-- Project Docs -->
 

@@ -25,6 +25,7 @@ site_dir: site
 # --- Theme Configuration ---
 theme:
   name: material
+  language: en
   logo: assets/images/jm-py-logo.svg
   favicon: assets/images/jm-py-logo.svg
   custom_dir: docs/.overrides
@@ -39,7 +40,6 @@ theme:
     - header.autohide
     - navigation.expand
     - navigation.footer
-    - navigation.instant
     - navigation.indexes
     - navigation.top
     - search.suggest
@@ -105,7 +105,7 @@ plugins:
           separate_signature: true
           filters: ["!^_"]
   i18n:
-    docs_structure: suffix
+    docs_structure: folder
     fallback_to_default: true
     reconfigure_material: true
     reconfigure_search: true

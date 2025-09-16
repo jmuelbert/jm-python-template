@@ -5,42 +5,61 @@
 name: Release Pipeline
 on:
   push:
+    branches:
+      - main
+      - release/*
     tags:
       - v*.*.*
+
   release:
     types: [published]
+
+defaults:
+  run:
+    shell: bash
+
 permissions:
   contents: write
   id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
-      - name: 🧐 Checkout Repository
-        uses: actions/checkout@v4
-      - name: Call Python Environment Setup
+
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+
+      - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
+
       - name: Get Project Version
         id: version
         run: echo "version=$(hatch version)" >> "$GITHUB_OUTPUT"
+
       - name: 📚 Compile Translations
-        uses: arduino/task-action@v2
+        uses: arduino/task-action@b91d5d2c96a56797b48ac1e0e89220bf64044611 #v2.0.0
         with:
           version: 3.31.0
           args: compile-babel-translations
 
       - name: 📦 Build Python Package
         run: hatch build
+
       - name: 📤 Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: dist
           path: dist/
@@ -50,8 +69,13 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
       - name: 📥 Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: dist
           path: dist/
@@ -61,50 +85,65 @@ jobs:
 
   test-pypi-upload:
     name: Create Test-Release & Publish to PyPi
-    needs: [validate-dist]
     if: github.event.release.prerelease == true
+    needs: [validate-dist]
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
     steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
       - name: 📥 Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: dist
           path: dist/
+
       - name: 📢 Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e #V1.13.0
         with:
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
   release:
+    if: github.event.release.prerelease == false
     name: Full Release → PyPI
     needs: [validate-dist]
     runs-on: ubuntu-latest
-    if: github.event.release.prerelease == false
+    environment:
+      name: pypi
+      url: https://pypi.org/project/jm-python-template
     permissions:
-      contents: write
-      id-token: write
+      id-token: write # REQUIRED for trusted publishing
+      contents: read # for retrieving artifacts
+
     steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
       - name: 📥 Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: dist
           path: dist/
+
       - name: 📢 Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e #V1.13.0
 
       - name: Build Changelog
         id: github_release
-        uses: mikepenz/release-changelog-builder-action@v5
+        uses: mikepenz/release-changelog-builder-action@c9dc8369bccbc41e0ac887f8fd674f5925d315f7 #v5.4.1
+        with:
+          configuration: .github/config/release-changelog-config.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
-        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
+        uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 #v2.3.3
         with:
           body: ${{steps.github_release.outputs.changelog}}
