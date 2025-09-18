@@ -125,19 +125,24 @@ jobs:
       - name: 🧰 Checkout Repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
 
-      - name: 📥 Download all coverage data artifacts
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      # Download artifacts without merging, each goes into its own folder
+      - name: 📥 Download Coverage Data (Windows)
+        uses: actions/download-artifact@v4
         with:
-          path: coverage-data
-          pattern: coverage-data-*
-          merge-multiple: true
+          name: coverage-data-windows-latest
+          path: coverage-data/windows
 
-      - name: Show all coverage data artifacts( Just for debugging)
-        run: |
-          ls -lah
-          ls -lah ./coverage-data/*
-          cp ./coverage-data/* .
-          ls -lah
+      - name: 📥 Download Coverage Data (Ubuntu)
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data-ubuntu-latest
+          path: coverage-data/ubuntu
+
+      - name: 📥 Download Coverage Data (macOS)
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data-macos-latest
+          path: coverage-data/macos
 
       - name: Setup Python
         uses: ./.github/actions/python-setup
@@ -146,7 +151,10 @@ jobs:
       - name: Combine coverage data
         run: |
           pip install coverage
-          python -m coverage combine
+
+      # The key step: Use 'coverage combine' to merge the files
+      - name: 📂 Combine Coverage Files
+        run: coverage combine coverage-data/*
 
       - name: Generate final coverage.xml
         run: python -m coverage xml
