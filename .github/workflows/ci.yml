@@ -147,9 +147,6 @@ jobs:
       - name: Show data for Debug
         run: |
           echo "Coverage data for Debug:"
-          ls -Rlah coverage-data/windows
-          ls -Rlah coverage-data/ubuntu
-          ls -Rlah coverage-data/macos
           ls -Rlah coverage-data
 
       - name: Setup Python
@@ -162,7 +159,7 @@ jobs:
 
       # The key step: Use 'coverage combine' to merge the files
       - name: 📂 Combine Coverage Files
-        run: coverage combine coverage-data/*
+        run: coverage combine coverage-data/**/.coverage
 
       - name: Generate final coverage.xml
         run: python -m coverage xml
