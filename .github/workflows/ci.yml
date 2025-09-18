@@ -162,7 +162,7 @@ jobs:
         run: coverage combine coverage-data/**/.coverage
 
       - name: Generate final coverage.xml
-        run: python -m coverage xml
+        run: coverage xml --source=src
 
       - name: 📢 Push Coverage Badge JSON
         run: bash .github/scripts/update-coverage-badge
