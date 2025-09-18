@@ -40,6 +40,7 @@ concurrency:
 
 jobs:
   commit-lint:
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: 🔒 Harden Runner
@@ -54,7 +55,6 @@ jobs:
 
       - name: 📝 Lint Commit Messages
         uses: ahmadnassri/action-commit-lint@c46b910837381d1b39c7b7ede72666d7f3e83222 #v2.1.17
-        # with config: conventional is default
 
   analyze_and_label:
     name: Analyze and Label Pull Request
@@ -257,6 +257,9 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+
       - name: Dependency Review
         id: review
         uses: actions/dependency-review-action@595b5aeba73380359d98a5e087f648dbb0edce1b #v4.7.3
@@ -346,7 +349,7 @@ jobs:
           # yamllint enable rule:indentation
 
   verify:
-    needs: [commit-lint, analyze_and_label]
+    needs: [commit-lint, analyze_and_label, post-dependency-report]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
