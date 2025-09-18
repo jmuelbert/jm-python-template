@@ -159,10 +159,10 @@ jobs:
 
       # The key step: Use 'coverage combine' to merge the files
       - name: 📂 Combine Coverage Files
-        run: coverage combine coverage-data/**/.coverage
+        run: coverage combine --rcfile=pyproject.toml coverage-data/**/.coverage
 
       - name: Generate final coverage.xml
-        run: coverage xml --source=src
+        run: coverage xml --rcfile=pyproject.toml
 
       - name: 📢 Push Coverage Badge JSON
         run: bash .github/scripts/update-coverage-badge
