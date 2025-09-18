@@ -127,19 +127,19 @@ jobs:
 
       # Download artifacts without merging, each goes into its own folder
       - name: 📥 Download Coverage Data (Windows)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: coverage-data-windows-latest
           path: coverage-data/windows
 
       - name: 📥 Download Coverage Data (Ubuntu)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: coverage-data-ubuntu-latest
           path: coverage-data/ubuntu
 
       - name: 📥 Download Coverage Data (macOS)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: coverage-data-macos-latest
           path: coverage-data/macos
