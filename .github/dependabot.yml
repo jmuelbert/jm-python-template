@@ -61,7 +61,7 @@ updates:
 
   # --- Docker ---
   - package-ecosystem: docker
-    directory: /
+    directory: .devcontainer
     schedule:
       interval: weekly
     labels:
@@ -77,18 +77,20 @@ updates:
         # yamllint disable-line rule:quoted-strings
         update-types: ["version-update:semver-major"]
 
-  # --- npm (for documentation) ---
+  # --- npm (for some tools) ---
   - package-ecosystem: npm
-    directory: /docs
+    directory: /
     schedule:
       interval: monthly
     groups:
-      documentation:
-        patterns:
-          - "*"
+      production:
+        dependency-type: production
+        update-types: [minor, patch]
+      development:
+        dependency-type: development
+        update-types: [minor, patch]
     labels:
       - dependencies
-      - docs
       - javascript
     commit-message:
       prefix: chore(docs)
