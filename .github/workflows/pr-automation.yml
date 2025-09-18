@@ -266,7 +266,6 @@ jobs:
         with:
           # This action now runs with the goal of generating output for the report
           comment-summary-in-pr: false
-          fail-on-severity: none # We don't want this action to fail the build
           retry-on-snapshot-warnings: true
           config-file: .github/config/dependency-review-config.yml
 
