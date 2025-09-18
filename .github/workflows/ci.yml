@@ -134,6 +134,7 @@ jobs:
 
       - name: Show all coverage data artifacts( Just for debugging)
         run: |
+          ls -lah
           cp coverage-data/* .
           ls -lah
 
