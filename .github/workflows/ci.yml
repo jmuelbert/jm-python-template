@@ -157,11 +157,18 @@ jobs:
         run: |
           pip install coverage
 
+      - name: 🔍 Debug Coverage Paths
+        run: coverage debug sys
+
       # The key step: Use 'coverage combine' to merge the files
       - name: 📂 Combine Coverage Files
-        run: coverage combine --rcfile=pyproject.toml coverage-data/**/.coverage
+        run: coverage combine coverage-data/**/.coverage
+        # The following command is not needed, because the path is set in the coverage combine command.
+        # run: coverage combine --rcfile=pyproject.toml coverage-data/**/.coverage
+        env:
+          COVERAGE_FILE: .coverage
 
-      - name: Generate final coverage.xml
+      - name: 📊 Generate XML Report
         run: coverage xml --rcfile=pyproject.toml
 
       - name: 📢 Push Coverage Badge JSON
