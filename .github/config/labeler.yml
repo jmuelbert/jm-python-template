@@ -50,6 +50,7 @@ type/chore:
       - .editorconfig
       - .gitignore
       - Taskfile.yml
+      - package.json
       - .github/workflows/**
       - bin/**
       - .yamllint
