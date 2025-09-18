@@ -144,6 +144,14 @@ jobs:
           name: coverage-data-macos-latest
           path: coverage-data/macos
 
+      - name: Show data for Debug
+        run: |
+          echo "Coverage data for Debug:"
+          ls -Rlah coverage-data/windows
+          ls -Rlah coverage-data/ubuntu
+          ls -Rlah coverage-data/macos
+          ls -Rlah coverage-data
+
       - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
