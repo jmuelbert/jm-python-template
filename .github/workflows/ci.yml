@@ -135,9 +135,29 @@ jobs:
         uses: ./.github/actions/python-setup
         id: python-setup
 
-      # Run commands in the 'combine' environment defined in pyproject.toml
       - name: 📂 Combine All Coverage Files
-        run: hatch env run --env combine -- coverage combine --rcfile=pyproject.toml coverage-data/**/.coverage
+        run: hatch env run --env combine -- coverage combine coverage-data/**/.coverage
+
+      - name: 🛠️ Fix Path Mappings in .coverage File
+        run: |
+          python - <<EOF
+          import coverage
+          from pathlib import Path
+
+          combined_coverage_data = coverage.CoverageData()
+          combined_coverage_data.read()
+
+          path_replacer = coverage.PathReplacer({'/Users/runner/work/': str(Path.cwd().parent) + '/'})
+
+          for filename in combined_coverage_data.measured_files():
+              new_filename = path_replacer.get_canonical_path(filename)
+
+              if filename != new_filename:
+                  del combined_coverage_data.arcs[filename]
+                  combined_coverage_data.arcs[new_filename] = combined_coverage_data.arcs.get(new_filename, []) + combined_coverage_data.arcs[filename]
+
+          combined_coverage_data.write()
+          EOF
 
       - name: 📊 Generate XML Report
         run: hatch env run --env combine -- coverage xml --rcfile=pyproject.toml
