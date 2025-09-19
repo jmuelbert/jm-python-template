@@ -137,10 +137,10 @@ jobs:
 
       # Run commands in the 'combine' environment defined in pyproject.toml
       - name: 📂 Combine All Coverage Files
-        run: hatch env run combine -- coverage combine coverage-data/**/.coverage
+        run: hatch env run --env combine coverage combine coverage-data/**/.coverage
 
       - name: 📊 Generate XML Report
-        run: hatch env run combine -- coverage xml
+        run: hatch env run --env combine coverage xml
 
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 #v6.0.1
