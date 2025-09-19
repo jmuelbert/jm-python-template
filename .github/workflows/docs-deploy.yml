@@ -56,7 +56,7 @@ jobs:
       - name: 📦 Install Documentation Dependencies
         # This command installs all dependencies from your Hatch `docs` environment
         run: |
-          hatch env run docs:install
+          hatch env create docs
 
       - name: 📝 Get Project Version and Deploy Docs
         # This single step combines both actions for efficiency

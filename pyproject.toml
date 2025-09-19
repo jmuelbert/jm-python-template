@@ -103,6 +103,10 @@ parallel = true
 randomize = true
 retries = 2
 
+[tool.hatch.envs.combine]
+dependencies = [
+  "coverage[toml]"
+]
 
 [tool.pytest.ini_options]
 addopts = [

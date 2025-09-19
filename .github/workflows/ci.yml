@@ -129,50 +129,18 @@ jobs:
       - name: 📥 Download Coverage Data (Windows)
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
-          name: coverage-data-windows-latest
-          path: coverage-data/windows
-
-      - name: 📥 Download Coverage Data (Ubuntu)
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
-        with:
-          name: coverage-data-ubuntu-latest
-          path: coverage-data/ubuntu
-
-      - name: 📥 Download Coverage Data (macOS)
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
-        with:
-          name: coverage-data-macos-latest
-          path: coverage-data/macos
-
-      - name: Show data for Debug
-        run: |
-          echo "Coverage data for Debug:"
-          ls -Rlah coverage-data
+          path: coverage-data
 
       - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
 
-      - name: Combine coverage data
-        run: |
-          pip install coverage
-
-      - name: 🔍 Debug Coverage Paths
-        run: coverage debug sys
-
-      # The key step: Use 'coverage combine' to merge the files
-      - name: 📂 Combine Coverage Files
-        run: coverage combine coverage-data/**/.coverage
-        # The following command is not needed, because the path is set in the coverage combine command.
-        # run: coverage combine --rcfile=pyproject.toml coverage-data/**/.coverage
-        env:
-          COVERAGE_FILE: .coverage
+      # Run commands in the 'combine' environment defined in pyproject.toml
+      - name: 📂 Combine All Coverage Files
+        run: hatch env run combine -- coverage combine coverage-data/**/.coverage
 
       - name: 📊 Generate XML Report
-        run: coverage xml --rcfile=pyproject.toml
-
-      - name: 📢 Push Coverage Badge JSON
-        run: bash .github/scripts/update-coverage-badge
+        run: hatch env run combine -- coverage xml
 
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 #v6.0.1
