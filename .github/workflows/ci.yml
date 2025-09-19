@@ -144,28 +144,35 @@ jobs:
           import coverage
           from pathlib import Path
 
-          # Load the combined coverage data from the default location
-          combined_coverage_data = coverage.CoverageData()
-          combined_coverage_data.read()
+          # Load the combined coverage data
+          combined_data = coverage.CoverageData()
+          combined_data.read()
 
           # Define the path remapping from macOS to Linux
           path_mapping = {
-            '/Users/runner/work/': str(Path.cwd().parent) + '/'
+              '/Users/runner/work/': str(Path.cwd().parent) + '/'
           }
+
           path_replacer = coverage.PathReplacer(path_mapping)
 
           # Create a new, corrected coverage data object
-          new_data = coverage.CoverageData()
+          corrected_data = coverage.CoverageData()
 
-          # Manually apply the path remapping
-          for filename in combined_coverage_data.measured_files():
+          # Manually apply the path remapping and merge the data
+          for filename in combined_data.measured_files():
+              # Get the lines and arcs data for the file
+              file_lines = combined_data.lines(filename)
+              file_arcs = combined_data.arcs(filename)
+
+              # Get the new filename with the corrected path
               new_filename = path_replacer.get_canonical_path(filename)
 
-              if filename != new_filename:
-                  new_data.add_arcs({new_filename: combined_coverage_data.arcs.get(filename, [])})
+              # Add the data to the new object under the corrected path
+              corrected_data.add_arcs({new_filename: file_arcs})
+              corrected_data.add_lines({new_filename: file_lines})
 
           # Write the corrected data back to the .coverage file
-          new_data.write()
+          corrected_data.write()
           EOF
 
       - name: 📊 Generate XML Report
