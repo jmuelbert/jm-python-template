@@ -38,6 +38,7 @@ pyproject
 pyright
 pyside
 pytest
+rcfile
 Roboto
 sarif
 sdist
