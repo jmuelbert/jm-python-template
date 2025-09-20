@@ -142,7 +142,7 @@ jobs:
         run: hatch env run --env combine -- coverage xml  --ignore-errors --rcfile=pyproject.toml
 
       - name: 📢 Push Coverage Badge JSON
-        run: bash .github/scripts/update-coverage-badge
+        run: bash .github/scripts/update-coverage-badge.sh
 
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 #v6.0.1
