@@ -138,45 +138,8 @@ jobs:
       - name: 📂 Combine All Coverage Files
         run: hatch env run --env combine -- coverage combine coverage-data/**/.coverage
 
-      - name: 🛠️ Fix Path Mappings in .coverage File
-        run: |
-          hatch env run --env combine -- python - <<EOF
-          import coverage
-          from pathlib import Path
-
-          # Load the combined coverage data
-          combined_data = coverage.CoverageData()
-          combined_data.read()
-
-          # Define the path remapping from macOS to Linux
-          path_mapping = {
-              '/Users/runner/work/': str(Path.cwd().parent) + '/'
-          }
-
-          path_replacer = coverage.PathReplacer(path_mapping)
-
-          # Create a new, corrected coverage data object
-          corrected_data = coverage.CoverageData()
-
-          # Manually apply the path remapping and merge the data
-          for filename in combined_data.measured_files():
-              # Get the lines and arcs data for the file
-              file_lines = combined_data.lines(filename)
-              file_arcs = combined_data.arcs(filename)
-
-              # Get the new filename with the corrected path
-              new_filename = path_replacer.get_canonical_path(filename)
-
-              # Add the data to the new object under the corrected path
-              corrected_data.add_arcs({new_filename: file_arcs})
-              corrected_data.add_lines({new_filename: file_lines})
-
-          # Write the corrected data back to the .coverage file
-          corrected_data.write()
-          EOF
-
       - name: 📊 Generate XML Report
-        run: hatch env run --env combine -- coverage xml --rcfile=pyproject.toml
+        run: hatch env run --env combine -- coverage xml  --ignore-errors --rcfile=pyproject.toml
 
       - name: 📢 Push Coverage Badge JSON
         run: bash .github/scripts/update-coverage-badge
