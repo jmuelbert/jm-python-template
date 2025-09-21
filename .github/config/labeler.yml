@@ -12,6 +12,7 @@ type/fix:
       - "**/*.py"
       - "**/fix/**"
       - "**/hotfix/**"
+      - "**/bugfix/**"
 
 type/docs:
   - any:
