@@ -11,19 +11,13 @@ on:
       - "**/*.md"
       - .github/workflows/docs-lint.yml
       - .vale.ini
+
   pull_request:
-    paths:
-      - docs/**
-      - "**/*.md"
-      - .github/workflows/docs-lint.yml
-      - .vale.ini
+    types: [opened, synchronize]
 
 defaults:
   run:
     shell: bash
-
-permissions:
-  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -87,7 +81,7 @@ jobs:
 
       - name: 📦 Build docs with strict option
         run: |
-          hatch run docs:build
+          hatch env run --env docs build
 
   verify:
     needs: docs-lint
