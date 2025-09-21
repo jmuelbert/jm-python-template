@@ -67,6 +67,7 @@ dependencies = [
   "pyright~=1.1",
   "reuse~=5.1",
   "pytest~=8.0",
+  "twine~=6.2",
 ]
 installer = "uv"
 [tool.hatch.envs.dev.scripts]
