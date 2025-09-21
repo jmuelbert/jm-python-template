@@ -15,16 +15,13 @@ on:
       - .github/CODE_OF_CONDUCT.md
       - mkdocs.yml
       - .github/workflows/docs-deploy.yml
+  pull_request:
+    types: [opened, synchronize]
   workflow_dispatch:
 
 defaults:
   run:
     shell: bash
-
-permissions:
-  contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -36,7 +33,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: read # Only needs permission to read the repository contents
+      contents: write # For pushing to the gh-pages branch
+      pages: write # Required for deploying to GitHub Pages
+      id-token: write # Required for OIDC authentication with GitHub Page
+
     steps:
       - name: 🔒 Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
@@ -52,11 +52,6 @@ jobs:
       - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
         id: python-setup
-
-      - name: 📦 Install Documentation Dependencies
-        # This command installs all dependencies from your Hatch `docs` environment
-        run: |
-          hatch env create docs
 
       - name: 📝 Get Project Version and Deploy Docs
         # This single step combines both actions for efficiency
