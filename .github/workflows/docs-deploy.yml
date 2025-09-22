@@ -53,6 +53,11 @@ jobs:
         uses: ./.github/actions/python-setup
         id: python-setup
 
+      - name: Configure Git Credentials
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: 📝 Deploy Docs with mike
         run: |
           hatch env run --env docs -- mike deploy --push --update-aliases latest
@@ -60,14 +65,6 @@ jobs:
       - name: Set Default Version
         run: |
           hatch env run --env docs -- mike set-default latest
-
-      - name: Check for Changes and Push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore(docs): Deploy docs via GitHub Actions" || echo "No changes to commit"
-          git push
 
   verify:
     needs: [build-and-deploy]
