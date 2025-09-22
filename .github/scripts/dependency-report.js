@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
 // biome-ignore lint/correctness :noUnusedParameters
-export default async ({ github, context, core}) => {
+export default async ({ github, context, core }) => {
 	const outputs = {
 		dependencyChanges: JSON.parse(process.env.DEPENDENCY_CHANGES || "[]"),
 		vulnerableChanges: JSON.parse(process.env.VULNERABLE_CHANGES || "[]"),

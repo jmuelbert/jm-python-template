@@ -137,7 +137,7 @@ jobs:
         with:
           script: |
             const script = require('./.github/scripts/pr-automation.js');
-            await script({ github, context, core });
+            await script.default({ github, context, core });
 
   dependency-review:
     name: Dependency Review
@@ -176,7 +176,7 @@ jobs:
         with:
           script: |
             const script = require('./.github/scripts/dependency-report.js');
-            await script({ github, context, core });
+            await script.default({ github, context, core });
 
   verify:
     needs: [commit-lint, analyze-pr, dependency-review]

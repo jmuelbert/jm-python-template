@@ -37,39 +37,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-configs:
-    name: Lint Configurations
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
-        with:
-          egress-policy: audit
-
-      - name: 🧰 Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8   # v5.0.0
-
-      - name: 🔧 Setup PNPM
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda  # v4.1.0
-        with:
-          version: 10
-          run_install: false
-
-      - name: 🔧 Install Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444   # v5.0.0
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - name: 🔧 Install Tools
-        run: pnpm install
-
-      - name: ▶️ Run Docs Linter & Formatter
-        run: pnpm run lint:docs
-
   lint-code:
-    name: Lint Python Codebase
+    name: Lint Python Codebase and Configurations
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -89,7 +58,7 @@ jobs:
         run: hatch env run --env dev lint
 
   lint-javascript-json:
-    name: Lint JavaScript & JSON
+    name: Lint JavaScript, JSON and HTML
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -119,7 +88,7 @@ jobs:
 
   tests:
     name: Test with ${{ matrix.os }}
-    needs: [lint-configs, lint-code, lint-javascript-json]
+    needs: [lint-code, lint-javascript-json]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     strategy:
@@ -191,7 +160,7 @@ jobs:
           file_pattern: .github/badges/coverage.json
 
   verify:
-    needs: [lint-configs, lint-code, lint-javascript-json, combine-and-badge, tests]
+    needs: [lint-code, lint-javascript-json, combine-and-badge, tests]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5

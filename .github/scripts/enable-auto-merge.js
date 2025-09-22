@@ -8,13 +8,13 @@ export default async ({ github, context, core }) => {
 			owner: context.repo.owner,
 			repo: context.repo.repo,
 			pull_number: context.issue.number,
-			merge_method: 'squash',
+			merge_method: "squash",
 			commit_title: `chore(deps): ${context.payload.pull_request.title}`,
-			commit_message: 'Auto-merged by Dependabot 🤖',
+			commit_message: "Auto-merged by Dependabot 🤖",
 		});
-		core.setOutput('merged', 'true');
+		core.setOutput("merged", "true");
 	} catch (error) {
 		console.log(`Failed to merge: ${error.message}`);
-		core.setOutput('merged', 'false');
+		core.setOutput("merged", "false");
 	}
 };
