@@ -58,6 +58,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
+      - name: 🧹 Prepare gh-pages branch
+        run: |
+          git fetch origin gh-pages || true
+          git checkout gh-pages || git checkout --orphan gh-pages
+          git pull origin gh-pages || true
+          git checkout -
+
       - name: 📝 Deploy Docs with mike
         run: |
           VERSION="${GITHUB_REF_NAME}"
