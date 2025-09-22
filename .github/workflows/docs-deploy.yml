@@ -15,8 +15,7 @@ on:
       - .github/CODE_OF_CONDUCT.md
       - mkdocs.yml
       - .github/workflows/docs-deploy.yml
-  pull_request:
-    types: [opened, synchronize]
+
   workflow_dispatch:
 
 defaults:
@@ -71,10 +70,7 @@ jobs:
           fi
 
           hatch env run --env docs -- mike deploy "$VERSION" --push --update-aliases latest
-
-      - name: Set Default Version
-        run: |
-          hatch env run --env docs -- mike set-default latest
+          hatch env run --env docs -- mike set-default latest || echo "No 'latest' alias yet"
 
   verify:
     needs: [build-and-deploy]
