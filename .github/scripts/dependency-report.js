@@ -2,12 +2,12 @@
 // SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
 // biome-ignore lint/correctness :noUnusedParameters
-export default async ({ github, context, core, env }) => {
+export default async ({ github, context, core}) => {
 	const outputs = {
-		dependencyChanges: JSON.parse(env.DEPENDENCY_CHANGES || "[]"),
-		vulnerableChanges: JSON.parse(env.VULNERABLE_CHANGES || "[]"),
-		licenseChanges: JSON.parse(env.LICENSE_CHANGES || "[]"),
-		deniedChanges: JSON.parse(env.DENIED_CHANGES || "[]"),
+		dependencyChanges: JSON.parse(process.env.DEPENDENCY_CHANGES || "[]"),
+		vulnerableChanges: JSON.parse(process.env.VULNERABLE_CHANGES || "[]"),
+		licenseChanges: JSON.parse(process.env.LICENSE_CHANGES || "[]"),
+		deniedChanges: JSON.parse(process.env.DENIED_CHANGES || "[]"),
 	};
 
 	let report = "## 📋 Pull Request Dependency Review Report\n\n";

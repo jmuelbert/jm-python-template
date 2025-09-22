@@ -39,12 +39,12 @@ jobs:
 
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -58,7 +58,7 @@ jobs:
         run: |
           VERSION=$(hatch version)
           # Use `hatch env run` to execute mike within the docs environment
-          hatch env run --env docs mike deploy --push --update-aliases "${VERSION}"
+          hatch env run --env docs -- mike deploy --push --update-aliases "${VERSION}"
 
   verify:
     needs: [build-and-deploy]
@@ -68,10 +68,10 @@ jobs:
 
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
       - name: ✅ Verify Workflow Completion
-        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
+        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302  # v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}

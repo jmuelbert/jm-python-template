@@ -38,80 +38,35 @@ jobs:
 
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: 📊 Fetch Dependabot Metadata
         id: metadata
-        uses: dependabot/fetch-metadata@08eff52bf64351f401fb50d4972fa95b9f2c2d1b #v2.4.0
+        uses: dependabot/fetch-metadata@08eff52bf64351f401fb50d4972fa95b9f2c2d1b  # v2.4.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🏷️ Add Labels
         id: labels
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         env:
           DEPENDENCY_TYPE: ${{ steps.metadata.outputs.dependency-type }}
           UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
           ALERT_STATE: ${{ steps.metadata.outputs.alert-state }}
         with:
-          # yamllint disable rule:indentation
           script: |
-            try {
-              const dependencyType = process.env.DEPENDENCY_TYPE;
-              const updateType = process.env.UPDATE_TYPE;
-              const alertState = process.env.ALERT_STATE;
+            const script = require('./.github/scripts/add-labels.js');
+            await script({ github, context, core });
 
-              const labels = [];
-
-              // Add dependency type label
-              if (dependencyType === 'direct:production') {
-                labels.push('production-dependency');
-              } else {
-                labels.push('development-dependency');
-              }
-
-              // Add update type label
-              if (updateType.includes('version-update:semver-patch')) {
-                labels.push('patch-update');
-              } else if (updateType.includes('version-update:semver-minor')) {
-                labels.push('minor-update');
-              } else if (updateType.includes('version-update:semver-major')) {
-                labels.push('major-update');
-              }
-
-              // Add security label if needed
-              if (alertState === 'fixed') {
-                labels.push('security');
-              }
-
-              const pr = context.payload.pull_request;
-              if (!pr) {
-                throw new Error('This workflow must be triggered by a pull request event.');
-              }
-
-              // Add labels to PR
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                labels: labels
-              });
-
-              console.log('Labels added successfully:', labels);
-            } catch (error) {
-              console.error('Failed to add labels:', error.message);
-              core.setFailed(error.message);
-            }
-          # yamllint enable
 
       - name: ✅ Auto-approve PR
         id: approve
         if: |
           steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
           contains(steps.metadata.outputs.dependency-names, 'test-dependencies')
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         with:
           # yamllint disable rule:indentation
           script: |
@@ -129,29 +84,16 @@ jobs:
         if: |
           steps.approve.outcome == 'success' &&
           !contains(steps.metadata.outputs.dependency-names, 'blocked-deps')
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         with:
-          # yamllint disable rule:indentation
           script: |
-            try {
-              await github.rest.pulls.merge({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                merge_method: 'squash',
-                commit_title: `chore(deps): ${context.payload.pull_request.title}`,
-                commit_message: 'Auto-merged by Dependabot 🤖'
-              });
-              core.setOutput('merged', 'true');
-            } catch (error) {
-              console.log(`Failed to merge: ${error.message}`);
-              core.setOutput('merged', 'false');
-            }
-          # yamllint enable
+            const script = require('./.github/scripts/enable-auto-merge.js');
+            await script({ github, context, core });
+
 
       - name: 📝 Add Merge Comment
         if: steps.merge.outputs.merged == 'true'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         with:
           # yamllint disable rule:indentation
           script: |
@@ -161,7 +103,6 @@ jobs:
               issue_number: context.payload.pull_request.number,
               body: `✅ Successfully auto-merged this PR!\n\nUpdated dependencies:\n${steps.metadata.outputs.dependency-names}`
             });
-
           # yamllint enable
 
   notify:
@@ -172,13 +113,13 @@ jobs:
       issues: write
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: 🔔 Notify on Failure
         if: needs.dependabot.result == 'failure'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         with:
           # yamllint disable rule:indentation
           script: |
@@ -191,6 +132,6 @@ jobs:
           # yamllint enable
 
       - name: ✅ Verify Workflow Completion
-        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
+        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302  # v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}

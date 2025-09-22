@@ -13,6 +13,7 @@
       "!site",
       "!node_modules",
       "!.cache",
+      "!.github/config/styles",
       "!.trunk",
       "!.venv",
       "!docs/.overrides/partials"

@@ -6,6 +6,9 @@
     },
     {
       "pattern": "^https://github.com/.*/workflows/"
+    },
+    {
+      "pattern": "^mailto:"
     }
   ],
   "replacementPatterns": [
