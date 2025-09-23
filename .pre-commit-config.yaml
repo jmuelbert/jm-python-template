@@ -4,7 +4,8 @@
 exclude: (?x)(
   LICENSE|
   LICENSES/|
-  pnpm-lock.yaml
+  pnpm-lock.yaml|
+  ^\.github/styles/Microsoft/
   )
 ci:
   autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
@@ -45,94 +46,29 @@ repos:
     hooks:
       - id: sync-pre-commit-deps
 
-  - repo: https://github.com/jorisroovers/gitlint
-    rev: v0.19.1
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.2.0
     hooks:
-      - id: gitlint
-        args: [--contrib=CT1, --msg-filename]
+      - id: conventional-pre-commit
+        stages: [commit-msg]
 
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: 3.0.0
     hooks:
-      - id: git-check # Configure in .gitattributes
+      # - id: git-check # Configure in .gitattributes
+      #  exclude: ^\.github/workflows/styles/Microsoft/
       - id: git-dirty # Configure in .gitignore
-      - id: script-must-not-have-extension
       - id: shellcheck
-      - id: shfmt
-
-  # ------------------------
-  # Local hooks using package.json scripts
-  # ------------------------
-  - repo: local
-    hooks:
-      - id: prettier
-        name: Prettier (via pnpm)
-        entry: pnpm exec prettier --check
-        language: system
-        files: (?i)\.(css|json|yaml|yml|js|ts|md|markdown|mdx|adoc|asciidoc)$
-
-      - id: prettier-fix
-        name: Prettier (via pnpm)
-        entry: pnpm exec prettier --write
-        language: system
-        files: (?i)\.(css|json|yaml|yml|js|ts|md|markdown|mdx|adoc|asciidoc)$
-        stages: [manual] # optional: nur bei manuellem Trigger
-
-      - id: taplo
-        name: Taplo (TOML check)
-        entry: pnpm run lint:toml --
-        language: system
-        pass_filenames: true
-        files: (?i)^.*\.toml$
-
-      - id: taplo-fix
-        name: Taplo (TOML check)
-        entry: pnpm run format:toml --
-        language: system
-        pass_filenames: true
-        files: (?i)\.toml$
-        stages: [manual] # optional: nur bei manuellem Trigger
-
-      - id: markdownlint
-        name: Markdownlint (via pnpm)
-        entry: pnpm exec markdownlint --config .markdownlint.json
-        language: system
-        pass_filenames: true
-        files: (?i)\.(md|markdown|mdx|adoc|asciidoc)$
-
-      - id: markdownlint-fix
-        name: Markdownlint Fix (via pnpm)
-        entry: pnpm exec markdownlint --config .markdownlint.json --fix
-        language: system
-        files: (?i)\.(md|markdown|mdx|adoc|asciidoc)$
-        stages: [manual] # optional: nur bei manuellem Trigger
-
-      - id: markdown-link-check
-        name: Markdown links check (via pnpm)
-        entry: pnpm exec markdown-link-check --config .markdown-link-check.json
-        language: system
-        pass_filenames: true
-        files: (?i)\.(md|markdown|mdx|adoc|asciidoc)$
-
-      - id: cspell
-        name: Spellcheck (via pnpm)
-        entry: pnpm exec cspell --no-progress --config cspell.json
-        language: system
-        pass_filenames: true
-        files: (?i)\.(md|markdown|mdx|adoc|asciidoc|rst|txt|html|htm)$
 
   # ------------------------
   # Python linting
   # ------------------------
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.12.12
+    rev: v0.13.0
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
-        stages: [manual]
       - id: ruff-format
-        stages: [manual]
-      - id: ruff
 
   # ------------------------
   # YAML linting
@@ -214,13 +150,14 @@ repos:
         # The `files` regex targets the Taskfile configuration file.
         files: (?i)taskfile\.ya?ml$
 
-  - repo: https://github.com/amperser/proselint
-    rev: 0.14.0 # Check for the latest release on GitHub
+  # ------------------------
+  # Secrets Detection
+  # ------------------------
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.28.0
     hooks:
-      - id: proselint
-        # Or any other file extensions you use for prose
-        exclude: ^docs/\.overrides/partials/
-        files: (?i)\.(md|markdown|mdx|adoc|asciidoc|rst|txt|html|htm)$
+      - id: gitleaks
+        args: [--config, .github/config/gitleaks.toml]
 
   # ------------------------
   # pyproject.toml validation

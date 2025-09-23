@@ -3,17 +3,31 @@
 ---
 version: "0.2"
 language: en  # Set a single default language
+dictionaries:
+  - en_GB
+  - en_US
+  - de-de
+  - es-es
+  - it-it
+  - project-words
 
 # Files to ignore
 ignorePaths:
   - "**/node_modules"
+  - "**/*.svg"
+  - "**/*.qrc"
   - .git
+  - .github/config/styles/**
+  - .gitignore
+  - .gitattributes
   - .vscode
   - .devcontainer
   - package-lock.json
   - pnpm-lock.yaml
   - cspell.config.yaml
   - project-words.txt # Exclude the word list itself
+  - LICENSE
+  - LICENSES/
 
 # Files to check
 files:
@@ -56,24 +70,68 @@ cache:
 
 # Overrides for specific files/globs
 overrides:
-  - filename: "**/*.de.md"
+  # French (fr) language-specific content
+  - filename: fr/**/*.md
+    language: en,fr
+  # German (de) language-specific content
+  - filename: de/**/*.md
     language: en,de
-  - filename: "**/*.es.md"
+  # Spanish (es) language-specific content
+  - filename: es/**/*.md
     language: en,es
-  - filename: "**/*.it.md"
+  # Italian (it) language-specific content
+  - filename: it/**/*.md
     language: en,it
-  - filename: "**/*.py"
-    language: en # Example for a Python file
+
+  # General Markdown files that are not language-specific
+  - filename: "**/*.md"
+    language: en
+
+  # Configuration for package.json
+  - filename: package.json
+    languageId: json
+    language: en
+    dictionaries:
+      - npm # Recommended for package.json to check package names
+
+  # Configuration for TOML files
+  - filename: "**/*.toml"
+    languageId: toml
+    language: en
+    dictionaries:
+      - toml # If CSpell has a specific TOML dict, use it
+
+  # Configuration for generic text files
+  - filename: "**/*.txt"
+    languageId: text
+    language: en
+
+  # Configuration for YAML files
+  - filename: "**/*.yaml"
+    languageId: yaml
+    language: en
+
+  # Configuration for executable scripts (no file extension) in a 'bin' directory
+  - filename: bin/*
+    languageId: bash
+    language: en
+    dictionaries:
+      - bash
+      - node
+      - shell
+  - filename: "**/*.sh"
+    language: en
+    dictionaries: [
+      bash,
+      node,
+      shell
+    ]
 
 # Project dictionary definitions
 dictionaryDefinitions:
   - name: project-words
     path: ./project-words.txt
     addWords: true
-
-# Use the project dictionary
-dictionaries:
-  - project-words
 
 # Import language dictionaries
 import:

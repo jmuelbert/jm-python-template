@@ -10,82 +10,73 @@ on:
     branches: [main]
     paths:
       - docs/**
+      - CHANGELOG.md
+      - .github/CONTRIBUTING.md
+      - .github/CODE_OF_CONDUCT.md
       - mkdocs.yml
       - .github/workflows/docs-deploy.yml
   workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
-    name: Build Documentation
+  build-and-deploy:
+    name: Build and Deploy Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     permissions:
       contents: read # Only needs permission to read the repository contents
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
+
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Call Python Environment Setup
+
+      - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
         id: python-setup
-      - name: 📚 Build Documentation
-        id: build
+
+      - name: 📦 Install Documentation Dependencies
+        # This command installs all dependencies from your Hatch `docs` environment
         run: |
-          hatch run docs:build
-          echo "doc-files=$(find site -type f -print | wc -l)" >> "$GITHUB_OUTPUT"
-      - name: 📦 Setup Pages
-        uses: actions/configure-pages@v5
-      - name: 📤 Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site/
-  # Deploy job
-  deploy:
-    # Add a dependency to the build job
-    needs: build
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write # to deploy to Pages
-      # to verify the deployment originates from an appropriate source
-      id-token: write
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-  notify:
-    needs: deploy
+          hatch env run docs:install
+
+      - name: 📝 Get Project Version and Deploy Docs
+        # This single step combines both actions for efficiency
+        run: |
+          VERSION=$(hatch version)
+          # Use `hatch env run` to execute mike within the docs environment
+          hatch env run --env docs mike deploy --push --update-aliases "${VERSION}"
+
+  verify:
+    needs: [build-and-deploy]
     if: always()
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: 📧 Process Status
-        uses: actions/github-script@v7
-        if: needs.deploy.result != 'success'
-        with:
-          script: |
-            const message =
-            `❌ Documentation deployment failed!\n` +
-            `Please check: ' +
-            '${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+    timeout-minutes: 5
 
-            await github.rest.issues.create({
-            ...context.repo,
-            title: '📚 Documentation Deployment Failed',
-            body: message,
-            labels: ['documentation', 'bug']
-            });
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+      - name: ✅ Verify Workflow Completion
+        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

@@ -1,0 +1,23 @@
+{
+  "name": "jm-python-template",
+  "columns": {
+    "triage": "Triage",
+    "inProgress": "In Progress",
+    "highPriority": "High Priority",
+    "inReview": "In Review",
+    "done": "Done"
+  },
+  "automation": {
+    "highPriority": {
+      "labels": ["high-priority", "security"],
+      "notify": {
+        "teams": ["core-team"],
+        "channels": ["security"]
+      }
+    },
+    "stale": {
+      "days": 30,
+      "exempt_labels": ["security", "pinned"]
+    }
+  }
+}

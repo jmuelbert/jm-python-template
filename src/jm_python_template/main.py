@@ -55,7 +55,7 @@ def comma(
 
     Args:
         name (str): The name to greet.
-        version (Optional[bool]): Whether to print the version.
+        _version (Optional[bool]): Whether to print the version.
 
     Returns:
         None

@@ -1,5 +1,10 @@
 ---
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+
 extends: default
+ignore: |
+  .github/config/styles/
 strict: true
 format: parsable
 
@@ -16,5 +21,5 @@ rules:
 
   trailing-spaces: enable
 
-  # "on:" soll nicht also truthy-Fehler gewertet werden
+  # "on:" Should not be used as a truthy value
   truthy: disable

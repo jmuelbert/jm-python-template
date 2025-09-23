@@ -1,7 +1,7 @@
 ---
-# SPDX-FileCopyRightText: 2025-present Jürgen Mülbert <juergen.muelbert@web.de>
-#
 # SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
+
 #
 # GitLab continuous integration file to build and deploy repository.
 #

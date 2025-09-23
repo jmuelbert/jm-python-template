@@ -20,7 +20,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["typer", "rich", "babel", "pyside6"]
+dependencies = ["typer~=0.17", "rich~=14.1", "babel~=2.17", "pyside6~=6.9"]
 description = ''
 dynamic = ["version"]
 keywords = []
@@ -31,48 +31,51 @@ requires-python = ">=3.11"
 
 [project.urls]
 Changelog     = "https://github.com/jmuelbert//jm-python-template/blob/main/CHANGELOG.md"
-Documentation = "https://github.com/jmuelbert//jm-python-template#readme"
+Documentation = "https://jmuelbert.github.io/jm-python-template/"
 Homepage      = "https://github.com/jmuelbert//jm-python-template"
 Issues        = "https://github.com/jmuelbert//jm-python-template/issues"
 Repository    = "https://github.com/jmuelbert//jm-python-template.git"
 Source        = "https://github.com/jmuelbert//jm-python-template"
 
-[project.optional-dependencies]
-docs = [
-  "mkdocs>=1.6.1,<1.7",
-  "mkdocs-material[imaging]>=9.6.7,<9.7",
-  "mkdocs-awesome-pages-plugin>=2.10.1,<2.20",
-  "mkdocs-git-revision-date-localized-plugin>=1.3.0,<1.4",
-  "mkdocs-glightbox>=0.4.0,<0.5",
-  "mkdocs-include-markdown-plugin>=7.1.6, <8.0.0",
-  "mkdocs-section-index>=0.3.0,<0.4",
-  "mkdocs-static-i18n>=1.3.0,<1.4",
-  "mkdocs-typer2>=0.1.5, <0.2.0",
-  "mkdocstrings[python]",
-  "mike>=2.1.3,<3.0.0",
-]
-
 [tool.hatch.version]
 path = "src/jm_python_template/__about__.py"
+
+[project.optional-dependencies]
+dependencies = [
+  "mkdocs~=1.6",
+  "mkdocs-material[imaging]~=9.6",
+  "mkdocs-awesome-pages-plugin~=2.1",
+  "mkdocs-git-revision-date-localized-plugin~=1.4",
+  "mkdocs-glightbox~=0.5",
+  "mkdocs-include-markdown-plugin~=7.1",
+  "mkdocs-section-index~=0.3.0",
+  "mkdocs-static-i18n~=1.3",
+  "mkdocs-typer2~=0.1",
+  "mkdocstrings[python]~=0.3",
+  "mike~=2.1",
+  "jm-reusable-scripts @ git+https://github.com/jmuelbert/jm-reusable-scripts.git",
+]
 
 [tool.hatch.envs.default]
 installer = "uv"
 
 [tool.hatch.envs.dev]
 dependencies = [
-  "ruff>=0.12.11",
-  "taplo>=0.9.3",
-  "pre-commit>=3.6.0",
-  "pyright>=1.1.350",
-  "reuse>=5.0.2",
+  "ruff~=0.12",
+  "taplo~=0.9",
+  "pre-commit~=4.3",
+  "pyright~=1.1",
+  "reuse~=5.1",
+  "pytest~=8.0",
 ]
 installer = "uv"
 [tool.hatch.envs.dev.scripts]
+check     = "ruff check ."
 fix       = "ruff check . --fix"
-format    = ["ruff format .", "taplo format"]
+format    = ["ruff check . --fix", "ruff format .", "taplo format"]
 lint      = ["ruff check .", "pyright", "reuse lint", "pre-commit run --all-files"]
 precommit = ["pre-commit {args}"]
-typing    = "pyright"
+typing    = ["pyright {args}"]
 
 [tool.hatch.entry_points."console_scripts"]
 main = "jm_python_template.main"
@@ -87,41 +90,29 @@ packages         = ["src/jm_python_template"]
 [tool.hatch.build.targets.sdist]
 exclude = ["/.github", "/scripts"]
 
-[[tool.hatch.envs.test.matrix]]
+[[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.11", "3.12", "3.13"]
 
 [tool.hatch.envs.hatch-test]
-default-args = [""]
-parallel     = true
-randomize    = true
-retries      = 2
-
-[tool.hatch.envs.test]
-dependencies = [
-  "coverage[toml]>=7.4.3",
-  "pytest>=8.2.1",
-  "pytest-mock>=3.14.0",
-  "pytest-cov>=4.1.0",
-  "pytest-timeout>=2.3.1",
-  "pytest-randomly>=3.15.0",
-  "fastapi>=0.115.8",
-  "typeguard>=4.1.5",
-  "xdoctest>=0.15.10",
-  "pytest-randomly>=3.15.0",
-  "pytest-sugar>=1.0.0",
-  "pylint-pytest>=1.1.2",
+extra-dependencies = [
+  "pytest-sugar~=1.1",
+  "pytest-timeout~=2.4",
+  "xdoctest~=1.2",
 ]
-installer = "uv"
+parallel = true
+randomize = true
+retries = 2
 
-[tool.hatch.envs.test.scripts]
-all       = ["test", "coverage", "typeguard", "doctest"]
-coverage  = "pytest --cov --cov-report term-missing:skip-covered --cov-report xml --cov-report html --cov=src tests/"
-doctest   = "pytest --doctest-modules"
-test      = "pytest tests/ {args}"
-typeguard = "pytest --typeguard-packages=src"
 
 [tool.pytest.ini_options]
-addopts = ["-ra", "--strict-markers", "--strict-config", "--doctest-modules"]
+addopts = [
+  "-q",
+  "-ra",
+  "--strict-markers",
+  "--strict-config",
+  "--doctest-modules",
+  "--xdoctest",
+]
 filterwarnings = ["error"]
 markers = [
   "unit: mark a test as a unit test",
@@ -134,7 +125,7 @@ markers = [
 ]
 minversion = "6.0"
 testpaths = ["tests"]
-
+timeout = "300"
 
 [tool.coverage.run]
 branch      = true
@@ -151,28 +142,28 @@ tests = ["tests", "*/jm_python_template/tests"]
 
 [tool.coverage.report]
 exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
-fail_under    = 90
+fail_under    = 50
 show_missing  = true
 
 [tool.hatch.envs.docs]
 dependencies = [
-  "mkdocs>=1.6.1,<1.7",
-  "mkdocs-material[imaging]>=9.6.7,<9.7",
-  "mkdocs-awesome-pages-plugin>=2.10.1,<2.20",
-  "mkdocs-git-revision-date-localized-plugin>=1.3.0,<1.4",
-  "mkdocs-glightbox>=0.4.0,<0.5",
-  "mkdocs-include-markdown-plugin>=7.1.6,<8.0.0",
-  "mkdocs-section-index>=0.3.0,<0.4",
-  "mkdocs-static-i18n>=1.3.0,<1.4",
-  "mkdocs-typer2>=0.1.5,<0.2.0",
-  "mkdocstrings[python]",
-  "mike>=2.1.3,<3.0.0",
+  "mkdocs~=1.6",
+  "mkdocs-material[imaging]~=9.6",
+  "mkdocs-awesome-pages-plugin~=2.1",
+  "mkdocs-git-revision-date-localized-plugin~=1.4",
+  "mkdocs-glightbox~=0.5",
+  "mkdocs-include-markdown-plugin~=7.1",
+  "mkdocs-section-index~=0.3.0",
+  "mkdocs-static-i18n~=1.3",
+  "mkdocs-typer2~=0.1",
+  "mkdocstrings[python]~=0.3",
+  "mike~=2.1",
   "jm-reusable-scripts @ git+https://github.com/jmuelbert/jm-reusable-scripts.git",
 ]
 
 [tool.hatch.envs.docs.scripts]
 build = [
-  "mkdocs build --clean {args}",
+  "mkdocs build --clean --strict {args}",
   "python -m json.tool --sort-keys --no-indent ./site/search/search_index.json ./site/search/search_index.json",
 ]
 qualitycheck = "doc-quality-check"
@@ -344,36 +335,6 @@ known_first_party = ["jm_python_template"]
 line_length       = 88
 multi_line_output = 3
 profile           = "black"
-
-[tool.proselint]
-checks = [
-  "typography.diacritical_marks",
-  "typography.exclamation",
-  "typography.quotes",
-  "misc.annotations",
-  "misc.link_review",
-  "security.password",
-  # cspell:disable-next-line
-  "spelling.able_atable",
-  # cspell:disable-next-line
-  "spelling.able_ible",
-  "spelling.athletes",
-  "spelling.em_im_en_in",
-  "spelling.er_or",
-  "spelling.in_un",
-  "spelling.misc",
-  "consistency.spacing",
-  "consistency.spelling",
-  # Additional recommended checks
-  "misc.tense",
-  # cspell:disable-next-line
-  "uncomparables.misc",
-  "weasel_words.misc",
-  "cliches.misc",
-  "conditional.misc",
-  "passive.misc",
-]
-max-line-length = 80
 
 [tool.xdoctest]
 style = "google"

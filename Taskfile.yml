@@ -18,27 +18,32 @@ tasks:
   default:
     desc: Lists all available tasks
     cmds:
-      - task --list
-
+      - task --list-all
   # ----------------------
   # Code Quality & Linting
   # ----------------------
-  lint:
-    desc: Run linting checks (pre-commit)
+  lint-docs:
+    desc: Run linting checks for documentation
     cmds:
-      - hatch run dev:pre-commit autoupdate
-      - hatch run dev:pre-commit run --all-files
+      - pnpm run lint:docs
+    silent: true
 
-  fmt:
+  lint-code:
+    desc: Run code linting (Ruff, Taplo, YAML, etc.)
+    cmds:
+      - hatch env run --dev pre-commit run --all-files
+
+  lint:
+    desc: Run all linting (code + docs)
+    cmds:
+      - task: lint-code
+      - task: lint-docs
+
+  format:
     desc: Run formatting hooks (Prettier, Ruff, Taplo, Black)
     cmds:
-      - hatch run dev:precommit run --all-files --hook-stage manual --all-files
-
-  check:
-    desc: Run linting and tests (CI-like local check)
-    cmds:
-      - task: lint
-      - task: test
+      - pnpm run format
+      - hatch run dev:precommit run --hook-stage manual --all-files
 
   # ----------------------
   # Testing & Coverage
@@ -46,12 +51,12 @@ tasks:
   test:
     desc: Run all tests with pytest
     cmds:
-      - hatch run test:all
+      - hatch test --all
 
   coverage:
     desc: Run tests with coverage report
     cmds:
-      - hatch run test:coverage
+      - hatch test --cover --all
 
   # ----------------------
   # Environment Cleanup
@@ -59,13 +64,13 @@ tasks:
   clean:
     desc: Clean caches, builds, and translation files
     cmds:
-      - rm -rf dist build htmlcov site .cache .ropeproject
-      - rm -rf .pytest_cache .mypy_cache .ruff_cache .venv
-      - rm -f coverage.xml uv.lock .coverage
+      - rm -rf dist build htmlcov site .cache .ropeproject .pytest_cache .mypy_cache .ruff_cache .venv coverage.xml uv.lock .coverage
       - rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.mo
       - rm -rf {{.LOCALES_DIR}}/*/LC_MESSAGES/*.po
       - rm -rf {{.GUI_TRANSLATIONS_DIR}}/*.ts {{.GUI_TRANSLATIONS_DIR}}/*.qm
       - rm -f {{.GUI_DIR}}/resources_rc.py
+      # Use hatch's built-in cleanup commands
+      - hatch clean -a || true
       - hatch env prune || true
 
   reset:
@@ -75,6 +80,7 @@ tasks:
       - hatch env remove default
       - hatch env create
       - task: hooks:install
+      - task: pnpm:install
 
   # ----------------------
   # Pre-commit Hooks
@@ -82,13 +88,26 @@ tasks:
   hooks:install:
     desc: Install pre-commit hooks
     cmds:
-      - hatch run dev:pre-commit install
-      - hatch run dev:pre-commit install --hook-type commit-msg
+      - hatch env run --dev pre-commit install
+      - hatch env run --dev pre-commit install --hook-type commit-msg
 
   hooks:update:
     desc: Update pre-commit hooks
     cmds:
-      - hatch run dev:pre-commit autoupdate
+      - hatch env run --dev pre-commit autoupdate
+
+  # ----------------------
+  # Node/pnpm
+  # ----------------------
+  pnpm:install:
+    desc: Install Node.js and pnpm
+    cmds:
+      - pnpm install
+
+  pnpm:update:
+    desc: Update Node.js and pnpm
+    cmds:
+      - pnpm update
 
   # ----------------------
   # Documentation
@@ -106,13 +125,13 @@ tasks:
   serve:
     desc: Serve docs locally
     cmds:
-      - hatch env create docs
       - hatch run docs:serve
 
   docs-build:
     desc: Build documentation
+    deps:
+      - lint-docs
     cmds:
-      - hatch env create docs
       - hatch run docs:build
 
   # ----------------------

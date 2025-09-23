@@ -4,25 +4,22 @@
 
 name: Core CI
 run-name: "${{ github.event_name == 'workflow_dispatch' && format('CI: {0}', github.ref_name) || '' }}"
-# yamllint disable-line rule:truthy
 on:
   push:
     branches: [main, develop]
     paths:
       - src/**
+      - tests/**
       - pyproject.toml
       - .github/workflows/ci.yml
       - .github/actions/**
   pull_request:
     types: [opened, synchronize, reopened]
 
-env:
-  FORCE_COLOR: "1"
-  PACKAGE_NAME: jm-python-template
-
 defaults:
   run:
     shell: bash
+
 permissions:
   contents: read
 
@@ -31,59 +28,56 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate-dependencies:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Dependency Review
-        id: review
-        uses: actions/dependency-review-action@v4
-        with:
-          fail-on-severity: moderate
-          comment-summary-in-pr: always
-          config-file: .github/dependency-review-config.yml
-
   lint-and-format:
     name: Lint & Format
     runs-on: ubuntu-latest
-    needs: validate-dependencies
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
-      - name: 🧐 Checkout Repository
-        uses: actions/checkout@v4
+
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           fetch-depth: 0
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+
+      - name: 🔧 Call Python Environment Setup
+        uses: ./.github/actions/python-setup
+        id: python-setup
+
+      # Lint the Codebase
+      - name: ▶️ Run lint Codebase
+        run: hatch run dev:lint
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda #v4.1.0
         with:
           version: 10
-      - name: Install Node dependencies
+          run_install: false
+
+      - name: 🔧 Install Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 #v5.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: 🔧 Install tools
         run: pnpm install
-      - name: ✨ Run Node linters & formatting
-        run: |
-          pnpm run lint:prettier
-          pnpm run lint:docs
-      - name: Setup Python environment
-        uses: ./.github/actions/python-setup
-      - name: ⚙️ Install Python dev env
-        run: hatch env create lint
-      - name: 🔍 Run Python linters & checks
-        run: hatch run dev:lint
+
+      # Lint prettier.
+      - name: Lint prettier.
+        run: pnpm run lint:prettier
+
       - name: 🔍 Trivy Security Scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 #v0.33.1
         with:
           scan-type: fs
           scan-ref: .
           severity: CRITICAL,HIGH
 
-  test:
+  tests:
     name: Test with ${{ matrix.os }}
     needs: lint-and-format
     runs-on: ${{ matrix.os }}
@@ -94,19 +88,82 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@v2
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
         with:
           egress-policy: audit
+
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+
+      - name: 🔧 Call Python Environment Setup
+        uses: ./.github/actions/python-setup
+        id: python-setup
+
+      - name: 🧪📊 Run tests and coverage
+        run: |
+          hatch test --cover -all
+
+      - name: 📤 Upload coverage data
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
+        with:
+          name: coverage-data-${{ matrix.os }}
+          path: ./.coverage
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 3
+
+  combine-and-badge:
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+
+      - name: 📥 Download all coverage data artifacts
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+        with:
+          path: .
+
       - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
-      - name: ⚙️ Install Python dev env
-        run: hatch env create test
-      - name: 🧪 Run tests
+
+      - name: Combine coverage data
         run: |
-          hatch run test:cov
+          pip install coverage
+          python -m coverage combine
+
+      - name: Generate final coverage.xml
+        run: python -m coverage xml
 
       - name: 📢 Push Coverage Badge JSON
         run: bash .github/scripts/update-coverage-badge
+
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 #v6.0.1
+        with:
+          commit_message: "chore: update coverage badge"
+          file_pattern: .github/badges/coverage.json
+
+  verify:
+    needs: [lint-and-format, tests]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: ✅ Verify Workflow Completion
+        uses: re-actors/alls-green@223e4bb7a751b91f43eda76992bcfbf23b8b0302 # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}
