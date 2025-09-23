@@ -12,6 +12,7 @@
 [![Pull Request Automation][wf-pr-automation-badge]][wf-pr-automation]
 [![Hatch][Hatch-badge]][Hatch]
 [![Ruff][Ruff-badge]][Ruff]
+[![Checked with Biome][biome-badge]][biome]
 [![Prettier][Prettier-badge]][Prettier]
 [![cSpell][cSpell-badge]][cSpell]
 [![pre-commit][pre-commit-badge]][pre-commit]
@@ -89,6 +90,8 @@ This project is licensed under the [EUPL V1.2 license].
 
  <!--- External -->
 
+[biome]: https://biomejs.dev
+[biome-badge]: https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome
 [cSpell]: https://cspell.org/
 [cSpell-badge]: https://img.shields.io/badge/cSpell-checked-blue?logo=cspell
 [Hatch]: https://hatch.pypa.io/

@@ -19,3 +19,15 @@ build/
 cspell.config.yaml
 pnpm-lock.yaml
 *.lock
+
+# These types of files should be ignored by Prettier:
+# Exclude files handled by Biome
+**/*.js
+**/*.jsx
+**/*.ts
+**/*.tsx
+**/*.json
+**/*.jsonc
+**/*.css
+**/*.html
+**/*.graphql

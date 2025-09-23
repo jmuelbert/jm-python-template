@@ -6,7 +6,7 @@ version                      = 1
 [[annotations]]
 SPDX-FileCopyrightText  = "Jürgen Mülbert <juergen.muelbert@outlook.de>"
 SPDX-License-Identifier = "EUPL-1.2"
-path                    = ["src/**", "tests/**", "package.json"]
+path                    = ["src/**", "tests/**"]
 precedence              = "aggregate"
 
 
@@ -57,7 +57,9 @@ path = [
   ".python-version",
   ".vala.ini",
   ".vscode/*",
+  "biome.json",
   "cspell.json",
+  "package.json",
   "pnpm-lock.yaml",
   "project-words.txt",
 ]
