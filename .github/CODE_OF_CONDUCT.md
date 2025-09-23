@@ -128,7 +128,7 @@ For answers to common questions about this code of conduct, see the FAQ at
 [https://www.contributor-covenant.org/faq][faq]. Translations are available
 at [https://www.contributor-covenant.org/translations][translations].
 
-[author_mail]: mailto:juergen.muelbert+develop@gmail.com
+[author_mail]: mailto:juergen.muelbert@outlook.de
 [faq]: https://www.contributor-covenant.org/faq
 [homepage]: https://www.contributor-covenant.org
 [mozilla coc]: https://github.com/mozilla/diversity

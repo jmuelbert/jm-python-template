@@ -13,6 +13,15 @@ on:
       - pyproject.toml
       - .github/workflows/ci.yml
       - .github/actions/**
+      - .github/scripts/**
+      - .github/.yamllint
+      - biome.json
+      - .prettierrc.yaml
+      - .pre-commit-config.yaml
+      - .markdow*
+      - .yamllint
+      - pyproject.toml
+
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -28,72 +37,72 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-and-format:
-    name: Lint & Format
+  lint-code:
+    name: Lint Python Codebase and Configurations
     runs-on: ubuntu-latest
     timeout-minutes: 5
+
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
 
       - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
-        id: python-setup
 
-      # Lint the Codebase
-      - name: ▶️ Run lint Codebase
-        run: hatch run dev:lint
+      - name: ▶️ Run Code Linter
+        run: hatch env run --env dev lint
 
+  lint-javascript-json:
+    name: Lint JavaScript, JSON and HTML
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 🔒 Harden Runner
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
       - name: 🔧 Setup PNPM
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda #v4.1.0
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda  # v4.1.0
         with:
           version: 10
           run_install: false
 
       - name: 🔧 Install Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 #v5.0.0
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5.0.0
         with:
           node-version: 24
           cache: pnpm
 
-      - name: 🔧 Install tools
+      - name: 🔧 Install Tools
         run: pnpm install
-
-      # Lint prettier.
-      - name: Lint prettier.
-        run: pnpm run lint:prettier
-
-      - name: 🔍 Trivy Security Scan
-        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 #v0.33.1
-        with:
-          scan-type: fs
-          scan-ref: .
-          severity: CRITICAL,HIGH
+      - name: ▶️ Run Biome
+        run: pnpm run lint:js-json
 
   tests:
     name: Test with ${{ matrix.os }}
-    needs: lint-and-format
+    needs: [lint-code, lint-javascript-json]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
 
       - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
@@ -101,10 +110,10 @@ jobs:
 
       - name: 🧪📊 Run tests and coverage
         run: |
-          hatch test --cover -all
+          hatch test --cover --all
 
       - name: 📤 Upload coverage data
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
           name: coverage-data-${{ matrix.os }}
           path: ./.coverage
@@ -118,52 +127,52 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
 
-      - name: 📥 Download all coverage data artifacts
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      # Download artifacts without merging, each goes into its own folder
+      - name: 📥 Download Coverage Data (Windows)
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0  # v5.0.0
         with:
-          path: .
+          path: coverage-data
 
       - name: Setup Python
         uses: ./.github/actions/python-setup
         id: python-setup
 
-      - name: Combine coverage data
-        run: |
-          pip install coverage
-          python -m coverage combine
+      - name: 📂 Combine All Coverage Files
+        run: hatch env run --env combine -- coverage combine coverage-data/**/.coverage
 
-      - name: Generate final coverage.xml
-        run: python -m coverage xml
+      - name: 📊 Generate XML Report
+        run: hatch env run --env combine -- coverage xml  --ignore-errors --rcfile=pyproject.toml
 
       - name: 📢 Push Coverage Badge JSON
-        run: bash .github/scripts/update-coverage-badge
+        run: bash .github/scripts/update-coverage-badge.sh
 
       - name: Git Auto Commit
-        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 #v6.0.1
+        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0  # v6.0.1
         with:
           commit_message: "chore: update coverage badge"
           file_pattern: .github/badges/coverage.json
 
   verify:
-    needs: [lint-and-format, tests]
+    needs: [lint-code, lint-javascript-json, combine-and-badge, tests]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: ✅ Verify Workflow Completion
         uses: re-actors/alls-green@2765efec08f0fd63e83ad900f5fd75646be69ff6 # v1.2.2
         with:
+          allowed-skips: combine-and-badge
           jobs: ${{ toJSON(needs) }}

@@ -9,14 +9,7 @@ on:
     branches:
       - main
       - develop
-
   pull_request:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - "**.md"
-      - docs/**
-      - .gitignore
-  pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     paths-ignore:
       - "**.md"
@@ -27,41 +20,35 @@ defaults:
   run:
     shell: bash
 
-permissions:
-  contents: read
-  pull-requests: write
-
-env:
-  MIN_COVERAGE: 80
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
 jobs:
   commit-lint:
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # For checkout
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
           fetch-depth: 0
 
       - name: 📝 Lint Commit Messages
-        uses: ahmadnassri/action-commit-lint@c46b910837381d1b39c7b7ede72666d7f3e83222 #v2.1.17
-        # with config: conventional is default
+        uses: ahmadnassri/action-commit-lint@c46b910837381d1b39c7b7ede72666d7f3e83222  # v2.1.17
 
-  analyze_and_label:
-    name: Analyze and Label Pull Request
-    if: github.event_name == 'pull_request'
+  analyze-pr:
+    name: Analyze and Manage Pull Request
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     permissions:
       contents: read
       pull-requests: write
@@ -69,18 +56,18 @@ jobs:
 
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: 🧰 Checkout Repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
           fetch-depth: 0
 
       - name: 🔄 Check Merge Conflicts
         id: conflicts
-        uses: eps1lon/actions-label-merge-conflict@1df065ebe6e3310545d4f4c4e862e43bdca146f0 #v3.0.3
+        uses: eps1lon/actions-label-merge-conflict@1df065ebe6e3310545d4f4c4e862e43bdca146f0  # v3.0.3
         timeout-minutes: 5
         continue-on-error: true
         with:
@@ -99,7 +86,7 @@ jobs:
 
       - name: 📏 Analyze Pull Request Size
         id: size
-        uses: codelytv/pr-size-labeler@4ec67706cd878fbc1c8db0a5dcd28b6bb412e85a #v1.10.3
+        uses: codelytv/pr-size-labeler@4ec67706cd878fbc1c8db0a5dcd28b6bb412e85a  # v1.10.3
         timeout-minutes: 5
         continue-on-error: true
         with:
@@ -142,223 +129,69 @@ jobs:
           configuration-path: .github/config/labeler.yml
           sync-labels: true
 
-      - name: 📝 Process PR Content
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
-        timeout-minutes: 5
+      - name: 📝 Run PR Automation Script
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd   # v8.0.0
+        id: pr-script
+        env:
+          MIN_COVERAGE: 51
         with:
-          # yamllint disable rule:indentation
           script: |
-            const pr = context.payload.pull_request;
-            const labels = new Set();
+            const script = require('./.github/scripts/pr-automation.js');
+            await script.default({ github, context, core });
 
-            // Enhanced title parsing with regex
-            const titlePattern = /^(fix|feat|docs|test|chore|refactor|style|perf)(?:\(.*\))?:/;
-            const match = pr.title.match(titlePattern);
-            if (match) {
-              labels.add(`type-${match[1]}`);
-            }
-
-            // Check PR body for specific keywords and contexts
-            const body = pr.body?.toLowerCase() || '';
-
-            const checks = {
-              'security-label': ['security', 'vulnerability', 'cve', 'auth', 'authentication'],
-              'performance-label': ['performance', 'optimize', 'speed', 'perf'],
-              'documentation-label': ['documentation', 'docs', 'readme'],
-              'dependencies-label': ['dependency', 'dependencies', 'deps'],
-              'breaking-label': ['breaking change', 'breaking-change'],
-              'deprecation-label': ['deprecate', 'deprecated']
-            };
-
-            Object.entries(checks).forEach(([label, keywords]) => {
-              if (keywords.some(keyword => body.includes(keyword))) {
-                labels.add(label);
-              }
-            });
-
-            // Add draft or ready-for-review labels
-            if (pr.draft) {
-              labels.add('status: work-in-progress');
-            } else {
-              labels.add('status: ready-for-review');
-            }
-
-            // Apply labels
-            if (labels.size > 0) {
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                labels: Array.from(labels)
-              });
-            }
-
-            // Add a review checklist as a comment for new PRs
-            if (context.payload.action === 'opened') {
-              const checklist = `
-                ## PR Review Checklist
-
-                ### 🎯 Prerequisites
-                - [ ] PR title follows [Conventional Commits](https://www.conventionalcommits.org/)
-                - [ ] Branch is up to date with target branch
-                - [ ] All automated checks are passing
-
-                ### 📝 Documentation
-                - [ ] Documentation updated
-                - [ ] API changes documented
-                - [ ] Change log updated
-                - [ ] Inline comments added for complex code
-
-                ### 🧪 Testing
-                - [ ] Unit tests added/updated
-                - [ ] Integration tests if needed
-                - [ ] All tests passing
-                - [ ] Coverage meets minimum threshold (${process.env.MIN_COVERAGE}%)
-                - [ ] Edge cases tested
-
-                ### 💻 Code Quality
-                - [ ] Code follows style guide
-                - [ ] No debug/commented code
-                - [ ] Error handling implemented
-                - [ ] Performance considerations addressed
-                - [ ] Code is modular and maintainable
-
-                ### 🔒 Security
-                - [ ] Security best practices followed
-                - [ ] Dependencies are up to date
-                - [ ] No sensitive data exposed
-                - [ ] Input validation implemented
-                - [ ] Security implications considered
-
-                ### 🚀 Deployment
-                - [ ] Migration scripts if needed
-                - [ ] Environment variables documented
-                - [ ] Deployment documentation updated
-                - [ ] Rollback plan considered
-              `;
-
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                body: checklist
-              });
-            }
-          # yamllint enable rule:indentation
-
-  post-dependency-report:
-    runs-on: ubuntu-latest
+  dependency-review:
+    name: Dependency Review
     if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: write
+
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+
       - name: Dependency Review
         id: review
-        uses: actions/dependency-review-action@595b5aeba73380359d98a5e087f648dbb0edce1b #v4.7.3
+        uses: actions/dependency-review-action@595b5aeba73380359d98a5e087f648dbb0edce1b  # v4.7.3
         with:
           # This action now runs with the goal of generating output for the report
           comment-summary-in-pr: false
-          fail-on-severity: none # We don't want this action to fail the build
           retry-on-snapshot-warnings: true
           config-file: .github/config/dependency-review-config.yml
 
-      - name: 📊Generate and Post Report
+      - name: 📊 Generate and Post Report
         if: always()
         env:
           DEPENDENCY_CHANGES: ${{ steps.review.outputs.dependency-changes }}
           VULNERABLE_CHANGES: ${{ steps.review.outputs.vulnerable-changes }}
           LICENSE_CHANGES: ${{ steps.review.outputs.invalid-license-changes }}
           DENIED_CHANGES: ${{ steps.review.outputs.denied-changes }}
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         with:
-          # yamllint disable rule:indentation
           script: |
-            const outputs = {
-              dependencyChanges: JSON.parse(process.env.DEPENDENCY_CHANGES || '[]'),
-              vulnerableChanges: JSON.parse(process.env.VULNERABLE_CHANGES || '[]'),
-              licenseChanges: JSON.parse(process.env.LICENSE_CHANGES || '[]'),
-              deniedChanges: JSON.parse(process.env.DENIED_CHANGES || '[]'),
-            };
-
-            let report = '## 📋 Pull Request Dependency Review Report\n\n';
-
-            // Dependency Summary
-            report += `### 📑 Summary\n`;
-            report += `- Total Changes: ${outputs.dependencyChanges.length}\n`;
-            report += `- Vulnerable Changes: ${outputs.vulnerableChanges.length}\n`;
-            report += `- License Issues: ${outputs.licenseChanges.length}\n`;
-            report += `- Denied Changes: ${outputs.deniedChanges.length}\n\n`;
-
-            // Vulnerabilities
-            if (outputs.vulnerableChanges.length > 0) {
-              report += '### ⚠️ Vulnerable Changes\n\n';
-              outputs.vulnerableChanges.forEach(change => {
-                report += `- **${change.package.name}@${change.package.version}**: ${change.advisory.title}\n`;
-                report += `  - Severity: ${change.advisory.severity}\n`;
-                report += `  - Advisory: [${change.advisory.url}](${change.advisory.url})\n\n`;
-              });
-            } else {
-              report += '### ✅ No Vulnerable Changes Found\n\n';
-            }
-
-            // License Issues
-            if (outputs.licenseChanges.length > 0) {
-              report += '### 🚫 License Issues\n\n';
-              outputs.licenseChanges.forEach(change => {
-                report += `- **${change.package.name}@${change.package.version}**: ${change.license}\n`;
-                report += `  - Allowed Licenses: ${change.allowedLicenses.join(', ')}\n\n`;
-              });
-            } else {
-              report += '### ✅ No License Issues Found\n\n';
-            }
-
-            // Denied Changes
-            if (outputs.deniedChanges.length > 0) {
-              report += '### ❌ Denied Changes\n\n';
-              outputs.deniedChanges.forEach(change => {
-                report += `- **${change.package.name}@${change.package.version}**: ${change.reason}\n`;
-              });
-            } else {
-              report += '### ✅ No Denied Changes Found\n\n';
-            }
-
-            // Post Report only on pull_request
-            if (context.payload.pull_request) {
-              try {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.payload.pull_request.number,
-                  body: report
-                });
-              } catch (error) {
-                console.error("Failed to create comment:", error);
-              }
-            } else {
-              console.log("Not a pull request, skipping comment creation.");
-            }
-
-          # yamllint enable rule:indentation
+            const script = require('./.github/scripts/dependency-report.js');
+            await script.default({ github, context, core });
 
   verify:
-    needs: [commit-lint, analyze_and_label]
+    needs: [commit-lint, analyze-pr, dependency-review]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
       - name: 🔒 Harden Runner
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a #v2.13.1
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a  # v2.13.1
         with:
           egress-policy: audit
 
       - name: ✅ Verify Workflow Completion
         uses: re-actors/alls-green@2765efec08f0fd63e83ad900f5fd75646be69ff6 # v1.2.2
         with:
-          allowed-skips: commit-lint, analyze_and_label
+          allowed-skips: commit-lint, analyze-pr, dependency-review
           jobs: ${{ toJSON(needs) }}

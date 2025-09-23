@@ -31,8 +31,8 @@
     },
     {
       "label": "fix",
-      "title": ["/fix(.*)/"],
-      "branch": ["/fix(.*)/"]
+      "title": ["/fix(.*)/", "/bug(.*)/", "/hot(.*)/"],
+      "branch": ["/fix(.*)/", "/bug(.*)/", "/hot(.*)/"]
     },
     {
       "label": "docs",

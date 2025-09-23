@@ -12,6 +12,7 @@ type/fix:
       - "**/*.py"
       - "**/fix/**"
       - "**/hotfix/**"
+      - "**/bugfix/**"
 
 type/docs:
   - any:
@@ -50,6 +51,7 @@ type/chore:
       - .editorconfig
       - .gitignore
       - Taskfile.yml
+      - package.json
       - .github/workflows/**
       - bin/**
       - .yamllint
