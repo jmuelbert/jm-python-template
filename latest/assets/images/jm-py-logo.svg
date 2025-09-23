@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+<!-- Background rectangle -->
+<rect x="0" y="0" width="100" height="100" fill="#2c3e50"/>
+
+<!-- Stylized 'J' and 'M' -->
+<path d="M25 25H45C50 25 50 30 45 30H30V45H25V25Z" fill="#3498db"/>
+<path d="M75 75H55C50 75 50 70 55 70H70V55H75V75Z" fill="#3498db"/>
+<path d="M25 75L50 25L75 75H25ZM50 65L65 40L65 60L50 65Z" fill="#2ecc71"/>
+
+<!-- Simplified Python snake -->
+<path d="M40 15C55 15 60 25 60 40C60 55 55 60 40 60C25 60 20 55 20 40C20 25 25 15 40 15Z" fill="#f1c40f"/>
+<path d="M60 85C45 85 40 75 40 60C40 45 45 40 60 40C75 40 80 45 80 60C80 75 75 85 60 85Z" fill="#e67e22"/>
+
+<!-- JM lettering -->
+<text x="35" y="45" font-family="Verdana, Geneva, sans-serif" font-size="20" font-weight="bold" fill="white">J</text>
+<text x="50" y="45" font-family="Verdana, Geneva, sans-serif" font-size="20" font-weight="bold" fill="white">M</text>
+</svg>
