@@ -75,6 +75,9 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: 🧰 Checkout Repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+
       - name: 🔧 Call Python Environment Setup
         uses: ./.github/actions/python-setup
 
@@ -86,7 +89,7 @@ jobs:
 
       - name: 🔍 Twine Check
         run: |
-          hatch env run --env dev twine check dist/*
+          hatch env run --env dev -- twine check dist/*
 
   publish-and-release:
     name: Publish and Create Release
