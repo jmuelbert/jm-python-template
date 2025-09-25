@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2025-present Jürgen Mülbert <juergen.muelbert@outlook.de>
 
 # Use a specific version of the Python image for stability
-FROM mcr.microsoft.com/devcontainers/python:1-3.13-bullseye
+FROM mcr.microsoft.com/devcontainers/python:1-3.13-bullseye@sha256:cb1447535ccca8cfcf880421f956145aee085234e281e52a0ee2b554af643c77
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
